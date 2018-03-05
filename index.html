@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<head>
+  <title id="titre">Loading ...</title>
+  <meta charset="utf-8" name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+  <style>
+    body {
+      color: #61443e;
+      font-family:Monospace;
+      font-size:13px;
+      text-align:center;
+      background-color: #bfd1e5;
+      margin: 0px;
+      overflow: hidden;
+    }
+    #info {
+      position: absolute;
+      top: 0px; width: 100%;
+      padding: 5px;
+    }
+    a {
+      color: #a06851;
+    }
+    #hud {
+      height: 100%;
+      width : 100%;
+      position:fixed;
+      top: 0px;
+      left: 0px;
+      z-index: 1;
+    }
+    #score {
+      background-color: #badbad;
+      text-align: center;
+      width: 220px;
+      margin: auto;
+      margin-top: 2%;
+      opacity: 0.5;
+      z-index: 1;
+
+    }
+    #guiContainer{
+      z-index: 2;
+    }
+    div#loaderRess{
+      height: 100%;
+      width: 100%;
+      position: fixed;
+      top: 0px;
+      left: 0px;
+      background-color: #FFFFFF;
+      opacity: 1;
+      filter: alpha(opacity=50);
+      z-index: 3;
+    }
+    div#loaderRess div{
+      width: 250px;
+      margin: auto;
+      margin-top: 330px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body >
+<!-- Div affichée durant le chargement -->
+<div id="loaderRess"><div>Please wait while loading</div></div>
+<script language="javascript" content="text/javascript">
+function loaderRess(text, points){
+  //onLoad="document.body.removeChild(document.getElementById('loaderRess'));"
+    if(document.getElementById('loaderRess')){
+        points = (points ? points : 0);
+        points += 1; //(points+1 > 7 ? 0 : points+1);
+        if(!text){
+            text = document.getElementById('loaderRess').childNodes[0].innerHTML;
+        }
+        switch (points) {
+          case 1:
+            text = "Please wait while loading.";
+            break;
+          case 2:
+            text += ".";
+            break;
+          case 3:
+            text += ".";
+            break;
+          case 4:
+            text = "It seems you have a slow connection";
+            break;
+          case 5:
+            text = "You can play this minigame while loading";
+            break;
+          case 6:
+            text = "The loading will continue in the background";
+            break;
+          default:
+        }
+      //  if (points == 2) text = "It seems you have a bad connection";
+      //  if (points == 3) text = "You can play this minigame until the end of the loading";
+        var text_suspensions = text;
+      //  for(i=0; i<points; i++){
+      //      text_suspensions += '.';
+      //  }
+        document.getElementById('loaderRess').childNodes[0].innerHTML = text_suspensions;
+        if (points<7) {
+          setTimeout('loaderRess(\''+text+'\', '+points+')', 2000);
+        }
+        else {
+          document.body.removeChild(document.getElementById('loaderRess'));
+        }
+    }
+}
+    loaderRess();
+</script>
+
+<div id="container"></div>
+<div id="hud" style="display:block">
+  <div id="guiContainer"></div>
+  <div id="score"> ha ben ça alors !</div>
+</div>
+
+  <script src="src/js/three.js"></script>
+  <script src="src/js/OrbitControls.js"></script>
+  <script src="src/js/GPUParticleSystem.js"></script>
+  <script src="src/js/threex/THREEx.screenshot.js"></script>
+  <script src="src/js/threex/THREEx.FullScreen.js"></script>
+  <script src="src/js/threex/THREEx.WindowResize.js"></script>
+  <script src="src/js/OBJLoader.js"></script>
+  <script src="src/lib/stats.min.js"></script>
+  <script src="src/lib/dat.gui.min.js"></script>
+
+  <script src="src/js/ressources.js"></script>
+  <script src="src/js/main.js"></script>
+
+</body>
+</html>
