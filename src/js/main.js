@@ -50,6 +50,7 @@ spawnerOptions = {
   timeScale: 0.4
 }
 var launch = false;
+var music;
 THREE.DefaultLoadingManager.onProgress = function ( url, itemsLoaded, itemsTotal ) {
   console.log( 'Loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.' );
 };
@@ -59,6 +60,15 @@ THREE.DefaultLoadingManager.onLoad = function ( ) {
   launch = true;
   animate();
 };
+//create an audio listener to add to the camera
+var listener = new THREE.AudioListener();
+// create a global audio source
+var fate = new THREE.Audio( listener );
+var pew = new THREE.Audio(  listener );
+var danger = new THREE.Audio(  listener );
+var boum = new THREE.Audio(  listener );
+var explosion = new THREE.Audio(  listener );
+var dejavu = new THREE.Audio(  listener );
 
   initGraphics(); //and audio
   initGui();
@@ -100,20 +110,40 @@ function initGraphics(){
     THREEx.FullScreen.bindKey();
     //document.getElementById('container').innerHTML	+= "- <i>f</i> for fullscreen";
   }
-  // create an AudioListener and add it to the camera
-  var listener = new THREE.AudioListener();
+  //add the AudioListener to the camera
   camera.add( listener );
-  // create a global audio source
-  var sound = new THREE.Audio( listener );
   // load a sound and set it as the Audio object's buffer
   var audioLoader = new THREE.AudioLoader();
-  audioLoader.load( 'src/medias/sounds/dejavu.wav', function( buffer ) {
-    sound.setBuffer( buffer );
-    sound.setLoop(true);
-    sound.setVolume(1.0);
-    //sound.play();
+  audioLoader.load( 'src/medias/sounds/fateOfTheUnknown.mp3', function( buffer ) {
+    fate.setBuffer( buffer );
+    fate.setLoop(true);
+    fate.setVolume(1.0);
   });
-
+  audioLoader.load( 'src/medias/sounds/pew.mp3', function( buffer ) {
+    pew.setBuffer( buffer );
+    pew.setLoop(false);
+    pew.setVolume(1.0);
+  });
+  audioLoader.load( 'src/medias/sounds/boum.mp3', function( buffer ) {
+    boum.setBuffer( buffer );
+    boum.setLoop(false);
+    boum.setVolume(1.0);
+  });
+  audioLoader.load( 'src/medias/sounds/dejavu.mp3', function( buffer ) {
+    dejavu.setBuffer( buffer );
+    dejavu.setLoop(false);
+    dejavu.setVolume(1.0);
+  });
+  audioLoader.load( 'src/medias/sounds/danger.mp3', function( buffer ) {
+    danger.setBuffer( buffer );
+    danger.setLoop(false);
+    danger.setVolume(1.0);
+  });
+  audioLoader.load( 'src/medias/sounds/explosion.mp3', function( buffer ) {
+    explosion.setBuffer( buffer );
+    explosion.setLoop(false);
+    explosion.setVolume(1.0);
+  });
 
   //show fps
   stats = new Stats();

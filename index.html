@@ -100,7 +100,7 @@ function loaderRess(text, points){
       //      text_suspensions += '.';
       //  }
         document.getElementById('loaderRess').childNodes[0].innerHTML = text_suspensions;
-        if (points<7) {
+        if (points<4) {
           setTimeout('loaderRess(\''+text+'\', '+points+')', 2000);
         }
         else {

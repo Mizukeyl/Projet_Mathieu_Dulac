@@ -6,9 +6,6 @@ function initGui(){
   var folder3 = gui.addFolder( 'Miscellaneous' );
   var folder4 = gui.addFolder( 'Camera');
 
-
-
-
   folder1.add(settings, "playerMoveSpeed", 0, 2).step(0.1);
   folder1.add(settings, "lifePoints", 0, 10).step(1).listen();
   folder1.add(settings, "reloadDelay", 0, 2).step(0.05);
@@ -206,6 +203,8 @@ function playerMove() {
     //if (clockShoot.getDelta() > 0.5) {
     if (clockShoot.getElapsedTime() - lastShot > settings.reloadDelay){
       shoot(vectUp,player.hitbox.position);
+      if (pew.isPlaying) boum.play();
+      else pew.play();
       lastShot = clockShoot.getElapsedTime();
     }
 
@@ -222,6 +221,7 @@ function onDocumentKeyDown(event) {
   switch (event.key) {
     case "Tab":
       animaEnnemies();
+      dejavu.play();
       break;
     case " ":
       spaceBarPushed = true;
