@@ -29,7 +29,7 @@ var gui = new dat.GUI( {width: 350});
 document.getElementById('guiContainer').appendChild(gui.domElement);
 var anima; //textures animators
 // array of functions for the rendering loop
-//var onRenderFcts= [];
+//var onRenderFcts= [];player
 var loader = new THREE.ObjectLoader();
 var meshes = [], mixers = [];
 //var mixer = new THREE.AnimationMixer(scene);
@@ -177,6 +177,7 @@ function initGraphics(){
   //ANIMATED TEXTURES
   var runnerTexture = new THREE.ImageUtils.loadTexture( 'src/medias/images/tunnel.jpg' );
   anima = new TextureAnimator( runnerTexture, 8, 8, 64, settings.animaSpeed ); // texture, #horiz, #vert, #total, duration.
+
   var runnerMaterial = new THREE.MeshBasicMaterial( { map: runnerTexture, side:THREE.DoubleSide } );
   var runnerGeometry = new THREE.PlaneGeometry(50, 50, 1, 1);
   var runner = new THREE.Mesh(runnerGeometry, runnerMaterial);
@@ -192,13 +193,14 @@ function initGraphics(){
     vertexShader:   document.getElementById('sky-vertex').textContent,
     fragmentShader: document.getElementById('sky-fragment').textContent
   });*/
-  var skyBox = new THREE.Mesh(skyGeometry, runnerMaterial);
+  /*var skyBox = new THREE.Mesh(skyGeometry, runnerMaterial);
   skyBox.scale.set(-1, 1, 1);
   skyBox.eulerOrder = 'XZY';
   skyBox.renderDepth = 1000.0;
   skyBox.rotateX(Math.PI / 16);
   skyBox.rotateY(-Math.PI / 2);
-  //scene.add(skyBox);
+  scene.add(skyBox);
+  */
   //CylinderGeometry(radiusTop, radiusBottom, height, radialSegments, heightSegments, openEnded, thetaStart, thetaLength)
   var geometry = new THREE.CylinderGeometry( 20, 40, 300, 32, 1, true);
   var material = new THREE.MeshBasicMaterial( {map: runnerTexture, side:THREE.BackSide} );

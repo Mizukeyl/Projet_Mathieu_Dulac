@@ -1,4 +1,9 @@
 //DAT.GUI
+
+
+
+
+//MODELES 3D SKETCHFAB
 function initGui(){
 
   var folder1 = gui.addFolder( 'Player' );
@@ -147,7 +152,6 @@ function initBullets(nbBullet){
   for (var i=0; i<nbBullet; i++){
     bullets[i] = new Bullet(i, -5,0,15, vectNull);
     scene.add(bullets[i].hitbox);
-
   }
 };
 
@@ -161,8 +165,6 @@ function createMeshes(obj){
     //addMesh(i, obj);
   }
 };
-
-
 
 // options passed during each spawned
 function particleOpt() {
@@ -265,6 +267,15 @@ function onDocumentKeyUp(event) {
     case "ArrowRight":
       rightArrowPushed = false;
       break;
+    case "x":
+      bomb();
+      break;
+    case "g":
+      document.getElementById("speedAnim").style.display = "none";
+      break;
+    case "h":
+      document.getElementById("speedAnim").style.display = "block";
+      break;
     default:
       return;
   }
@@ -280,9 +291,8 @@ function bulletsMove(){
     if (bullets[i].alive) {
       if (bullets[i].direction == vectUp) {
         bullets[i].hitbox.position.y += settings.bulletSpeed;
-        bullets[i].hitbox.position.z += Math.sin(bullets[i].hitbox.position.y);
-        bullets[i].hitbox.position.x += Math.sin(bullets[i].hitbox.position.y/2);
-
+      //  bullets[i].hitbox.position.z += Math.sin(bullets[i].hitbox.position.y);
+      //  bullets[i].hitbox.position.x += Math.sin(bullets[i].hitbox.position.y/2);
         bullets[i].particleOptions.color = 0xaa88ff; //white
       }
       else if (bullets[i].direction == vectDown) {
@@ -344,18 +354,18 @@ function fullDetectCollision(bullet){
     }
   }
   else {
-    //ennemies.forEach(function(currentEn,index){
     for (var i=0; i<ennemies.length; i++){ //collision between bullets and ennemies
       computeHitboxEdges(ennemies[i]);
       if (isCollision(bullet,ennemies[i])) {
-        ennemies[i].hitbox.visible = false;
         bullet.hitbox.visible = false;
         bullet.alive = false;
         bullet.hitbox.position.setZ(15);
         bullet.particleOptions.position.setZ(15);
         collisionParticle.position.set(ennemies[i].hitbox.position.x,ennemies[i].hitbox.position.y,ennemies[i].hitbox.position.z);
+        ennemies[i].hitbox.visible = false;
         ennemies[i].hitbox.position.setZ(4);
         ennemies[i].alive = false;
+        meshes[i].visible = false;
 
       }
     }
@@ -450,6 +460,17 @@ function shoot(direction, position){
     position.z)
   bullets[j].hitbox.visible = true;
   bullets[j].alive = true;
+}
+
+function bomb(){
+  var vectPos = new THREE.Vector3(0,0,0);
+  vectPos.set(player.hitbox.position.x,player.hitbox.position.y,player.hitbox.position.z);
+  vectPos.x -= 20;
+  for (var i=0; i<40; i++){
+    vectPos.x ++;
+    vectPos.y += (Math.random()-0.2);
+    shoot(vectUp, vectPos);
+  }
 }
 
 /*
