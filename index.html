@@ -26,20 +26,33 @@
       position:fixed;
       top: 0px;
       left: 0px;
-      z-index: 1;
+      z-index: 3;
+    }
+    #speedAnim {
+      height: 100%;
+      width : 100%;
+      position:fixed;
+      top: 0px;
+      left: 0px;
+      opacity: 0.3;
+      background-image: url("src/medias/images/speedAnim.gif");
+      background-position: center;
+      background-size: cover;
+      background-repeat: no-repeat;
+      z-index: 2;
     }
     #score {
       background-color: #badbad;
       text-align: center;
+
       width: 220px;
+      height: 50px;
       margin: auto;
       margin-top: 2%;
       opacity: 0.5;
-      z-index: 1;
 
     }
     #guiContainer{
-      z-index: 2;
     }
     div#loaderRess{
       height: 100%;
@@ -62,7 +75,9 @@
 </head>
 <body >
 <!-- Div affichée durant le chargement -->
+<!--
 <div id="loaderRess"><div>Please wait while loading</div></div>
+-->
 <script language="javascript" content="text/javascript">
 function loaderRess(text, points){
   //onLoad="document.body.removeChild(document.getElementById('loaderRess'));"
@@ -100,7 +115,7 @@ function loaderRess(text, points){
       //      text_suspensions += '.';
       //  }
         document.getElementById('loaderRess').childNodes[0].innerHTML = text_suspensions;
-        if (points<4) {
+        if (points<7) {
           setTimeout('loaderRess(\''+text+'\', '+points+')', 2000);
         }
         else {
@@ -108,7 +123,7 @@ function loaderRess(text, points){
         }
     }
 }
-    loaderRess();
+    //loaderRess();
 </script>
 
 <div id="container"></div>
@@ -116,6 +131,7 @@ function loaderRess(text, points){
   <div id="guiContainer"></div>
   <div id="score"> ha ben ça alors !</div>
 </div>
+<div id="speedAnim"></div>
 
   <script src="src/js/three.js"></script>
   <script src="src/js/OrbitControls.js"></script>
