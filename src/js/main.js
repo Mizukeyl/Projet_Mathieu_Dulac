@@ -32,6 +32,7 @@ var anima; //textures animators
 //var onRenderFcts= [];player
 var loader = new THREE.ObjectLoader();
 var meshes = [], mixers = [];
+var playerMesh;
 //var mixer = new THREE.AnimationMixer(scene);
 var settings = {
   level: 0,

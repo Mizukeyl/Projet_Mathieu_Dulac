@@ -55,9 +55,11 @@ function initObjects(nbColumns, nbLines){
   //raycaster.far = 1;
   initBullets(50);
   initEnnemies(nbColumns,nbLines);
-  player = new Character(-1, 0,-35,0);
+  player = new PlayerCharacter(0,-35,0);
   scene.add( groupEnnemies );
   scene.add( player.hitbox );
+  scene.add(player.boxHelper);
+
   scene.add(particleSystem);
 };
 
@@ -99,7 +101,28 @@ function computeHitboxEdges(box){
   box.hitbox.minZ = box.hitbox.position.z - borders;
   box.hitbox.maxZ = box.hitbox.position.z + borders;
 };
-//var m=0;
+
+function PlayerCharacter(x,y,z){
+  loader.load("src/medias/models/damn.json", function(obj){
+    obj.position.set(x,y,z);
+    playerMesh = obj;
+    scene.add(playerMesh);
+  });
+  this.dim = 1;
+  this.alive = true;
+  this.daWae = vectUp; //the way of the movement
+  this.hitbox = new THREE.Mesh(new THREE.BoxGeometry( this.dim, this.dim, this.dim ), new THREE.MeshBasicMaterial({color: 0xff00ff}));
+  this.boundingBox = new THREE.Box3().setFromObject(this.hitbox);
+  //this.boundingBox
+  this.boxHelper = new THREE.Box3Helper(this.boundingBox, 0xffff00);
+  this.hitbox.position.set(x,y,z);
+  this.hitbox.minY = this.hitbox.position.y - this.dim/2;
+  this.hitbox.maxY = this.hitbox.position.y + this.dim/2;
+  this.hitbox.minX = this.hitbox.position.x - this.dim/2;
+  this.hitbox.maxX = this.hitbox.position.x + this.dim/2;
+  this.hitbox.minZ = this.hitbox.position.z - this.dim/2;
+  this.hitbox.maxZ = this.hitbox.position.z + this.dim/2;
+}
 //add characters
 function Character(m, x,y,z){
 
@@ -189,15 +212,20 @@ function spawnerOpt() {
 
 //manage player's movements
 function playerMove() {
+
   if (leftArrowPushed) {
     if (player.hitbox.position.x > -20){
       player.hitbox.position.x -= settings.playerMoveSpeed;
+      player.boundingBox.setFromObject(player.hitbox);
+
       camera.position.x -= settings.playerMoveSpeed;
     }
   }
   if (rightArrowPushed) {
     if (player.hitbox.position.x < 20){
       player.hitbox.position.x += settings.playerMoveSpeed;
+      player.boundingBox.setFromObject(player.hitbox);
+
       camera.position.x += settings.playerMoveSpeed;
     }
   }
