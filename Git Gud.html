@@ -17,9 +17,10 @@ git fetch
 //enregistrer fichier
   git add nouveau_fichier.txt
   git commit -m " commentaire "
+//merger
+  git merge ma-branche --no-ff -m "intégration de ma nouvelle fonctionnalité dans master"
 
-git merge ma-branche --no-ff -m "intégration de ma nouvelle fonctionnalité dans master"
+//supprimer branche
+  git branch -d ma-branche
 
-git branch -d ma-branche
-
-git log --decorate --graph
+  git log --decorate --graph
