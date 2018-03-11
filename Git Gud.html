@@ -12,8 +12,6 @@ cd projet...
 //pour créer et bifurquer en MEME TEMPS
   git checkout -b ma-branche
 
-git fetch
-
 //enregistrer fichier
   git add nouveau_fichier.txt
   git commit -m " commentaire "
@@ -23,4 +21,10 @@ git fetch
 //supprimer branche
   git branch -d ma-branche
 
+//log infos
   git log --decorate --graph
+  git log --decorate --all
+//statut
+  git status
+//maj donnees depot distant
+  git fetch
