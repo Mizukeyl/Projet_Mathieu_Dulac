@@ -12,6 +12,14 @@ cd projet...
 //pour créer et bifurquer en MEME TEMPS
   git checkout -b ma-branche
 
+git fetch
+
 //enregistrer fichier
   git add nouveau_fichier.txt
   git commit -m " commentaire "
+
+git merge ma-branche --no-ff -m "intégration de ma nouvelle fonctionnalité dans master"
+
+git branch -d ma-branche
+
+git log --decorate --graph
