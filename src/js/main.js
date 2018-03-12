@@ -247,6 +247,9 @@ function animate(){
   requestAnimationFrame(animate);
   if (!pause) {
     updateTexture();
+    //updateHitboxesEdges();
+    updateBoundingBoxes(); 
+
     playerMove();
     bulletsMove();
     ennemiesMove();

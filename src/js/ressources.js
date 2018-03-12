@@ -112,10 +112,9 @@ function PlayerCharacter(x,y,z){
   this.alive = true;
   this.daWae = vectUp; //the way of the movement
   this.hitbox = new THREE.Mesh(new THREE.BoxGeometry( this.dim, this.dim, this.dim ), new THREE.MeshBasicMaterial({color: 0xff00ff}));
-  this.boundingBox = new THREE.Box3().setFromObject(this.hitbox);
-  //this.boundingBox
-  this.boxHelper = new THREE.Box3Helper(this.boundingBox, 0xffff00);
   this.hitbox.position.set(x,y,z);
+  this.boundingBox = new THREE.Box3().setFromObject(this.hitbox);
+  this.boxHelper = new THREE.Box3Helper(this.boundingBox, 0xffff00);
   this.hitbox.minY = this.hitbox.position.y - this.dim/2;
   this.hitbox.maxY = this.hitbox.position.y + this.dim/2;
   this.hitbox.minX = this.hitbox.position.x - this.dim/2;
@@ -137,6 +136,9 @@ function Character(m, x,y,z){
   this.daWae = vectUp; //the way of the movement
   this.hitbox = new THREE.Mesh(new THREE.BoxGeometry( this.dim, this.dim, this.dim ), new THREE.MeshBasicMaterial({color: 0xff00ff}));
   this.hitbox.position.set(x,y,z);
+  this.boundingBox = new THREE.Box3().setFromObject(this.hitbox);
+  this.boxHelper = new THREE.Box3Helper(this.boundingBox, 0xffff00);
+  scene.add(this.boxHelper);
   this.hitbox.minY = this.hitbox.position.y - this.dim/2;
   this.hitbox.maxY = this.hitbox.position.y + this.dim/2;
   this.hitbox.minX = this.hitbox.position.x - this.dim/2;
@@ -153,6 +155,9 @@ function Bullet(index, x,y,z, direction){
   this.particleOptions = new particleOpt();
   this.particleOptions.position.set(x,y,z);
   this.hitbox.position.set(x,y,z);
+  this.boundingBox = new THREE.Box3().setFromObject(this.hitbox);
+  this.boxHelper = new THREE.Box3Helper(this.boundingBox, 0xffff00);
+  scene.add(this.boxHelper);
   this.hitbox.minY = this.hitbox.position.y - this.dim/2;
   this.hitbox.maxY = this.hitbox.position.y + this.dim/2;
   this.hitbox.minX = this.hitbox.position.x - this.dim/2;
@@ -216,16 +221,12 @@ function playerMove() {
   if (leftArrowPushed) {
     if (player.hitbox.position.x > -20){
       player.hitbox.position.x -= settings.playerMoveSpeed;
-      player.boundingBox.setFromObject(player.hitbox);
-
       camera.position.x -= settings.playerMoveSpeed;
     }
   }
   if (rightArrowPushed) {
     if (player.hitbox.position.x < 20){
       player.hitbox.position.x += settings.playerMoveSpeed;
-      player.boundingBox.setFromObject(player.hitbox);
-
       camera.position.x += settings.playerMoveSpeed;
     }
   }
@@ -314,7 +315,6 @@ function onDocumentKeyUp(event) {
 
 //manage bullets movements
 function bulletsMove(){
-  //bullets.forEach(function(currentBullet, index)
   for (var i=0; i<bullets.length; i++){
     if (bullets[i].alive) {
       if (bullets[i].direction == vectUp) {
@@ -333,13 +333,14 @@ function bulletsMove(){
         bullets[i].hitbox.position.z
       );
     }
-    computeHitboxEdges(bullets[i]);
+    //computeHitboxEdges(bullets[i]);
+    bullets[i].boundingBox.setFromObject(bullets[i].hitbox);
     fullDetectCollision(bullets[i]);
     if (collisionParticle.position.z < 1) {
       collisionParticle.position.z += settings.bulletSpeed/100;
     }
-    if (bullets[i].hitbox.maxY >= 30 || bullets[i].hitbox.maxY <= -40) { //reset the bullets who goes too far
-      bullets[i].hitbox.visible = false;
+    if (bullets[i].hitbox.position.y >= 30 || bullets[i].hitbox.position.y <= -40) { //reset the bullets who goes too far
+//bullets[i].hitbox.visible = false;
       bullets[i].alive = false;
       bullets[i].hitbox.position.setZ(20);
       bullets[i].particleOptions.position.setZ(15);
@@ -366,12 +367,34 @@ function bulletsMove(){
   particleSystem.update( tick );
 }
 
+function updateBoundingBoxes(){
+  player.boundingBox.setFromObject(player.hitbox);
+  for (var i=0; i<ennemies.length; i++){
+    ennemies[i].boundingBox.setFromObject(ennemies[i].hitbox);
+  }
+  for (var i=0; i<bullets.length; i++){
+      bullets[i].boundingBox.setFromObject(bullets[i].hitbox);
+  }
+}
+
+function updateHitboxesEdges(){
+  computeHitboxEdges(player);
+  for (var i=0; i<ennemies.length; i++){
+    computeHitboxEdges(ennemies[i]);
+  }
+  for (var i=0; i<bullets.length; i++){
+    computeHitboxEdges(bullets[i]);
+  }
+}
+
 function fullDetectCollision(bullet){
   if (bullet.direction == vectDown){ //collision between bullets and player
-    computeHitboxEdges(player);
-    if (isCollision(bullet,player)) {
+    //computeHitboxEdges(player); //use box3 instead
+    player.boundingBox.setFromObject(player.hitbox);
+    //if (isCollision(bullet,player)) { //use box3 instead
+    if (bullet.boundingBox.intersectsBox(player.boundingBox)) {
       collisionParticle.position.set(player.hitbox.position.x,player.hitbox.position.y,player.hitbox.position.z);
-      bullet.hitbox.visible = false;
+//bullet.hitbox.visible = false;
       bullet.hitbox.position.setZ(15);
       bullet.alive = false;
       bullet.particleOptions.position.setZ(15);
@@ -383,9 +406,11 @@ function fullDetectCollision(bullet){
   }
   else {
     for (var i=0; i<ennemies.length; i++){ //collision between bullets and ennemies
-      computeHitboxEdges(ennemies[i]);
-      if (isCollision(bullet,ennemies[i])) {
-        bullet.hitbox.visible = false;
+      //computeHitboxEdges(ennemies[i]);
+      ennemies[i].boundingBox.setFromObject(ennemies[i].hitbox);
+      //if (isCollision(bullet,ennemies[i])) {
+      if (bullet.boundingBox.intersectsBox(ennemies[i].boundingBox)) {
+//bullet.hitbox.visible = false;
         bullet.alive = false;
         bullet.hitbox.position.setZ(15);
         bullet.particleOptions.position.setZ(15);
@@ -399,10 +424,12 @@ function fullDetectCollision(bullet){
     }
     for (var i=0; i<bullets.length; i++){ //collision between bullets
       if (bullets[i].direction == vectDown){
-        computeHitboxEdges(bullets[i]);
-        if (isCollision(bullet,bullets[i])){
+        //computeHitboxEdges(bullets[i]);
+        bullets[i].boundingBox.setFromObject(bullets[i].hitbox);
+        //if (isCollision(bullet,bullets[i])){
+        if (bullet.boundingBox.intersectsBox(bullets[i].boundingBox)){
           collisionParticle.position.set(bullets[i].hitbox.position.x,bullets[i].hitbox.position.y,bullets[i].hitbox.position.z);
-          bullet.hitbox.visible = false;
+//bullet.hitbox.visible = false;
           bullets[i].hitbox.visible = false;
           bullet.hitbox.position.setZ(5);
           bullet.alive = false;
@@ -416,6 +443,7 @@ function fullDetectCollision(bullet){
     }
   }
 }
+
 function isCollision(a, b) {
 return	(a.hitbox.minX <= b.hitbox.maxX && a.hitbox.maxX >= b.hitbox.minX) &&
       (a.hitbox.minY <= b.hitbox.maxY && a.hitbox.maxY >= b.hitbox.minY) &&
