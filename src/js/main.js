@@ -254,15 +254,17 @@ function animate(){
     playerMove();
     bulletsMove();
     ennemiesMove();
+    var delta = 100* clockTex.getDelta();
+    for (var i=0;i<mixers.length;i++){
+      mixers[i].update(delta);
+    }
+    playerMixer.update(delta);
+
     document.getElementById('scorePts').innerHTML = score;
 
   }
   //raycaster.set( player.hitbox.position, vectUp);
-  var delta = 100* clockTex.getDelta();
-  for (var i=0;i<mixers.length;i++){
-    mixers[i].update(delta);
-  }
-  //playerMixer.update(delta);
+
   stats.update();
   renderer.render( scene, camera );
 }

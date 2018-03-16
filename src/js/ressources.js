@@ -57,8 +57,8 @@ function initObjects(nbColumns, nbLines){
   initEnnemies(nbColumns,nbLines);
   player = new PlayerCharacter(0,-35,0);
   scene.add( groupEnnemies );
-  scene.add( player.hitbox );
-  scene.add(player.boxHelper);
+  //scene.add( player.hitbox );
+  //scene.add(player.boxHelper);
 
   scene.add(particleSystem);
 };
@@ -185,6 +185,7 @@ function initBullets(nbBullet){
   }
 };
 
+/*
 function createMeshes(obj){
   for (var i=0; i<ennemies.length; i++){
     obj.position.set(ennemies[i].hitbox.position.x,ennemies[i].hitbox.position.y,ennemies[i].hitbox.position.z);
@@ -195,7 +196,7 @@ function createMeshes(obj){
     //mixer.clipAction(playerMesh.animations[0], playerMesh[i]).play();
     //addMesh(i, obj);
   }
-};
+};*/
 
 // options passed during each spawned
 function particleOpt() {
@@ -442,7 +443,7 @@ function fullDetectCollision(bullet){
           bullets[i].hitbox.position.setZ(18);
           bullets[i].alive = false;
           bullets[i].particleOptions.position.setZ(15);
-          score += bullet[i].scorePts;
+          score += bullets[i].scorePts;
         }
       }
     }
@@ -463,7 +464,8 @@ function animaEnnemies(){
   }
   // TODO player animation to place somewhere else
   //playerMixer = new THREE.AnimationMixer(scene);
-  mixers[ennemies.length].clipAction(playerMesh.animations[0], playerMesh).play();
+  playerMixer = new THREE.AnimationMixer(scene);
+  playerMixer.clipAction(playerMesh.animations[0], playerMesh).play();
 }
 //AI of the ennemies
 function ennemiesMove(){
