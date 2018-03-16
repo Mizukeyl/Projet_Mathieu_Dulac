@@ -103,7 +103,7 @@ function computeHitboxEdges(box){
 };
 
 function PlayerCharacter(x,y,z){
-  loader.load("src/medias/models/ae86.json", function(obj){
+  loader.load("src/medias/models/wall.json", function(obj){
     obj.position.set(x,y,z);
     playerMesh = obj;
     scene.add(playerMesh);
@@ -191,7 +191,8 @@ function createMeshes(obj){
     mesh[i] = new THREE.Object3D();
     mesh[i] = obj;
     scene.add(mesh[i]);
-    mixer.clipAction(mesh[i].animations[0], mesh[i]).play();
+    //mixer.clipAction(mesh[i].animations[0], mesh[i]).play();
+    //mixer.clipAction(playerMesh.animations[0], playerMesh[i]).play();
     //addMesh(i, obj);
   }
 };
@@ -460,6 +461,9 @@ function animaEnnemies(){
     //window.alert(meshes[i]);
     mixers[i].clipAction(meshes[i].animations[0], meshes[i]).play();
   }
+  // TODO player animation to place somewhere else
+  //playerMixer = new THREE.AnimationMixer(scene);
+  mixers[ennemies.length].clipAction(playerMesh.animations[0], playerMesh).play();
 }
 //AI of the ennemies
 function ennemiesMove(){

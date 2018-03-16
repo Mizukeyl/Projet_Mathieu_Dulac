@@ -32,7 +32,7 @@ var anima; //textures animators
 // array of functions for the rendering loop
 //var onRenderFcts= [];player
 var loader = new THREE.ObjectLoader();
-var meshes = [], mixers = [];
+var meshes = [], mixers = [], playerMixer;
 var playerMesh;
 //var mixer = new THREE.AnimationMixer(scene);
 var settings = {
@@ -262,6 +262,7 @@ function animate(){
   for (var i=0;i<mixers.length;i++){
     mixers[i].update(delta);
   }
+  //playerMixer.update(delta);
   stats.update();
   renderer.render( scene, camera );
 }
