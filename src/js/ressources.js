@@ -103,7 +103,7 @@ function computeHitboxEdges(box){
 };
 
 function PlayerCharacter(x,y,z){
-  loader.load("src/medias/models/damn.json", function(obj){
+  loader.load("src/medias/models/ae86.json", function(obj){
     obj.position.set(x,y,z);
     playerMesh = obj;
     scene.add(playerMesh);
@@ -123,14 +123,15 @@ function PlayerCharacter(x,y,z){
   this.hitbox.maxZ = this.hitbox.position.z + this.dim/2;
 }
 //add characters
-function Character(m, x,y,z){
+function Character(m,model3D,scorePts, x,y,z){
 
-  loader.load("src/medias/models/damn.json", function(obj){
+  loader.load(model3D, function(obj){
     obj.position.set(x,y,z);
     meshes[m] = obj;
     scene.add(meshes[m]);
     //m++;
   });
+  this.scorePts = scorePts;
   this.dim = 1;
   this.alive = true;
   this.daWae = vectUp; //the way of the movement
@@ -148,6 +149,7 @@ function Character(m, x,y,z){
 };
 //add bullets
 function Bullet(index, x,y,z, direction){
+  this.scorePts = 100;
   this.alive = false;
   this.index = index;
   this.dim = 0.30;
@@ -170,7 +172,7 @@ function initEnnemies(nbColumns,nbLines){
   var n=0;
   for (var j=0; j<nbLines; j++) {
     for (var i=0; i<nbColumns; i++){
-      ennemies[n] = new Character(n, (i*3-10), (j*3+5), 0);
+      ennemies[n] = new Character(n,"src/medias/models/damn.json",30, (i*3-10), (j*3+5), 0);
       groupEnnemies.add(ennemies[n].hitbox);
       n++;
     }
@@ -221,12 +223,14 @@ function playerMove() {
   if (leftArrowPushed) {
     if (player.hitbox.position.x > -20){
       player.hitbox.position.x -= settings.playerMoveSpeed;
+      playerMesh.position.x -= settings.playerMoveSpeed;
       camera.position.x -= settings.playerMoveSpeed;
     }
   }
   if (rightArrowPushed) {
     if (player.hitbox.position.x < 20){
       player.hitbox.position.x += settings.playerMoveSpeed;
+      playerMesh.position.x += settings.playerMoveSpeed;
       camera.position.x += settings.playerMoveSpeed;
     }
   }
@@ -238,7 +242,6 @@ function playerMove() {
       else pew.play();
       lastShot = clockShoot.getElapsedTime();
     }
-
   }
 };
 //keyboard inputs
@@ -419,6 +422,7 @@ function fullDetectCollision(bullet){
         ennemies[i].hitbox.position.setZ(4);
         ennemies[i].alive = false;
         meshes[i].visible = false;
+        score += ennemies[i].scorePts;
 
       }
     }
@@ -437,7 +441,7 @@ function fullDetectCollision(bullet){
           bullets[i].hitbox.position.setZ(18);
           bullets[i].alive = false;
           bullets[i].particleOptions.position.setZ(15);
-
+          score += bullet[i].scorePts;
         }
       }
     }

@@ -5,6 +5,7 @@
 //var hpPlayer = 3, shootDelay = 0.5;
 var leftArrowPushed = false, rightArrowPushed = false, spaceBarPushed = false;
 var player, ennemies = [], bullets = [];
+var score = 0;
 var groupEnnemies = new THREE.Group();
 var vectUp = new THREE.Vector3(0,1,0);
 var vectDown = new THREE.Vector3(0,-1,0);
@@ -42,7 +43,7 @@ var settings = {
   reloadDelay: 0.5,
   ennemyMoveSpeed: 0.1,
   shootFrequ: 800,
-  bulletSpeed: 0.9
+  bulletSpeed: 0.8
 }
 spawnerOptions = {
   spawnRate: 15000,
@@ -248,11 +249,13 @@ function animate(){
   if (!pause) {
     updateTexture();
     //updateHitboxesEdges();
-    updateBoundingBoxes(); 
+    updateBoundingBoxes();
 
     playerMove();
     bulletsMove();
     ennemiesMove();
+    document.getElementById('scorePts').innerHTML = score;
+
   }
   //raycaster.set( player.hitbox.position, vectUp);
   var delta = 100* clockTex.getDelta();
