@@ -1,0 +1,60 @@
+{
+	"metadata": {
+		"version": 4.5,
+		"type": "Object",
+		"generator": "Object3D.toJSON"
+	},
+	"geometries": [
+		{
+			"uuid": "1C09F42A-6456-4523-BA5A-83DC85CBEA13",
+			"type": "IcosahedronGeometry",
+			"radius": 75,
+			"detail": 4
+		}],
+	"materials": [
+		{
+			"uuid": "8CA4148D-EEFB-407E-AFC9-FD45DF987655",
+			"type": "MeshStandardMaterial",
+			"color": 16510456,
+			"roughness": 1,
+			"metalness": 1,
+			"emissive": 0,
+			"alphaMap": "1F35517F-1C7A-431A-B318-310DB61195ED",
+			"side": 2,
+			"transparent": true,
+			"depthFunc": 3,
+			"depthTest": true,
+			"depthWrite": true,
+			"alphaTest": 0.5
+		}],
+	"textures": [
+		{
+			"uuid": "1F35517F-1C7A-431A-B318-310DB61195ED",
+			"name": "",
+			"mapping": 300,
+			"repeat": [1,1],
+			"offset": [0,0],
+			"center": [0,0],
+			"rotation": 0,
+			"wrap": [1001,1001],
+			"format": 1023,
+			"minFilter": 1008,
+			"magFilter": 1006,
+			"anisotropy": 1,
+			"flipY": true,
+			"image": "EF1CFF5B-D6A3-4EE8-94E4-9FE60D28FEE9"
+		}],
+	"images": [
+		{
+			"uuid": "EF1CFF5B-D6A3-4EE8-94E4-9FE60D28FEE9",
+			"url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAFUlEQVQYlWNgYGD4jxf/JwAYhoUJANlNn2EMZ/SCAAAAAElFTkSuQmCC"
+		}],
+	"object": {
+		"uuid": "A62DA9A3-60E3-4280-939D-87B37F44F31F",
+		"type": "Mesh",
+		"name": "Main Sphere",
+		"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
+		"geometry": "1C09F42A-6456-4523-BA5A-83DC85CBEA13",
+		"material": "8CA4148D-EEFB-407E-AFC9-FD45DF987655"
+	}
+}
