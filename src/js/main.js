@@ -29,6 +29,7 @@ var light, directionalLight;
 var gui = new dat.GUI( {width: 350});
 document.getElementById('guiContainer').appendChild(gui.domElement);
 var anima; //textures animators
+var alphaMesh;
 // array of functions for the rendering loop
 //var onRenderFcts= [];player
 var loader = new THREE.ObjectLoader();
@@ -78,7 +79,6 @@ var dejavu = new THREE.Audio(  listener );
   //animaEnnemies();
 
 
-//initObjects(8,5);
 //////////////////////////////////////////////////////////////////////////////////
 //		Init
 // git examples : physics / convex / break
@@ -160,33 +160,49 @@ function initGraphics(){
   directionalLight = new THREE.DirectionalLight( 0xffffff, 0.7 );
   directionalLight.position.set(1,1,1);
   scene.add( directionalLight );
-  //GROUND
-  var textureLoader = new THREE.TextureLoader();
-  var maxAnisotropy = renderer.getMaxAnisotropy();
-  var texture1 = textureLoader.load( "src/medias/images/checkerboardA.png" );
-  var material1 = new THREE.MeshPhongMaterial( { color: 0xffffff, map: texture1, transparent: true } );
-  texture1.anisotropy =  maxAnisotropy;
-  texture1.wrapS = texture1.wrapT = THREE.RepeatWrapping;
-  texture1.repeat.set( 10, 10 );
-  //add plane
-  var plane = new THREE.Mesh(new THREE.PlaneGeometry(100,100), material1);
-  plane.position.setZ(-1);
-  //plane.scale.set( 10,10,10);
-  //scene.add( plane );
+
   //Fog
   scene.fog = new THREE.FogExp2( 0x0000ff, 0.0035);
+
+  function addObjects(scene) {
+         //var geometry = new THREE.IcosahedronGeometry(30, 5);
+         var geometry = new THREE.CylinderGeometry( 20, 40, 300, 32, 1, true);
+
+         var material = new THREE.MeshStandardMaterial({ color: "#444", transparent: true, side: THREE.DoubleSide, alphaTest: 0.5, opacity: 0.9, roughness: 1 });
+
+         // this image is loaded as data uri. Just copy and paste the string contained in "image.src" in your browser's url bar to see the image.
+         // alpha texture used to regulate transparency
+         var image = document.createElement('img');
+         var alphaMap = new THREE.Texture(image);
+         image.onload = function()  {
+             alphaMap.needsUpdate = true;
+         };
+         image.src = 'src/medias/images/map.png';
+         material.alphaMap = alphaMap;
+         material.alphaMap.magFilter = THREE.NearestFilter;
+         material.alphaMap.wrapT = THREE.RepeatWrapping;
+         material.alphaMap.repeat.y = 1;
+
+         var mesh = new THREE.Mesh(geometry, material);
+         mesh.position.setY(100);
+         scene.add(mesh);
+         return mesh;
+     }
+  alphaMesh = addObjects(scene);
+
+
 
   //ANIMATED TEXTURES
   var runnerTexture = new THREE.ImageUtils.loadTexture( 'src/medias/images/tunnel.jpg' );
   anima = new TextureAnimator( runnerTexture, 8, 8, 64, settings.animaSpeed ); // texture, #horiz, #vert, #total, duration.
 
-  var runnerMaterial = new THREE.MeshBasicMaterial( { map: runnerTexture, side:THREE.DoubleSide } );
+/*  var runnerMaterial = new THREE.MeshBasicMaterial( { map: runnerTexture, side:THREE.DoubleSide } );
   var runnerGeometry = new THREE.PlaneGeometry(50, 50, 1, 1);
   var runner = new THREE.Mesh(runnerGeometry, runnerMaterial);
-  runner.position.set(0,25,0);
+  runner.position.set(0,25,0); */
   //scene.add(runner);
   //SKYSPHERE
-  var skyGeometry = new THREE.SphereBufferGeometry(100, 60, 40);
+//  var skyGeometry = new THREE.SphereBufferGeometry(100, 60, 40);
   /*var uniforms = {
     texture: { type: 't', value: THREE.ImageUtils.loadTexture('/path/to/my_image.jpg') }
   };*/
@@ -244,9 +260,12 @@ loader.load("src/medias/models/damn.json", function(obj){
 //////////////////////////////////////////////////////////////////////////////////
 //mixer.clipAction(clips[0]).play();
 // render the scene
+var time =0;
 function animate(){
   requestAnimationFrame(animate);
   if (!pause) {
+    time++;
+    alphaMesh.material.alphaMap.offset.y = time*0.008;
     updateTexture();
     //updateHitboxesEdges();
     updateBoundingBoxes();

@@ -56,7 +56,7 @@ function initObjects(nbColumns, nbLines){
   initBullets(50);
   initEnnemies(nbColumns,nbLines);
   player = new PlayerCharacter(0,-35,0);
-  scene.add( groupEnnemies );
+  //scene.add( groupEnnemies ); //hitbox
   //scene.add( player.hitbox );
   //scene.add(player.boxHelper);
 
@@ -107,6 +107,7 @@ function PlayerCharacter(x,y,z){
     obj.position.set(x,y,z);
     playerMesh = obj;
     scene.add(playerMesh);
+
   });
   this.dim = 1;
   this.alive = true;
@@ -181,7 +182,7 @@ function initEnnemies(nbColumns,nbLines){
 function initBullets(nbBullet){
   for (var i=0; i<nbBullet; i++){
     bullets[i] = new Bullet(i, -5,0,15, vectNull);
-    scene.add(bullets[i].hitbox);
+    //scene.add(bullets[i].hitbox);
   }
 };
 
@@ -257,7 +258,7 @@ function onDocumentKeyDown(event) {
   switch (event.key) {
     case "Tab":
       animaEnnemies();
-      dejavu.play();
+      //dejavu.play();
       break;
     case " ":
       spaceBarPushed = true;
@@ -395,7 +396,7 @@ function updateHitboxesEdges(){
 function fullDetectCollision(bullet){
   if (bullet.direction == vectDown){ //collision between bullets and player
     //computeHitboxEdges(player); //use box3 instead
-    player.boundingBox.setFromObject(player.hitbox);
+    //player.boundingBox.setFromObject(player.hitbox);
     //if (isCollision(bullet,player)) { //use box3 instead
     if (bullet.boundingBox.intersectsBox(player.boundingBox)) {
       collisionParticle.position.set(player.hitbox.position.x,player.hitbox.position.y,player.hitbox.position.z);
@@ -412,7 +413,7 @@ function fullDetectCollision(bullet){
   else {
     for (var i=0; i<ennemies.length; i++){ //collision between bullets and ennemies
       //computeHitboxEdges(ennemies[i]);
-      ennemies[i].boundingBox.setFromObject(ennemies[i].hitbox);
+      //ennemies[i].boundingBox.setFromObject(ennemies[i].hitbox);
       //if (isCollision(bullet,ennemies[i])) {
       if (bullet.boundingBox.intersectsBox(ennemies[i].boundingBox)) {
 //bullet.hitbox.visible = false;
@@ -431,7 +432,7 @@ function fullDetectCollision(bullet){
     for (var i=0; i<bullets.length; i++){ //collision between bullets
       if (bullets[i].direction == vectDown){
         //computeHitboxEdges(bullets[i]);
-        bullets[i].boundingBox.setFromObject(bullets[i].hitbox);
+        //bullets[i].boundingBox.setFromObject(bullets[i].hitbox);
         //if (isCollision(bullet,bullets[i])){
         if (bullet.boundingBox.intersectsBox(bullets[i].boundingBox)){
           collisionParticle.position.set(bullets[i].hitbox.position.x,bullets[i].hitbox.position.y,bullets[i].hitbox.position.z);
@@ -680,3 +681,17 @@ function loaderRess(text, points){
     loaderRess();
 
 */
+
+//GROUND
+/*  var textureLoader = new THREE.TextureLoader();
+var maxAnisotropy = renderer.getMaxAnisotropy();
+var texture1 = textureLoader.load( "src/medias/images/checkerboardA.png" );
+var material1 = new THREE.MeshPhongMaterial( { color: 0xffffff, map: texture1, transparent: true } );
+texture1.anisotropy =  maxAnisotropy;
+texture1.wrapS = texture1.wrapT = THREE.RepeatWrapping;
+texture1.repeat.set( 10, 10 );
+//add plane
+var plane = new THREE.Mesh(new THREE.PlaneGeometry(100,100), material1);
+plane.position.setZ(-1);
+//plane.scale.set( 10,10,10);
+//scene.add( plane ); */
