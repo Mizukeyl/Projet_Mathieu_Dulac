@@ -1,8 +1,5 @@
 //DAT.GUI
 
-
-
-
 //MODELES 3D SKETCHFAB
 function initGui(){
 
@@ -19,7 +16,7 @@ function initGui(){
   folder3.add(settings, "animaSpeed", 5, 500).step(10).onFinishChange(function(){
     anima.tileDisplayDuration = settings.animaSpeed;
   });
-  folder3.add(spawnerOptions, "spawnRate", 0, 30000).step(1);
+  folder3.add(spawnerOptions, "spawnRate", 0, 80000).step(1);
   folder3.add(spawnerOptions, "horizontalSpeed", 0, 5).step(0.05);
   folder3.add(spawnerOptions, "verticalSpeed", 0, 5).step(0.05);
   folder3.add(spawnerOptions, "timeScale", 0, 5).step(0.05);
@@ -73,6 +70,7 @@ function switchMenu(){
       initObjects(8,5);
       break;
     case 1:
+      animaEnnemies();
       pause=false;
       break;
     case 2:
@@ -80,32 +78,30 @@ function switchMenu(){
       for (var j=0; j< 5; j++) {
         for (var i=0; i< 8; i++){
           ennemies[n].hitbox.position.set(i*3-10, j*3+5, 0);
-          ennemies[n].hitbox.visible = true;
+          meshes[n].position.set(i*3-10, j*3+5, 0);
           ennemies[n].daWae = vectUp;
+          ennemies[n].alive = true;
+          ennemies[n].hitbox.visible = true;
+          meshes[n].visible = true;
           n++;
         }
       }
       player.hitbox.position.set(0,-35, 0);
-      camera.position.set(0,-60,20);
+      camera.position.set(0,-65,20);
       break;
     default:
       window.alert("menu value incorrect");
   }
 };
-function computeHitboxEdges(box){
-  var borders = box.dim/2;
-  box.hitbox.minX = box.hitbox.position.x - borders;
-  box.hitbox.maxX = box.hitbox.position.x + borders;
-  box.hitbox.minY = box.hitbox.position.y - borders;
-  box.hitbox.maxY = box.hitbox.position.y + borders;
-  box.hitbox.minZ = box.hitbox.position.z - borders;
-  box.hitbox.maxZ = box.hitbox.position.z + borders;
-};
 
 function PlayerCharacter(x,y,z){
-  loader.load("src/medias/models/wall.json", function(obj){
+  loader.load("src/medias/models/alphaWall.json", function(obj){
     obj.position.set(x,y,z);
+    //this.material = new THREE.MeshBasicMaterial({color: 0x000000});
     playerMesh = obj;
+    //playerMesh.material.alphaMap.magFilter = THREE.NearestFilter;
+    playerMesh.material.alphaMap.wrapT = THREE.RepeatWrapping;
+    playerMesh.material.alphaMap.repeat.y = 1;
     scene.add(playerMesh);
 
   });
@@ -116,12 +112,6 @@ function PlayerCharacter(x,y,z){
   this.hitbox.position.set(x,y,z);
   this.boundingBox = new THREE.Box3().setFromObject(this.hitbox);
   this.boxHelper = new THREE.Box3Helper(this.boundingBox, 0xffff00);
-  this.hitbox.minY = this.hitbox.position.y - this.dim/2;
-  this.hitbox.maxY = this.hitbox.position.y + this.dim/2;
-  this.hitbox.minX = this.hitbox.position.x - this.dim/2;
-  this.hitbox.maxX = this.hitbox.position.x + this.dim/2;
-  this.hitbox.minZ = this.hitbox.position.z - this.dim/2;
-  this.hitbox.maxZ = this.hitbox.position.z + this.dim/2;
 }
 //add characters
 function Character(m,model3D,scorePts, x,y,z){
@@ -140,19 +130,14 @@ function Character(m,model3D,scorePts, x,y,z){
   this.hitbox.position.set(x,y,z);
   this.boundingBox = new THREE.Box3().setFromObject(this.hitbox);
   this.boxHelper = new THREE.Box3Helper(this.boundingBox, 0xffff00);
-  scene.add(this.boxHelper);
-  this.hitbox.minY = this.hitbox.position.y - this.dim/2;
-  this.hitbox.maxY = this.hitbox.position.y + this.dim/2;
-  this.hitbox.minX = this.hitbox.position.x - this.dim/2;
-  this.hitbox.maxX = this.hitbox.position.x + this.dim/2;
-  this.hitbox.minZ = this.hitbox.position.z - this.dim/2;
-  this.hitbox.maxZ = this.hitbox.position.z + this.dim/2;
+  //scene.add(this.boxHelper);
 };
 //add bullets
 function Bullet(index, x,y,z, direction){
   this.scorePts = 100;
   this.alive = false;
   this.index = index;
+  this.direction = direction;
   this.dim = 0.30;
   this.hitbox = new THREE.Mesh(new THREE.BoxGeometry( this.dim, this.dim, this.dim ), new THREE.MeshBasicMaterial({color: 0xff0000}) );
   this.particleOptions = new particleOpt();
@@ -160,15 +145,14 @@ function Bullet(index, x,y,z, direction){
   this.hitbox.position.set(x,y,z);
   this.boundingBox = new THREE.Box3().setFromObject(this.hitbox);
   this.boxHelper = new THREE.Box3Helper(this.boundingBox, 0xffff00);
-  scene.add(this.boxHelper);
-  this.hitbox.minY = this.hitbox.position.y - this.dim/2;
-  this.hitbox.maxY = this.hitbox.position.y + this.dim/2;
-  this.hitbox.minX = this.hitbox.position.x - this.dim/2;
-  this.hitbox.maxX = this.hitbox.position.x + this.dim/2;
-  this.hitbox.minZ = this.hitbox.position.z - this.dim/2;
-  this.hitbox.maxZ = this.hitbox.position.z + this.dim/2;
-  this.direction = direction;
+  //scene.add(this.boxHelper);
 };
+
+function Wall(x,y,z){
+  this.alive = true;
+
+}
+
 function initEnnemies(nbColumns,nbLines){
   var n=0;
   for (var j=0; j<nbLines; j++) {
@@ -186,18 +170,7 @@ function initBullets(nbBullet){
   }
 };
 
-/*
-function createMeshes(obj){
-  for (var i=0; i<ennemies.length; i++){
-    obj.position.set(ennemies[i].hitbox.position.x,ennemies[i].hitbox.position.y,ennemies[i].hitbox.position.z);
-    mesh[i] = new THREE.Object3D();
-    mesh[i] = obj;
-    scene.add(mesh[i]);
-    //mixer.clipAction(mesh[i].animations[0], mesh[i]).play();
-    //mixer.clipAction(playerMesh.animations[0], playerMesh[i]).play();
-    //addMesh(i, obj);
-  }
-};*/
+
 
 // options passed during each spawned
 function particleOpt() {
@@ -273,6 +246,8 @@ function onDocumentKeyDown(event) {
       //playerMove();
       break;
     case "ArrowDown":
+      playerMesh.material = new THREE.MeshBasicMaterial({});
+      console.log("na");
       //mixer.clipAction(meshes[2].animations[0], meshes[2]).play();
       //switchMenu();
       break;
@@ -383,15 +358,7 @@ function updateBoundingBoxes(){
   }
 }
 
-function updateHitboxesEdges(){
-  computeHitboxEdges(player);
-  for (var i=0; i<ennemies.length; i++){
-    computeHitboxEdges(ennemies[i]);
-  }
-  for (var i=0; i<bullets.length; i++){
-    computeHitboxEdges(bullets[i]);
-  }
-}
+
 
 function fullDetectCollision(bullet){
   if (bullet.direction == vectDown){ //collision between bullets and player
@@ -464,10 +431,10 @@ function animaEnnemies(){
     mixers[i].clipAction(meshes[i].animations[0], meshes[i]).play();
   }
   // TODO player animation to place somewhere else
-  //playerMixer = new THREE.AnimationMixer(scene);
-  playerMixer = new THREE.AnimationMixer(scene);
-  playerMixer.clipAction(playerMesh.animations[0], playerMesh).play();
+//  playerMixer = new THREE.AnimationMixer(scene);
+//  playerMixer.clipAction(playerMesh.animations[0], playerMesh).play();
 }
+
 //AI of the ennemies
 function ennemiesMove(){
   for (var i=0; i<ennemies.length; i++){
@@ -695,3 +662,106 @@ var plane = new THREE.Mesh(new THREE.PlaneGeometry(100,100), material1);
 plane.position.setZ(-1);
 //plane.scale.set( 10,10,10);
 //scene.add( plane ); */
+/*
+function computeHitboxEdges(box){
+  var borders = box.dim/2;
+  box.hitbox.minX = box.hitbox.position.x - borders;
+  box.hitbox.maxX = box.hitbox.position.x + borders;
+  box.hitbox.minY = box.hitbox.position.y - borders;
+  box.hitbox.maxY = box.hitbox.position.y + borders;
+  box.hitbox.minZ = box.hitbox.position.z - borders;
+  box.hitbox.maxZ = box.hitbox.position.z + borders;
+};
+
+function updateHitboxesEdges(){
+  computeHitboxEdges(player);
+  for (var i=0; i<ennemies.length; i++){
+    computeHitboxEdges(ennemies[i]);
+  }
+  for (var i=0; i<bullets.length; i++){
+    computeHitboxEdges(bullets[i]);
+  }
+}
+
+this.hitbox.minY = this.hitbox.position.y - this.dim/2;
+this.hitbox.maxY = this.hitbox.position.y + this.dim/2;
+this.hitbox.minX = this.hitbox.position.x - this.dim/2;
+this.hitbox.maxX = this.hitbox.position.x + this.dim/2;
+this.hitbox.minZ = this.hitbox.position.z - this.dim/2;
+this.hitbox.maxZ = this.hitbox.position.z + this.dim/2;
+
+
+function createMeshes(obj){
+  for (var i=0; i<ennemies.length; i++){
+    obj.position.set(ennemies[i].hitbox.position.x,ennemies[i].hitbox.position.y,ennemies[i].hitbox.position.z);
+    mesh[i] = new THREE.Object3D();
+    mesh[i] = obj;
+    scene.add(mesh[i]);
+    //mixer.clipAction(mesh[i].animations[0], mesh[i]).play();
+    //mixer.clipAction(playerMesh.animations[0], playerMesh[i]).play();
+    //addMesh(i, obj);
+  }
+};*/
+
+/*  var runnerMaterial = new THREE.MeshBasicMaterial( { map: runnerTexture, side:THREE.DoubleSide } );
+  var runnerGeometry = new THREE.PlaneGeometry(50, 50, 1, 1);
+  var runner = new THREE.Mesh(runnerGeometry, runnerMaterial);
+  runner.position.set(0,25,0); */
+  //scene.add(runner);
+  //SKYSPHERE
+//  var skyGeometry = new THREE.SphereBufferGeometry(100, 60, 40);
+  /*var uniforms = {
+    texture: { type: 't', value: THREE.ImageUtils.loadTexture('/path/to/my_image.jpg') }
+  };*/
+  /*var material = new THREE.ShaderMaterial( {
+    uniforms:       uniforms,
+    vertexShader:   document.getElementById('sky-vertex').textContent,
+    fragmentShader: document.getElementById('sky-fragment').textContent
+  });*/
+  /*var skyBox = new THREE.Mesh(skyGeometry, runnerMaterial);
+  skyBox.scale.set(-1, 1, 1);
+  skyBox.eulerOrder = 'XZY';
+  skyBox.renderDepth = 1000.0;
+  skyBox.rotateX(Math.PI / 16);
+  skyBox.rotateY(-Math.PI / 2);
+  scene.add(skyBox);
+  */
+
+
+  /*
+  var meshGroup = new THREE.Group();
+  var loader = new THREE.ObjectLoader();
+  loader.load("src/medias/models/damn.json",
+      function(mesh){
+        meshGroup.add(mesh);
+        mixer = new THREE.AnimationMixer(meshGroup);
+        mixer.clipAction(meshGroup.animations[0]).play();
+      });
+  */
+  // Alternatively, to parse a previously loaded JSON structure
+  //var object = loader.parse( "src/medias/models/Heart2.json" );
+
+  //scene.add( object );
+
+  /*
+  loader.load("src/medias/models/damn.json", function(obj){
+    for(var i=0; i<ennemies.length; i++){
+      obj.position.set(ennemies[i].hitbox.position.x,ennemies[i].hitbox.position.y,ennemies[i].hitbox.position.z);
+      meshes[i] = obj;
+      scene.add(meshes[i]);
+      mixer.clipAction(meshes[i].animations[0], meshes[i]).play();
+    }
+  });*/
+
+  /*
+ var material = new THREE.MeshBasicMaterial ({color: 0xbadbad});
+
+ geoLoader.load("src/medias/models/geoWall.json", function(geometry){
+   //var geometry = new THREE.Geometry().fromBufferGeometry( bufferGeometry );
+   var object = new THREE.Mesh(geometry, material);
+   object.position.set(x,y,z);
+
+   scene.add(object);
+   playerMesh = object;
+   scene.add(playerMesh);
+ });*/

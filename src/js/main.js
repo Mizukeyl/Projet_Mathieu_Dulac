@@ -33,6 +33,8 @@ var alphaMesh;
 // array of functions for the rendering loop
 //var onRenderFcts= [];player
 var loader = new THREE.ObjectLoader();
+var geoLoader = new THREE.BufferGeometryLoader();
+
 var meshes = [], mixers = [], playerMixer;
 var playerMesh;
 //var mixer = new THREE.AnimationMixer(scene);
@@ -44,13 +46,13 @@ var settings = {
   reloadDelay: 0.5,
   ennemyMoveSpeed: 0.1,
   shootFrequ: 800,
-  bulletSpeed: 0.8
+  bulletSpeed: 0.7
 }
 spawnerOptions = {
-  spawnRate: 15000,
+  spawnRate: 20000,
   horizontalSpeed: 1.5,
   verticalSpeed: 1.33,
-  timeScale: 0.4
+  timeScale: 1
 }
 var launch = false;
 var music;
@@ -177,7 +179,7 @@ function initGraphics(){
          image.onload = function()  {
              alphaMap.needsUpdate = true;
          };
-         image.src = 'src/medias/images/map.png';
+         image.src = 'src/medias/images/map2.png';
          material.alphaMap = alphaMap;
          material.alphaMap.magFilter = THREE.NearestFilter;
          material.alphaMap.wrapT = THREE.RepeatWrapping;
@@ -195,32 +197,9 @@ function initGraphics(){
   //ANIMATED TEXTURES
   var runnerTexture = new THREE.ImageUtils.loadTexture( 'src/medias/images/tunnel.jpg' );
   anima = new TextureAnimator( runnerTexture, 8, 8, 64, settings.animaSpeed ); // texture, #horiz, #vert, #total, duration.
-
-/*  var runnerMaterial = new THREE.MeshBasicMaterial( { map: runnerTexture, side:THREE.DoubleSide } );
-  var runnerGeometry = new THREE.PlaneGeometry(50, 50, 1, 1);
-  var runner = new THREE.Mesh(runnerGeometry, runnerMaterial);
-  runner.position.set(0,25,0); */
-  //scene.add(runner);
-  //SKYSPHERE
-//  var skyGeometry = new THREE.SphereBufferGeometry(100, 60, 40);
-  /*var uniforms = {
-    texture: { type: 't', value: THREE.ImageUtils.loadTexture('/path/to/my_image.jpg') }
-  };*/
-  /*var material = new THREE.ShaderMaterial( {
-    uniforms:       uniforms,
-    vertexShader:   document.getElementById('sky-vertex').textContent,
-    fragmentShader: document.getElementById('sky-fragment').textContent
-  });*/
-  /*var skyBox = new THREE.Mesh(skyGeometry, runnerMaterial);
-  skyBox.scale.set(-1, 1, 1);
-  skyBox.eulerOrder = 'XZY';
-  skyBox.renderDepth = 1000.0;
-  skyBox.rotateX(Math.PI / 16);
-  skyBox.rotateY(-Math.PI / 2);
-  scene.add(skyBox);
-  */
   //CylinderGeometry(radiusTop, radiusBottom, height, radialSegments, heightSegments, openEnded, thetaStart, thetaLength)
-  var geometry = new THREE.CylinderGeometry( 20, 40, 300, 32, 1, true);
+  var geometry = new THREE.CylinderGeometry( 20, 50, 300, 32, 1, true);
+  //var geometry = new THREE.SphereBufferGeometry(150, 60, 40);
   var material = new THREE.MeshBasicMaterial( {map: runnerTexture, side:THREE.BackSide} );
   var cylinder = new THREE.Mesh( geometry, material );
   cylinder.position.setY(100);
@@ -230,30 +209,6 @@ function initGraphics(){
 
 
 
-/*
-var meshGroup = new THREE.Group();
-var loader = new THREE.ObjectLoader();
-loader.load("src/medias/models/damn.json",
-    function(mesh){
-      meshGroup.add(mesh);
-      mixer = new THREE.AnimationMixer(meshGroup);
-      mixer.clipAction(meshGroup.animations[0]).play();
-    });
-*/
-// Alternatively, to parse a previously loaded JSON structure
-//var object = loader.parse( "src/medias/models/Heart2.json" );
-
-//scene.add( object );
-
-/*
-loader.load("src/medias/models/damn.json", function(obj){
-  for(var i=0; i<ennemies.length; i++){
-    obj.position.set(ennemies[i].hitbox.position.x,ennemies[i].hitbox.position.y,ennemies[i].hitbox.position.z);
-    meshes[i] = obj;
-    scene.add(meshes[i]);
-    mixer.clipAction(meshes[i].animations[0], meshes[i]).play();
-  }
-});*/
 
 //////////////////////////////////////////////////////////////////////////////////
 //		render the whole thing on the page
@@ -266,6 +221,8 @@ function animate(){
   if (!pause) {
     time++;
     alphaMesh.material.alphaMap.offset.y = time*0.008;
+    playerMesh.material.alphaMap.offset.y = time*0.008;
+
     updateTexture();
     //updateHitboxesEdges();
     updateBoundingBoxes();
@@ -277,7 +234,7 @@ function animate(){
     for (var i=0;i<mixers.length;i++){
       mixers[i].update(delta);
     }
-    playerMixer.update(delta);
+    //playerMixer.update(delta);
 
     document.getElementById('scorePts').innerHTML = score;
 
