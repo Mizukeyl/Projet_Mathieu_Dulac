@@ -1,0 +1,17 @@
+{
+	"metadata": {
+		"version": 4.5,
+		"type": "BufferGeometry",
+		"generator": "BufferGeometry.toJSON"
+	},
+	"uuid": "BF9D1017-9D00-4897-8021-2BE04781D977",
+	"type": "CylinderBufferGeometry",
+	"radiusTop": 1,
+	"radiusBottom": 1,
+	"height": 1,
+	"radialSegments": 8,
+	"heightSegments": 1,
+	"openEnded": false,
+	"thetaStart": 0,
+	"thetaLength": 6.283185
+}
