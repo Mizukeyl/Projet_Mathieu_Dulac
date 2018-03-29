@@ -179,7 +179,7 @@ function initGraphics(){
          image.onload = function()  {
              alphaMap.needsUpdate = true;
          };
-         image.src = 'src/medias/images/map2.png';
+         image.src = 'src/medias/images/alphaWall.png';
          material.alphaMap = alphaMap;
          material.alphaMap.magFilter = THREE.NearestFilter;
          material.alphaMap.wrapT = THREE.RepeatWrapping;
@@ -221,7 +221,7 @@ function animate(){
   if (!pause) {
     time++;
     alphaMesh.material.alphaMap.offset.y = time*0.008;
-    playerMesh.material.alphaMap.offset.y = time*0.008;
+    playerMesh.material.alphaMap.offset.y = time*0.005;
 
     updateTexture();
     //updateHitboxesEdges();
