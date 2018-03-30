@@ -9,7 +9,7 @@ function initGui(){
   var folder4 = gui.addFolder( 'Camera');
 
   folder1.add(settings, "playerMoveSpeed", 0, 2).step(0.1);
-  folder1.add(settings, "lifePoints", 0, 10).step(1).listen();
+  folder1.add(settings, "lifePoints", 0, 100).step(1).listen();
   folder1.add(settings, "reloadDelay", 0, 2).step(0.05);
   folder2.add(settings, "ennemyMoveSpeed", 0, 2).step(0.1);
   folder2.add(settings, "shootFrequ", 0, 2000).step(1);
@@ -45,18 +45,14 @@ function initGui(){
 function initObjects(nbColumns, nbLines){
   //init particles
   options = new particleOpt(); //to test with dat.gui
-  //spawnerOptions = new spawnerOpt();
   particleSystem = new THREE.GPUParticleSystem( {maxParticles: 250000} );
-
-  //var raycaster = new THREE.Raycaster();//raycast on the player to test
-  //raycaster.far = 1;
   initBullets(50);
   initEnnemies(nbColumns,nbLines);
   player = new PlayerCharacter(0,-35,0);
+  initWalls(5);
   //scene.add( groupEnnemies ); //hitbox
   //scene.add( player.hitbox );
   //scene.add(player.boxHelper);
-
   scene.add(particleSystem);
 };
 
@@ -78,11 +74,11 @@ function switchMenu(){
       for (var j=0; j< 5; j++) {
         for (var i=0; i< 8; i++){
           ennemies[n].hitbox.position.set(i*3-10, j*3+5, 0);
-          meshes[n].position.set(i*3-10, j*3+5, 0);
+          ennemiesMeshes[n].position.set(i*3-10, j*3+5, 0);
           ennemies[n].daWae = vectUp;
           ennemies[n].alive = true;
           ennemies[n].hitbox.visible = true;
-          meshes[n].visible = true;
+          ennemiesMeshes[n].visible = true;
           n++;
         }
       }
@@ -103,7 +99,6 @@ function PlayerCharacter(x,y,z){
     playerMesh.material.alphaMap.wrapT = THREE.RepeatWrapping;
     playerMesh.material.alphaMap.repeat.y = 1;
     scene.add(playerMesh);
-
   });
   this.dim = 1;
   this.alive = true;
@@ -118,8 +113,8 @@ function Character(m,model3D,scorePts, x,y,z){
 
   loader.load(model3D, function(obj){
     obj.position.set(x,y,z);
-    meshes[m] = obj;
-    scene.add(meshes[m]);
+    ennemiesMeshes[m] = obj;
+    scene.add(ennemiesMeshes[m]);
     //m++;
   });
   this.scorePts = scorePts;
@@ -148,9 +143,36 @@ function Bullet(index, x,y,z, direction){
   //scene.add(this.boxHelper);
 };
 
-function Wall(x,y,z){
+function Wall(n, x,y,z, yHit,zHit){
   this.alive = true;
+  loader.load("src/medias/models/alphaWall.json", function(obj){
+    obj.position.set(x,y,z);
+    wallsMeshes[n] = obj;
+    wallsMeshes[n].material.alphaMap.wrapT = THREE.RepeatWrapping;
+    wallsMeshes[n].material.alphaMap.repeat.y = 1;
+    scene.add(wallsMeshes[n]);
+  });
+  this.dim = 0.9;
+  this.hitbox = new THREE.Mesh(new THREE.BoxGeometry( this.dim, this.dim, this.dim ), new THREE.MeshBasicMaterial({color: 0xff0000}) );
+  this.hitbox.position.set(x,yHit,zHit);
+  this.boundingBox = new THREE.Box3().setFromObject(this.hitbox);
+  this.boxHelper = new THREE.Box3Helper(this.boundingBox, 0xffff00);
+  //scene.add(this.boxHelper);
 
+}
+
+function initWalls(nbColumns){
+  var n = 0;
+  for (var i=0; i<nbColumns; i++){
+    walls[n  ] = new Wall(n  , (i*10-20)    , -30, 0  ,   -30, 0);
+    walls[n+1] = new Wall(n+1, (i*10-20)-1.0, -30, 0  ,   -31, 0);
+    walls[n+2] = new Wall(n+2, (i*10-20)+1.0, -30, 0  ,   -29, 0);
+    walls[n+3] = new Wall(n+3, (i*10-20)-0.5, -30, 0+1,   -28, 0);
+    walls[n+4] = new Wall(n+4, (i*10-20)+0.5, -30, 0+1,   -27, 0);
+    walls[n+5] = new Wall(n+5, (i*10-20)-0.5, -30, 0-1,   -32, 0);
+    walls[n+6] = new Wall(n+6, (i*10-20)+0.5, -30, 0-1,   -33, 0);
+    n+=7;
+  }
 }
 
 function initEnnemies(nbColumns,nbLines){
@@ -248,7 +270,7 @@ function onDocumentKeyDown(event) {
     case "ArrowDown":
       playerMesh.material = new THREE.MeshBasicMaterial({});
       console.log("na");
-      //mixer.clipAction(meshes[2].animations[0], meshes[2]).play();
+      //mixer.clipAction(ennemiesMeshes[2].animations[0], ennemiesMeshes[2]).play();
       //switchMenu();
       break;
     case "Escape":
@@ -292,8 +314,6 @@ function onDocumentKeyUp(event) {
   event.preventDefault();
 };
 
-
-
 //manage bullets movements
 function bulletsMove(){
   for (var i=0; i<bullets.length; i++){
@@ -317,10 +337,10 @@ function bulletsMove(){
     //computeHitboxEdges(bullets[i]);
     bullets[i].boundingBox.setFromObject(bullets[i].hitbox);
     fullDetectCollision(bullets[i]);
-    if (collisionParticle.position.z < 1) {
+    if (collisionParticle.position.z <= 1) {
       collisionParticle.position.z += settings.bulletSpeed/100;
     }
-    if (bullets[i].hitbox.position.y >= 30 || bullets[i].hitbox.position.y <= -40) { //reset the bullets who goes too far
+    if (bullets[i].hitbox.position.y >= yZoneLimit || bullets[i].hitbox.position.y <= -yZoneLimit) { //reset the bullets who goes too far
 //bullets[i].hitbox.visible = false;
       bullets[i].alive = false;
       bullets[i].hitbox.position.setZ(20);
@@ -353,14 +373,30 @@ function updateBoundingBoxes(){
   for (var i=0; i<ennemies.length; i++){
     ennemies[i].boundingBox.setFromObject(ennemies[i].hitbox);
   }
-  for (var i=0; i<bullets.length; i++){
-      bullets[i].boundingBox.setFromObject(bullets[i].hitbox);
+  for (var j=0; j<bullets.length; j++){
+      bullets[j].boundingBox.setFromObject(bullets[j].hitbox);
+  }
+  for (var k=0; k<walls.length; k++){
+      walls[k].boundingBox.setFromObject(walls[k].hitbox);
   }
 }
 
 
 
 function fullDetectCollision(bullet){
+  if (bullet.hitbox.position.y <= -10){ //collision between bullets and walls
+    for (var i = 0; i < walls.length; i++) {
+      if (bullet.boundingBox.intersectsBox(walls[i].boundingBox)){
+        collisionParticle.position.set(walls[i].hitbox.position.x,walls[i].hitbox.position.y,walls[i].hitbox.position.z);
+        bullet.hitbox.position.setZ(15);
+        bullet.alive = false;
+        bullet.particleOptions.position.setZ(15);
+        walls[i].hitbox.position.setZ(15);
+        walls[i].alive=false;
+        wallsMeshes[i].visible=false;
+      }
+    }
+  }
   if (bullet.direction == vectDown){ //collision between bullets and player
     //computeHitboxEdges(player); //use box3 instead
     //player.boundingBox.setFromObject(player.hitbox);
@@ -391,7 +427,7 @@ function fullDetectCollision(bullet){
         ennemies[i].hitbox.visible = false;
         ennemies[i].hitbox.position.setZ(4);
         ennemies[i].alive = false;
-        meshes[i].visible = false;
+        ennemiesMeshes[i].visible = false;
         score += ennemies[i].scorePts;
 
       }
@@ -427,8 +463,8 @@ return	(a.hitbox.minX <= b.hitbox.maxX && a.hitbox.maxX >= b.hitbox.minX) &&
 function animaEnnemies(){
   for (var i=0; i<ennemies.length; i++){
     mixers[i] = new THREE.AnimationMixer(scene);
-    //window.alert(meshes[i]);
-    mixers[i].clipAction(meshes[i].animations[0], meshes[i]).play();
+    //window.alert(ennemiesMeshes[i]);
+    mixers[i].clipAction(ennemiesMeshes[i].animations[0], ennemiesMeshes[i]).play();
   }
   // TODO player animation to place somewhere else
 //  playerMixer = new THREE.AnimationMixer(scene);
@@ -444,20 +480,20 @@ function ennemiesMove(){
       //ennemies movements
       if (ennemies[i].daWae == vectUp) {
         ennemies[i].hitbox.position.x += settings.ennemyMoveSpeed;
-        meshes[i].position.x += settings.ennemyMoveSpeed;
-        if (ennemies[i].hitbox.position.x > 20) {
+        ennemiesMeshes[i].position.x += settings.ennemyMoveSpeed;
+        if (ennemies[i].hitbox.position.x > xZoneLimit) {
           ennemies[i].daWae = vectDown;
           ennemies[i].hitbox.position.y -= 2;
-          meshes[i].position.y -= 2;
+          ennemiesMeshes[i].position.y -= 2;
         }
       }
       else if (ennemies[i].daWae == vectDown) {
         ennemies[i].hitbox.position.x -= settings.ennemyMoveSpeed;
-        meshes[i].position.x -= settings.ennemyMoveSpeed;
-        if (ennemies[i].hitbox.position.x < -20) {
+        ennemiesMeshes[i].position.x -= settings.ennemyMoveSpeed;
+        if (ennemies[i].hitbox.position.x < -xZoneLimit) {
           ennemies[i].daWae = vectUp;
           ennemies[i].hitbox.position.y -= 2;
-          meshes[i].position.y -= 2;
+          ennemiesMeshes[i].position.y -= 2;
         }
       }
     }
@@ -691,7 +727,7 @@ this.hitbox.minZ = this.hitbox.position.z - this.dim/2;
 this.hitbox.maxZ = this.hitbox.position.z + this.dim/2;
 
 
-function createMeshes(obj){
+function createennemiesMeshes(obj){
   for (var i=0; i<ennemies.length; i++){
     obj.position.set(ennemies[i].hitbox.position.x,ennemies[i].hitbox.position.y,ennemies[i].hitbox.position.z);
     mesh[i] = new THREE.Object3D();
@@ -747,9 +783,9 @@ function createMeshes(obj){
   loader.load("src/medias/models/damn.json", function(obj){
     for(var i=0; i<ennemies.length; i++){
       obj.position.set(ennemies[i].hitbox.position.x,ennemies[i].hitbox.position.y,ennemies[i].hitbox.position.z);
-      meshes[i] = obj;
-      scene.add(meshes[i]);
-      mixer.clipAction(meshes[i].animations[0], meshes[i]).play();
+      ennemiesMeshes[i] = obj;
+      scene.add(ennemiesMeshes[i]);
+      mixer.clipAction(ennemiesMeshes[i].animations[0], ennemiesMeshes[i]).play();
     }
   });*/
 

@@ -1,22 +1,37 @@
 'use strict';
 // - Global Variables -
-//var bulletSpeed = 0.9, ennemyShootFrequ = 800;
-//var playerSpeed = 0.2, ennemySpeed = 0.1;
-//var hpPlayer = 3, shootDelay = 0.5;
+var renderer, scene, camera, controls, pause=true;
+var stats;
+var light, directionalLight;
+var gui = new dat.GUI( {width: 350});
+document.getElementById('guiContainer').appendChild(gui.domElement);
+var anima; //textures animators
+var alphaMesh;
+var loader = new THREE.ObjectLoader();
+var geoLoader = new THREE.BufferGeometryLoader();
+
+//CHARACTERS
+var xZoneLimit = 20, yZoneLimit = 40;
+var ennemiesMeshes = [], mixers = []; //mixers for animations
+var playerMesh, playerMixer;
+var wallsMeshes = [];
 var leftArrowPushed = false, rightArrowPushed = false, spaceBarPushed = false;
-var player, ennemies = [], bullets = [];
+var player, ennemies = [], bullets = [], walls = [];
 var score = 0;
 var groupEnnemies = new THREE.Group();
 var vectUp = new THREE.Vector3(0,1,0);
 var vectDown = new THREE.Vector3(0,-1,0);
 var vectNull = new THREE.Vector3(0,0,0);
 var vectLook = new THREE.Vector3(0,0,0);
+
+//CLOCKS
 var clock = new THREE.Clock();
 var clockTex = new THREE.Clock(); //clock for the texture animation
 var clockShoot = new THREE.Clock();
 var lastShot = clockShoot.getElapsedTime();
 var tick = 0;
-var renderer, scene, camera, controls, pause=true;
+
+//PARTICLES
 var options, spawnerOptions, particleSystem;
 var collisionParticle = new particleOpt();
 collisionParticle.lifetime = 3;
@@ -24,20 +39,7 @@ collisionParticle.color = 0xffA500; //orange
 collisionParticle.positionRandomness = 1;
 collisionParticle.position.set(0,-20,10);
 collisionParticle.turbulence = 0.3;
-var stats;
-var light, directionalLight;
-var gui = new dat.GUI( {width: 350});
-document.getElementById('guiContainer').appendChild(gui.domElement);
-var anima; //textures animators
-var alphaMesh;
-// array of functions for the rendering loop
-//var onRenderFcts= [];player
-var loader = new THREE.ObjectLoader();
-var geoLoader = new THREE.BufferGeometryLoader();
-
-var meshes = [], mixers = [], playerMixer;
-var playerMesh;
-//var mixer = new THREE.AnimationMixer(scene);
+//Gui var
 var settings = {
   level: 0,
   animaSpeed: 50,
@@ -54,18 +56,9 @@ spawnerOptions = {
   verticalSpeed: 1.33,
   timeScale: 1
 }
-var launch = false;
-var music;
-THREE.DefaultLoadingManager.onProgress = function ( url, itemsLoaded, itemsTotal ) {
-  console.log( 'Loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.' );
-};
-THREE.DefaultLoadingManager.onLoad = function ( ) {
 
-	console.log( 'Loading Complete!');
-  launch = true;
-  animate();
-};
-//create an audio listener to add to the camera
+//AUDIO
+var music;
 var listener = new THREE.AudioListener();
 // create a global audio source
 var fate = new THREE.Audio( listener );
@@ -75,11 +68,23 @@ var boum = new THREE.Audio(  listener );
 var explosion = new THREE.Audio(  listener );
 var dejavu = new THREE.Audio(  listener );
 
-  initGraphics(); //and audio
-  initGui();
-  switchMenu();
-  //animaEnnemies();
+//LOADING MANAGER
+var launch = false;
+THREE.DefaultLoadingManager.onProgress = function ( url, itemsLoaded, itemsTotal ) {
+  console.log( 'Loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.' );
+};
+THREE.DefaultLoadingManager.onLoad = function ( ) {
+	console.log( 'Loading Complete!');
+  launch = true;
+  animate();
+};
 
+
+//INIT FUNCTIONS
+initGraphics(); //and audio
+initGui();
+switchMenu();
+  //animaEnnemies();
 
 //////////////////////////////////////////////////////////////////////////////////
 //		Init
@@ -222,6 +227,9 @@ function animate(){
     time++;
     alphaMesh.material.alphaMap.offset.y = time*0.008;
     playerMesh.material.alphaMap.offset.y = time*0.005;
+    for (var i = 0; i < wallsMeshes.length; i++) {
+      wallsMeshes[i].material.alphaMap.offset.y = time*0.005;
+    }
 
     updateTexture();
     //updateHitboxesEdges();
