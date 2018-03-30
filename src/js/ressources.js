@@ -188,9 +188,17 @@ function initEnnemies(nbColumns,nbLines){
 function initBullets(nbBullet){
   for (var i=0; i<nbBullet; i++){
     bullets[i] = new Bullet(i, -5,0,15, vectNull);
+    collisionParticle[i] = new particleOpt();
+    collisionParticle[i].lifetime = 3;
+    collisionParticle[i].color = 0xffA500; //orange
+    collisionParticle[i].positionRandomness = 1;
+    collisionParticle[i].position.set(0,-20,10);
+    collisionParticle[i].turbulence = 0.3;
     //scene.add(bullets[i].hitbox);
   }
 };
+
+
 
 
 
@@ -206,6 +214,7 @@ function particleOpt() {
   this.lifetime = 1;
   this.size = 6;
   this.sizeRandomness = 1;
+  this.explosion = 600;
 };
 function spawnerOpt() {
   this.spawnRate = 15000;
@@ -268,7 +277,6 @@ function onDocumentKeyDown(event) {
       //playerMove();
       break;
     case "ArrowDown":
-      playerMesh.material = new THREE.MeshBasicMaterial({});
       console.log("na");
       //mixer.clipAction(ennemiesMeshes[2].animations[0], ennemiesMeshes[2]).play();
       //switchMenu();
@@ -337,9 +345,9 @@ function bulletsMove(){
     //computeHitboxEdges(bullets[i]);
     bullets[i].boundingBox.setFromObject(bullets[i].hitbox);
     fullDetectCollision(bullets[i]);
-    if (collisionParticle.position.z <= 1) {
+    /*if (collisionParticle.position.z <= 1) {
       collisionParticle.position.z += settings.bulletSpeed/100;
-    }
+    }*/
     if (bullets[i].hitbox.position.y >= yZoneLimit || bullets[i].hitbox.position.y <= -yZoneLimit) { //reset the bullets who goes too far
 //bullets[i].hitbox.visible = false;
       bullets[i].alive = false;
@@ -358,11 +366,15 @@ function bulletsMove(){
         if (bullets[i].alive){
           particleSystem.spawnParticle( bullets[i].particleOptions );
         }
+        else if (collisionParticle[i].explosion < 600 && collisionParticle[i].explosion >0){
+          particleSystem.spawnParticle( collisionParticle[i] );
+          collisionParticle[i].explosion --;
+        }
       }
-      if (collisionParticle.position.z < 1) {
+      /*if (collisionParticle.position.z < 1) {
         particleSystem.spawnParticle( collisionParticle );
         //if (tick == 0) collisionParticle.position.set(0,-20,10);
-      }
+      }*/
     }
   }
   particleSystem.update( tick );
@@ -384,15 +396,16 @@ function updateBoundingBoxes(){
 
 
 function fullDetectCollision(bullet){
+  var index = bullet.index;
   if (bullet.hitbox.position.y <= -10){ //collision between bullets and walls
     for (var i = 0; i < walls.length; i++) {
       if (bullet.boundingBox.intersectsBox(walls[i].boundingBox)){
-        collisionParticle.position.set(walls[i].hitbox.position.x,walls[i].hitbox.position.y,walls[i].hitbox.position.z);
-        bullet.hitbox.position.setZ(15);
+        collisionParticle[index].position.set(walls[i].hitbox.position.x,walls[i].hitbox.position.y,walls[i].hitbox.position.z);
+        collisionParticle[index].explosion = 599;
         bullet.alive = false;
-        bullet.particleOptions.position.setZ(15);
-        walls[i].hitbox.position.setZ(15);
         walls[i].alive=false;
+        bullet.hitbox.position.setZ(15);
+        walls[i].hitbox.position.setZ(10);
         wallsMeshes[i].visible=false;
       }
     }
@@ -402,11 +415,10 @@ function fullDetectCollision(bullet){
     //player.boundingBox.setFromObject(player.hitbox);
     //if (isCollision(bullet,player)) { //use box3 instead
     if (bullet.boundingBox.intersectsBox(player.boundingBox)) {
-      collisionParticle.position.set(player.hitbox.position.x,player.hitbox.position.y,player.hitbox.position.z);
-//bullet.hitbox.visible = false;
-      bullet.hitbox.position.setZ(15);
+      collisionParticle[index].position.set(player.hitbox.position.x,player.hitbox.position.y,player.hitbox.position.z);
+      collisionParticle[index].explosion = 599;
       bullet.alive = false;
-      bullet.particleOptions.position.setZ(15);
+      bullet.hitbox.position.setZ(15);
       settings.lifePoints--;
       if (settings.lifePoints <= 0) {
         window.alert("Fin du game");
@@ -419,11 +431,10 @@ function fullDetectCollision(bullet){
       //ennemies[i].boundingBox.setFromObject(ennemies[i].hitbox);
       //if (isCollision(bullet,ennemies[i])) {
       if (bullet.boundingBox.intersectsBox(ennemies[i].boundingBox)) {
-//bullet.hitbox.visible = false;
+        collisionParticle[index].position.set(ennemies[i].hitbox.position.x,ennemies[i].hitbox.position.y,ennemies[i].hitbox.position.z);
+        collisionParticle[index].explosion = 599;
         bullet.alive = false;
         bullet.hitbox.position.setZ(15);
-        bullet.particleOptions.position.setZ(15);
-        collisionParticle.position.set(ennemies[i].hitbox.position.x,ennemies[i].hitbox.position.y,ennemies[i].hitbox.position.z);
         ennemies[i].hitbox.visible = false;
         ennemies[i].hitbox.position.setZ(4);
         ennemies[i].alive = false;
@@ -438,12 +449,11 @@ function fullDetectCollision(bullet){
         //bullets[i].boundingBox.setFromObject(bullets[i].hitbox);
         //if (isCollision(bullet,bullets[i])){
         if (bullet.boundingBox.intersectsBox(bullets[i].boundingBox)){
-          collisionParticle.position.set(bullets[i].hitbox.position.x,bullets[i].hitbox.position.y,bullets[i].hitbox.position.z);
-//bullet.hitbox.visible = false;
+          collisionParticle[index].position.set(bullets[i].hitbox.position.x,bullets[i].hitbox.position.y,bullets[i].hitbox.position.z);
+          collisionParticle[index].explosion = 599;
+          bullet.alive = false;
           bullets[i].hitbox.visible = false;
           bullet.hitbox.position.setZ(5);
-          bullet.alive = false;
-          bullet.particleOptions.position.setZ(15);
           bullets[i].hitbox.position.setZ(18);
           bullets[i].alive = false;
           bullets[i].particleOptions.position.setZ(15);

@@ -33,12 +33,8 @@ var tick = 0;
 
 //PARTICLES
 var options, spawnerOptions, particleSystem;
-var collisionParticle = new particleOpt();
-collisionParticle.lifetime = 3;
-collisionParticle.color = 0xffA500; //orange
-collisionParticle.positionRandomness = 1;
-collisionParticle.position.set(0,-20,10);
-collisionParticle.turbulence = 0.3;
+var collisionParticle = [];
+
 //Gui var
 var settings = {
   level: 0,
