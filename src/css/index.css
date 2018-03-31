@@ -1,0 +1,82 @@
+body {
+  color: #61443e;
+  font-family:Monospace;
+  font-size:13px;
+  text-align:center;
+  background-color: #bfd1e5;
+  margin: 0px;
+  overflow: hidden;
+}
+#info {
+  position: absolute;
+  top: 0px; width: 100%;
+  padding: 5px;
+}
+a {
+  color: #a06851;
+}
+
+#pauseMenu{
+  background-color: #999999;
+  height: 80%;
+  width : 80%;
+  position: fixed;
+  top: 10%;
+  left: 10%;
+  opacity: 0.9;
+  /*border-radius: 50px;*/
+  z-index: 5;
+}
+#hud {
+  height: 100%;
+  width : 100%;
+  position:fixed;
+  top: 0px;
+  left: 0px;
+  z-index: 3;
+}
+
+div#loaderRess{
+  height: 100%;
+  width: 100%;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  background-color: #FFFFFF;
+  opacity: 1;
+  filter: alpha (opacity=50);
+  z-index: 3;
+}
+#speedAnim {
+  height: 100%;
+  width : 100%;
+  position:fixed;
+  top: 0px;
+  left: 0px;
+  opacity: 0.1;
+  background-image: url("../medias/images/speedAnim.gif");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  z-index: 2;
+}
+#score {
+  background-color: #84FFE3;
+  text-align: center;
+  font-family: Jazz LET, fantasy;
+  font-size: 25px;
+  width: 220px;
+  height: 30px;
+  margin: auto;
+  margin-top: 2%;
+  opacity: 0.5;
+  border-radius: 10px;
+}
+#guiContainer{
+}
+div#loaderRess div{
+  width: 250px;
+  margin: auto;
+  margin-top: 330px;
+  font-weight: bold;
+}
