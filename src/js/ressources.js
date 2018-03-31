@@ -282,7 +282,15 @@ function onDocumentKeyDown(event) {
       //switchMenu();
       break;
     case "Escape":
-      pause = (pause ? false: true);
+      //pause = (pause ? false: true);
+      if (pause) {
+        document.getElementById("pauseMenu").style.display = "none";
+        pause = false;
+      } else {
+        document.getElementById("pauseMenu").style.display = "block";
+        pause = true;
+      }
+
       break;
     default:
       return;

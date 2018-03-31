@@ -219,6 +219,7 @@ function initGraphics(){
 var time =0;
 function animate(){
   requestAnimationFrame(animate);
+
   if (!pause) {
     time++;
     alphaMesh.material.alphaMap.offset.y = time*0.008;
@@ -241,7 +242,6 @@ function animate(){
     //playerMixer.update(delta);
 
     document.getElementById('scorePts').innerHTML = score;
-
   }
   //raycaster.set( player.hitbox.position, vectUp);
 
