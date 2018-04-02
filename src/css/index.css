@@ -1,7 +1,7 @@
 body {
-  color: #61443e;
-  font-family:Monospace;
-  font-size:13px;
+  color: #d0d0d0;
+  font-family: Jazz LET, fantasy;
+  font-size:16px;
   text-align:center;
   background-color: #bfd1e5;
   margin: 0px;
@@ -17,16 +17,21 @@ a {
 }
 
 #pauseMenu{
-  background-color: #999999;
-  height: 80%;
-  width : 80%;
+  height: 30%;
+  width : 16%;
   position: fixed;
-  top: 10%;
-  left: 10%;
-  opacity: 0.9;
+  top: 20%;
+  left: 42%;
+  margin-top: 5%;
   /*border-radius: 50px;*/
   z-index: 5;
 }
+.pauseMenuButton{
+  background-color: #C7C7EF;
+  color: #424242;
+  opacity: 0.4;
+}
+
 #hud {
   height: 100%;
   width : 100%;
@@ -35,7 +40,19 @@ a {
   left: 0px;
   z-index: 3;
 }
-
+.help{
+  padding: 15px;
+  text-align: left;
+  position: fixed;
+  bottom: 15px;
+  left: 5px;
+  background-color: #202F2F;
+  opacity: 0.6;
+}
+.help b{
+  padding-left: 20px;
+  font-size: 18px;
+}
 div#loaderRess{
   height: 100%;
   width: 100%;
@@ -46,6 +63,12 @@ div#loaderRess{
   opacity: 1;
   filter: alpha (opacity=50);
   z-index: 3;
+}
+div#loaderRess div{
+  width: 250px;
+  margin: auto;
+  margin-top: 330px;
+  font-weight: bold;
 }
 #speedAnim {
   height: 100%;
@@ -62,8 +85,8 @@ div#loaderRess{
 }
 #score {
   background-color: #84FFE3;
+  color: #424242;
   text-align: center;
-  font-family: Jazz LET, fantasy;
   font-size: 25px;
   width: 220px;
   height: 30px;
@@ -72,11 +95,7 @@ div#loaderRess{
   opacity: 0.5;
   border-radius: 10px;
 }
-#guiContainer{
+#scorePts{
 }
-div#loaderRess div{
-  width: 250px;
-  margin: auto;
-  margin-top: 330px;
-  font-weight: bold;
+#guiContainer{
 }

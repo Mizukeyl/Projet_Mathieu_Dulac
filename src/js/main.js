@@ -80,7 +80,6 @@ THREE.DefaultLoadingManager.onLoad = function ( ) {
 initGraphics(); //and audio
 initGui();
 switchMenu();
-  //animaEnnemies();
 
 //////////////////////////////////////////////////////////////////////////////////
 //		Init

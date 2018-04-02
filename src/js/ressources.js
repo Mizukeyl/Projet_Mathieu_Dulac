@@ -179,7 +179,7 @@ function initEnnemies(nbColumns,nbLines){
   var n=0;
   for (var j=0; j<nbLines; j++) {
     for (var i=0; i<nbColumns; i++){
-      ennemies[n] = new Character(n,"src/medias/models/damn.json",30, (i*3-10), (j*3+5), 0);
+      ennemies[n] = new Character(n,"src/medias/models/spell-book.json",30, (i*3-10), (j*3+5), 0);
       groupEnnemies.add(ennemies[n].hitbox);
       n++;
     }
@@ -281,17 +281,6 @@ function onDocumentKeyDown(event) {
       //mixer.clipAction(ennemiesMeshes[2].animations[0], ennemiesMeshes[2]).play();
       //switchMenu();
       break;
-    case "Escape":
-      //pause = (pause ? false: true);
-      if (pause) {
-        document.getElementById("pauseMenu").style.display = "none";
-        pause = false;
-      } else {
-        document.getElementById("pauseMenu").style.display = "block";
-        pause = true;
-      }
-
-      break;
     default:
       return;
   }
@@ -318,12 +307,22 @@ function onDocumentKeyUp(event) {
     case "x":
       bomb();
       break;
-    case "g":
+    case "Escape":
       document.getElementById("speedAnim").style.display = "none";
       break;
-    case "h":
+    case "s":
       document.getElementById("speedAnim").style.display = "block";
       break;
+    case "h":
+        //pause = (pause ? false: true);
+        if (pause) {
+          document.getElementById("pauseMenu").style.display = "none";
+          pause = false;
+        } else {
+          document.getElementById("pauseMenu").style.display = "block";
+          pause = true;
+        }
+        break;
     default:
       return;
   }

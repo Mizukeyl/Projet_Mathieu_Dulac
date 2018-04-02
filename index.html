@@ -5,65 +5,40 @@
             <link rel="stylesheet" href="src/css/index.css"/>
 </head>
 <body >
+
   <!-- Div affichée durant le chargement -->
+
   <!--
   <div id="loaderRess"><div>Please wait while loading</div></div>
   -->
-  <script language="javascript" content="text/javascript">
-  function loaderRess(text, points){
-    //onLoad="document.body.removeChild(document.getElementById('loaderRess'));"
-      if(document.getElementById('loaderRess')){
-          points = (points ? points : 0);
-          points += 1; //(points+1 > 7 ? 0 : points+1);
-          if(!text){
-              text = document.getElementById('loaderRess').childNodes[0].innerHTML;
-          }
-          switch (points) {
-            case 1:
-              text = "Please wait while loading.";
-              break;
-            case 2:
-              text += ".";
-              break;
-            case 3:
-              text += ".";
-              break;
-            case 4:
-              text = "It seems you have a slow connection";
-              break;
-            case 5:
-              text = "You can play this minigame while loading";
-              break;
-            case 6:
-              text = "The loading will continue in the background";
-              break;
-            default:
-          }
-        //  if (points == 2) text = "It seems you have a bad connection";
-        //  if (points == 3) text = "You can play this minigame until the end of the loading";
-          var text_suspensions = text;
-        //  for(i=0; i<points; i++){
-        //      text_suspensions += '.';
-        //  }
-          document.getElementById('loaderRess').childNodes[0].innerHTML = text_suspensions;
-          if (points<7) {
-            setTimeout('loaderRess(\''+text+'\', '+points+')', 2000);
-          }
-          else {
-            document.body.removeChild(document.getElementById('loaderRess'));
-          }
-      }
-  }
-      //loaderRess();
+  <script src="src/js/index.js">
+    //loaderRess();
   </script>
 
   <div id="container"></div>
-  <div id="pauseMenu"></div>
+  <div id="pauseMenu">
+    <h1> Pause Menu </h1>
+    <div class="pauseMenuButton" onmouseover="this.style.background='gray';" onmouseout="this.style.background='white';">
+      <h2>Music </h2></div>
+    <div class="pauseMenuButton" onmouseover="this.style.background='gray';" onmouseout="this.style.background='white';">
+      <h2>Moving Texture </h2></div>
+    <div class="pauseMenuButton" onmouseover="this.style.background='gray';" onmouseout="this.style.background='white';">
+      <h2>Developer options </h2></div>
+  </div>
   <div id="hud" style="display:block">
     <div id="guiContainer"></div>
     <div id="score"> Score :
       <span id="scorePts"> 0</span>
     </div>
+    <div class="help">
+       <b>List of keys</b> <br/><br/>
+       "h" to pause game <br/>
+       "x" to bomb <br/>
+       "p" to printScreen <br/>
+       "f" for fullScreen <br/>
+       "i" for invincibility <br/>
+       "k" to kill all ennemies <br/>
+     </div>
   </div>
   <div id="speedAnim"></div>
 
