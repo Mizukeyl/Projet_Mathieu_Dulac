@@ -179,7 +179,7 @@ function initEnnemies(nbColumns,nbLines){
   var n=0;
   for (var j=0; j<nbLines; j++) {
     for (var i=0; i<nbColumns; i++){
-      ennemies[n] = new Character(n,"src/medias/models/spell-book.json",30, (i*3-10), (j*3+5), 0);
+      ennemies[n] = new Character(n,"src/medias/models/spell-book-decimate.json",30, (i*3-10), (j*3+5), 0);
       groupEnnemies.add(ennemies[n].hitbox);
       n++;
     }
