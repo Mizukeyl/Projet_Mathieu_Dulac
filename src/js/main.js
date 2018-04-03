@@ -63,6 +63,11 @@ var danger = new THREE.Audio(  listener );
 var boum = new THREE.Audio(  listener );
 var explosion = new THREE.Audio(  listener );
 var dejavu = new THREE.Audio(  listener );
+var LTheme = new THREE.Audio(  listener );
+var cloudChasers = new THREE.Audio(  listener );
+var kiseijuu = new THREE.Audio(  listener );
+var microgravity = new THREE.Audio(  listener );
+
 
 //LOADING MANAGER
 var launch = false;
@@ -149,6 +154,12 @@ function initGraphics(){
     explosion.setVolume(1.0);
   });
 
+  audioLoader.load( 'src/medias/sounds/Organoid_-_02_-_Microgravity.mp3', function( buffer ) {
+    microgravity.setBuffer( buffer );
+    microgravity.setLoop(false);
+    microgravity.setVolume(0.2);
+  });
+
   //show fps
   stats = new Stats();
   //stats.domElement.style.position = 'absolute';
@@ -160,8 +171,11 @@ function initGraphics(){
   scene.add( light );
   // White directional light at 70% intensity shining from the top.
   directionalLight = new THREE.DirectionalLight( 0xffffff, 0.7 );
-  directionalLight.position.set(1,1,1);
+  directionalLight.position.set(0,-30,10);
+  //directionalLight.lookAt(vectLook);
+  var lightHelper = new THREE.DirectionalLightHelper(directionalLight, 5);
   scene.add( directionalLight );
+  scene.add(lightHelper);
 
   //Fog
   scene.fog = new THREE.FogExp2( 0x0000ff, 0.0035);

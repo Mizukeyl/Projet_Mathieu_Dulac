@@ -262,7 +262,7 @@ function onDocumentKeyDown(event) {
   switch (event.key) {
     case "Tab":
       animaEnnemies();
-      //dejavu.play();
+      kiseijuu.play();
       break;
     case " ":
       spaceBarPushed = true;
@@ -277,7 +277,7 @@ function onDocumentKeyDown(event) {
       //playerMove();
       break;
     case "ArrowDown":
-      console.log("na");
+      microgravity.play();
       //mixer.clipAction(ennemiesMeshes[2].animations[0], ennemiesMeshes[2]).play();
       //switchMenu();
       break;
