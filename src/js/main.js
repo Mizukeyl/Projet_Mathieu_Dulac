@@ -1,6 +1,6 @@
 'use strict';
 // - Global Variables -
-var renderer, scene, camera, controls, pause=true;
+var renderer,composer, glitchPass, scene, chaseCamera, fixedCamera, chaseCameraActive=false, controls, pause=true;
 var stats;
 var light, directionalLight;
 var gui = new dat.GUI( {width: 350});
@@ -104,14 +104,32 @@ function initGraphics(){
   document.body.appendChild( renderer.domElement );
   //container.appendChild( renderer.domElement );
 
+
+
   // init scene and camera
   scene	= new THREE.Scene();
-  camera	= new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 1000);
-  camera.position.set(0,-65,20);
-  camera.up.set(0,0,1);
-  controls	= new THREE.OrbitControls(camera);
+  chaseCamera	= new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 1000);
+  fixedCamera	= new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 1000);
+  chaseCamera.position.set(0,-60,10);
+  fixedCamera.position.set(0,-65,20);
+  chaseCamera.lookAt(vectLook);
+  fixedCamera.lookAt(vectLook);
+  //chaseCamera.up.set(0,0,1);
+  //fixedCamera.up.set(0,0,1);
+  controls	= new THREE.OrbitControls(chaseCamera);
   // transparently support window resize
-  THREEx.WindowResize.bind(renderer, camera);
+  THREEx.WindowResize.bind(renderer, fixedCamera);
+  THREEx.WindowResize.bind(renderer, chaseCamera);
+
+  //postprocessing
+  composer = new THREE.EffectComposer(renderer);
+  composer.addPass( new THREE.RenderPass(scene, chaseCamera));
+  glitchPass = new THREE.GlitchPass();
+  glitchPass.renderToScreen = true;
+  glitchPass.goWild = true; //constantly glitching
+  composer.addPass(glitchPass);
+
+
   // allow 'p' to make screenshot
   THREEx.Screenshot.bindKey(renderer);
   // allow 'f' to go fullscreen where this feature is supported
@@ -120,7 +138,8 @@ function initGraphics(){
     //document.getElementById('container').innerHTML	+= "- <i>f</i> for fullscreen";
   }
   //add the AudioListener to the camera
-  camera.add( listener );
+  chaseCamera.add( listener );
+
   // load a sound and set it as the Audio object's buffer
   var audioLoader = new THREE.AudioLoader();
   audioLoader.load( 'src/medias/sounds/fateOfTheUnknown.mp3', function( buffer ) {
@@ -170,12 +189,12 @@ function initGraphics(){
   light = new THREE.AmbientLight( 0x404040 ); // soft white light
   scene.add( light );
   // White directional light at 70% intensity shining from the top.
-  directionalLight = new THREE.DirectionalLight( 0xffffff, 0.7 );
+  directionalLight = new THREE.DirectionalLight( 0xffffff, 1 );
   directionalLight.position.set(0,-30,10);
   //directionalLight.lookAt(vectLook);
   var lightHelper = new THREE.DirectionalLightHelper(directionalLight, 5);
   scene.add( directionalLight );
-  scene.add(lightHelper);
+  //scene.add(lightHelper);
 
   //Fog
   scene.fog = new THREE.FogExp2( 0x0000ff, 0.0035);
@@ -259,5 +278,18 @@ function animate(){
   //raycaster.set( player.hitbox.position, vectUp);
 
   stats.update();
-  renderer.render( scene, camera );
+  renderGlitch();
+}
+
+var glitching = true;
+function renderGlitch(){
+  var frame;
+  if (glitching){
+    frame++;
+    composer.render();
+  }
+  else {
+    frame=0;
+    renderer.render( scene, chaseCamera );
+  }
 }

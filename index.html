@@ -41,8 +41,12 @@
      </div>
   </div>
   <div id="speedAnim"></div>
+  <div>
+    <label for="dotScreen">Glitch me wild:</label>
+    <input id="wildGlitch" type="checkbox" onchange="updateOptions()"/><br />
+  </div>
 
-
+    <!--three.js and core lib-->
     <script src="src/js/three.js"></script>
     <script src="src/js/OrbitControls.js"></script>
     <script src="src/js/GPUParticleSystem.js"></script>
@@ -52,6 +56,14 @@
     <script src="src/js/OBJLoader.js"></script>
     <script src="src/lib/stats.min.js"></script>
     <script src="src/lib/dat.gui.min.js"></script>
+    <!--postprocessing-->
+		<script src="src/js/CopyShader.js"></script>
+		<script src="src/js/DigitalGlitch.js"></script>
+		<script src="src/js/EffectComposer.js"></script>
+		<script src="src/js/RenderPass.js"></script>
+		<script src="src/js/MaskPass.js"></script>
+		<script src="src/js/ShaderPass.js"></script>
+    <script src="src/js/GlitchPass.js"></script>
 
     <script src="src/js/ressources.js"></script>
     <script src="src/js/main.js"></script>

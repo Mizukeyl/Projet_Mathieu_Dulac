@@ -25,17 +25,17 @@ function initGui(){
     document.getElementById('titre').innerHTML = "Loading "+settings.level*25+"% ...";
     switchMenu();
   });
-  folder4.add(camera.position, "x", -50, 50).step(0.2).listen();
-  folder4.add(camera.position, "y", -100, 50).step(0.2).listen();
-  folder4.add(camera.position, "z", -50, 50).step(0.2).listen();
+  folder4.add(chaseCamera.position, "x", -50, 50).step(0.2).listen();
+  folder4.add(chaseCamera.position, "y", -100, 50).step(0.2).listen();
+  folder4.add(chaseCamera.position, "z", -50, 50).step(0.2).listen();
   folder4.add(vectLook, "x", -50, 50).step(0.2).onChange(function(){
-    camera.lookAt(vectLook);
+    chaseCamera.lookAt(vectLook);
   });
   folder4.add(vectLook, "y", -50, 50).step(0.2).onChange(function(){
-    camera.lookAt(vectLook);
+    chaseCamera.lookAt(vectLook);
   });
   folder4.add(vectLook, "z", -50, 50).step(0.2).onChange(function(){
-    camera.lookAt(vectLook);
+    chaseCamera.lookAt(vectLook);
   });
   //folder1.open();
 };
@@ -83,7 +83,7 @@ function switchMenu(){
         }
       }
       player.hitbox.position.set(0,-35, 0);
-      camera.position.set(0,-65,20);
+      chaseCamera.position.set(0,-65,20);
       break;
     default:
       window.alert("menu value incorrect");
@@ -231,14 +231,14 @@ function playerMove() {
     if (player.hitbox.position.x > -20){
       player.hitbox.position.x -= settings.playerMoveSpeed;
       playerMesh.position.x -= settings.playerMoveSpeed;
-      camera.position.x -= settings.playerMoveSpeed;
+      if (chaseCameraActive) chaseCamera.position.x -= settings.playerMoveSpeed;
     }
   }
   if (rightArrowPushed) {
     if (player.hitbox.position.x < 20){
       player.hitbox.position.x += settings.playerMoveSpeed;
       playerMesh.position.x += settings.playerMoveSpeed;
-      camera.position.x += settings.playerMoveSpeed;
+      if (chaseCameraActive) chaseCamera.position.x += settings.playerMoveSpeed;
     }
   }
   if (spaceBarPushed) {
@@ -295,6 +295,14 @@ function onDocumentKeyUp(event) {
     case "Tab":
       spaceBarPushed = false;
       break;
+    case "1":
+      //chaseCameraActive = true;
+      glitching=false;
+      break;
+    case "2":
+      //chaseCameraActive = false;
+      glitching=true;
+    break;
     case " ":
       spaceBarPushed = false;
       break;
