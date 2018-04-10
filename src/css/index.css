@@ -42,6 +42,7 @@ a {
 }
 .help{
   padding: 15px;
+  font-family: cursive;
   text-align: left;
   position: fixed;
   bottom: 15px;

@@ -83,6 +83,7 @@ THREE.DefaultLoadingManager.onLoad = function ( ) {
 
 //INIT FUNCTIONS
 initGraphics(); //and audio
+
 initGui();
 switchMenu();
 
@@ -103,8 +104,6 @@ function initGraphics(){
   renderer.setSize( window.innerWidth, window.innerHeight );
   document.body.appendChild( renderer.domElement );
   //container.appendChild( renderer.domElement );
-
-
 
   // init scene and camera
   scene	= new THREE.Scene();
@@ -159,7 +158,7 @@ function initGraphics(){
   });
   audioLoader.load( 'src/medias/sounds/dejavu.mp3', function( buffer ) {
     dejavu.setBuffer( buffer );
-    dejavu.setLoop(false);
+    dejavu.setLoop(true);
     dejavu.setVolume(1.0);
   });
   audioLoader.load( 'src/medias/sounds/danger.mp3', function( buffer ) {
@@ -175,7 +174,7 @@ function initGraphics(){
 
   audioLoader.load( 'src/medias/sounds/Organoid_-_02_-_Microgravity.mp3', function( buffer ) {
     microgravity.setBuffer( buffer );
-    microgravity.setLoop(false);
+    microgravity.setLoop(true);
     microgravity.setVolume(0.2);
   });
 
@@ -185,7 +184,7 @@ function initGraphics(){
   stats.domElement.style.top = '10px';
   container.appendChild( stats.domElement );
   //document.getElementById('container').appendChild( stats.domElement);
-  //manage light
+  //Light
   light = new THREE.AmbientLight( 0x404040 ); // soft white light
   scene.add( light );
   // White directional light at 70% intensity shining from the top.
@@ -255,7 +254,7 @@ function animate(){
   if (!pause) {
     time++;
     alphaMesh.material.alphaMap.offset.y = time*0.008;
-    playerMesh.material.alphaMap.offset.y = time*0.005;
+    //playerMesh.material.alphaMap.offset.y = time*0.005;
     for (var i = 0; i < wallsMeshes.length; i++) {
       wallsMeshes[i].material.alphaMap.offset.y = time*0.005;
     }
@@ -271,7 +270,7 @@ function animate(){
     for (var i=0;i<mixers.length;i++){
       mixers[i].update(delta);
     }
-    //playerMixer.update(delta);
+    playerMixer.update(delta);
 
     document.getElementById('scorePts').innerHTML = score;
   }

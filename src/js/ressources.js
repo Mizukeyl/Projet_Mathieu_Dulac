@@ -91,13 +91,13 @@ function switchMenu(){
 };
 
 function PlayerCharacter(x,y,z){
-  loader.load("src/medias/models/alphaWall.json", function(obj){
+  loader.load("src/medias/models/necro-book-decimated.json", function(obj){
     obj.position.set(x,y,z);
     //this.material = new THREE.MeshBasicMaterial({color: 0x000000});
     playerMesh = obj;
     //playerMesh.material.alphaMap.magFilter = THREE.NearestFilter;
-    playerMesh.material.alphaMap.wrapT = THREE.RepeatWrapping;
-    playerMesh.material.alphaMap.repeat.y = 1;
+    //playerMesh.material.alphaMap.wrapT = THREE.RepeatWrapping;
+    //playerMesh.material.alphaMap.repeat.y = 1;
     scene.add(playerMesh);
   });
   this.dim = 1;
@@ -262,7 +262,7 @@ function onDocumentKeyDown(event) {
   switch (event.key) {
     case "Tab":
       animaEnnemies();
-      kiseijuu.play();
+      microgravity.play();
       break;
     case " ":
       spaceBarPushed = true;
@@ -492,8 +492,8 @@ function animaEnnemies(){
     mixers[i].clipAction(ennemiesMeshes[i].animations[0], ennemiesMeshes[i]).play();
   }
   // TODO player animation to place somewhere else
-//  playerMixer = new THREE.AnimationMixer(scene);
-//  playerMixer.clipAction(playerMesh.animations[0], playerMesh).play();
+  playerMixer = new THREE.AnimationMixer(scene);
+  playerMixer.clipAction(playerMesh.animations[0], playerMesh).play();
 }
 
 //AI of the ennemies
