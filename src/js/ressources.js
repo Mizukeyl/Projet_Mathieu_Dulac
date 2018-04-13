@@ -198,10 +198,6 @@ function initBullets(nbBullet){
   }
 };
 
-
-
-
-
 // options passed during each spawned
 function particleOpt() {
   this.position = new THREE.Vector3();
@@ -277,7 +273,16 @@ function onDocumentKeyDown(event) {
       //playerMove();
       break;
     case "ArrowDown":
-      microgravity.play();
+      document.getElementById("info").style.display = "none";
+      //glitching=false;
+      //microgravity.play();
+      //mixer.clipAction(ennemiesMeshes[2].animations[0], ennemiesMeshes[2]).play();
+      //switchMenu();
+      break;
+    case "ArrowUp":
+      document.getElementById("info").style.display = "block";
+      //glitching=true;
+      //microgravity.play();
       //mixer.clipAction(ennemiesMeshes[2].animations[0], ennemiesMeshes[2]).play();
       //switchMenu();
       break;
@@ -296,12 +301,23 @@ function onDocumentKeyUp(event) {
       spaceBarPushed = false;
       break;
     case "1":
-      //chaseCameraActive = true;
-      glitching=false;
+      chaseCameraActive = true;
+      chaseCamera.up.set(0,0,1);
+      chaseCamera.position.set(playerMesh.position.x,playerMesh.position.y-10,playerMesh.position.z+5);
+      //glitching=false;
       break;
     case "2":
-      //chaseCameraActive = false;
-      glitching=true;
+      chaseCameraActive = false;
+      chaseCamera.position.set(0,-60,10);
+      chaseCamera.up.set(0,0,1);
+      chaseCamera.lookAt(vectLook);
+    break;
+    case "3":
+      chaseCameraActive = false;
+      chaseCamera.position.set(0,35,-10);
+      chaseCamera.up.set(0,0,-1);
+      chaseCamera.lookAt(vectLook);
+      //glitching=true;
     break;
     case " ":
       spaceBarPushed = false;
@@ -319,17 +335,21 @@ function onDocumentKeyUp(event) {
       document.getElementById("speedAnim").style.display = "none";
       break;
     case "s":
-      document.getElementById("speedAnim").style.display = "block";
+      //pause = (pause ? false: true);
+      if (pause) {
+        document.getElementById("pauseMenu").style.display = "none";
+        pause = false;
+      } else {
+        document.getElementById("pauseMenu").style.display = "block";
+        pause = true;
+      }
       break;
     case "h":
-        //pause = (pause ? false: true);
-        if (pause) {
-          document.getElementById("pauseMenu").style.display = "none";
-          pause = false;
-        } else {
-          document.getElementById("pauseMenu").style.display = "block";
-          pause = true;
-        }
+      if (document.getElementById("help").style.display === "none"){
+        document.getElementById("help").style.display = "block";
+      } else {
+        document.getElementById("help").style.display = "none";
+      }
         break;
     default:
       return;
@@ -435,8 +455,9 @@ function fullDetectCollision(bullet){
       bullet.alive = false;
       bullet.hitbox.position.setZ(15);
       settings.lifePoints--;
+      glitching = true;
       if (settings.lifePoints <= 0) {
-        window.alert("Fin du game");
+        gameOver();
       }
     }
   }
@@ -479,7 +500,13 @@ function fullDetectCollision(bullet){
   }
 }
 
-function isCollision(a, b) {
+function gameOver(){
+  pause=true;
+  document.getElementById("info").style.display = "block";
+  document.getElementById("info").innerHTML = "Game Over"
+}
+
+function isCollision(a, b) { //not used
 return	(a.hitbox.minX <= b.hitbox.maxX && a.hitbox.maxX >= b.hitbox.minX) &&
       (a.hitbox.minY <= b.hitbox.maxY && a.hitbox.maxY >= b.hitbox.minY) &&
       (a.hitbox.minZ <= b.hitbox.maxZ && a.hitbox.maxZ >= b.hitbox.minZ)

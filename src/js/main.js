@@ -3,7 +3,7 @@
 var renderer,composer, glitchPass, scene, chaseCamera, fixedCamera, chaseCameraActive=false, controls, pause=true;
 var stats;
 var light, directionalLight;
-var gui = new dat.GUI( {width: 350});
+var gui = new dat.GUI( {hideable: false},{width: 350});
 document.getElementById('guiContainer').appendChild(gui.domElement);
 var anima; //textures animators
 var alphaMesh;
@@ -108,16 +108,16 @@ function initGraphics(){
   // init scene and camera
   scene	= new THREE.Scene();
   chaseCamera	= new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 1000);
-  fixedCamera	= new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 1000);
+  //fixedCamera	= new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 1000);
   chaseCamera.position.set(0,-60,10);
-  fixedCamera.position.set(0,-65,20);
+  //fixedCamera.position.set(0,-65,20);
   chaseCamera.lookAt(vectLook);
-  fixedCamera.lookAt(vectLook);
-  //chaseCamera.up.set(0,0,1);
+  //fixedCamera.lookAt(vectLook);
+  chaseCamera.up.set(0,0,1);
   //fixedCamera.up.set(0,0,1);
   controls	= new THREE.OrbitControls(chaseCamera);
   // transparently support window resize
-  THREEx.WindowResize.bind(renderer, fixedCamera);
+  //THREEx.WindowResize.bind(renderer, fixedCamera);
   THREEx.WindowResize.bind(renderer, chaseCamera);
 
   //postprocessing
@@ -127,7 +127,6 @@ function initGraphics(){
   glitchPass.renderToScreen = true;
   glitchPass.goWild = true; //constantly glitching
   composer.addPass(glitchPass);
-
 
   // allow 'p' to make screenshot
   THREEx.Screenshot.bindKey(renderer);
@@ -280,15 +279,16 @@ function animate(){
   renderGlitch();
 }
 
-var glitching = true;
+var glitching = false;
+var frameGlitch=0;
 function renderGlitch(){
-  var frame;
-  if (glitching){
-    frame++;
+  if (glitching && (frameGlitch < 40)){
+    frameGlitch++;
     composer.render();
   }
   else {
-    frame=0;
+    frameGlitch=0;
+    glitching = false;
     renderer.render( scene, chaseCamera );
   }
 }

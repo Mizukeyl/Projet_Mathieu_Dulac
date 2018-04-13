@@ -8,12 +8,19 @@ body {
   overflow: hidden;
 }
 #info {
-  position: absolute;
-  top: 0px; width: 100%;
-  padding: 5px;
-}
-a {
-  color: #a06851;
+  height: 6%;
+  width : 40%;
+  position: fixed;
+  top: 15%;
+  left: 30%;
+  font-family: cursive;
+  font-size: 35px;
+  padding-top: 1%;
+  padding-bottom: 1%;
+  background-color: #C7C7EF;
+  color: #424242;
+  opacity: 0.9;
+  z-index: 6;
 }
 
 #pauseMenu{
@@ -40,7 +47,7 @@ a {
   left: 0px;
   z-index: 3;
 }
-.help{
+#help{
   padding: 15px;
   font-family: cursive;
   text-align: left;
@@ -50,7 +57,7 @@ a {
   background-color: #202F2F;
   opacity: 0.6;
 }
-.help b{
+#help b{
   padding-left: 20px;
   font-size: 18px;
 }
@@ -87,7 +94,6 @@ div#loaderRess div{
 #score {
   background-color: #84FFE3;
   color: #424242;
-  text-align: center;
   font-size: 25px;
   width: 220px;
   height: 30px;
