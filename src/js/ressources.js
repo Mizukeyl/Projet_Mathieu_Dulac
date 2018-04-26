@@ -129,7 +129,7 @@ function Character(m,model3D,scorePts, x,y,z){
 };
 //add bullets
 function Bullet(index, x,y,z, direction){
-  this.scorePts = 100;
+  this.scorePts = 20;
   this.alive = false;
   this.index = index;
   this.direction = direction;
@@ -179,7 +179,9 @@ function initEnnemies(nbColumns,nbLines){
   var n=0;
   for (var j=0; j<nbLines; j++) {
     for (var i=0; i<nbColumns; i++){
-      ennemies[n] = new Character(n,"src/medias/models/spell-book-decimate.json",30, (i*3-10), (j*3+5), 0);
+      if (n< 2*nbColumns) ennemies[n] = new Character(n,"src/medias/models/spell-book-decimated.json",30, (i*3-10), (j*3+5), 0);
+      else if (n< 4*nbColumns) ennemies[n] = new Character(n,"src/medias/models/tome-of-secret-speculation.json",50, (i*3-10), (j*3+5), 0);
+      else ennemies[n] = new Character(n,"src/medias/models/damned-souls.json",100, (i*3-10), (j*3+5), 0);
       groupEnnemies.add(ennemies[n].hitbox);
       n++;
     }
@@ -281,6 +283,7 @@ function onDocumentKeyDown(event) {
       break;
     case "ArrowUp":
       document.getElementById("info").style.display = "block";
+      launch = true;
       //glitching=true;
       //microgravity.play();
       //mixer.clipAction(ennemiesMeshes[2].animations[0], ennemiesMeshes[2]).play();

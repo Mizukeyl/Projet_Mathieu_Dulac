@@ -7,6 +7,27 @@ body {
   margin: 0px;
   overflow: hidden;
 }
+div#loaderRess{
+  height: 100%;
+  width: 100%;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  background-color: #FFFFFF;
+  opacity: 1;
+  z-index: 8;
+}
+div#loaderRess div{
+  width: 500px;
+  margin: auto;
+  margin-top: 330px;
+  font-size: 35px;
+  color: black;
+  font-weight: bold;
+}
+#titleScreen{
+  z-index: 7;
+}
 #info {
   height: 6%;
   width : 40%;
@@ -19,6 +40,7 @@ body {
   padding-bottom: 1%;
   background-color: #C7C7EF;
   color: #424242;
+  display: none;
   opacity: 0.9;
   z-index: 6;
 }
@@ -61,23 +83,7 @@ body {
   padding-left: 20px;
   font-size: 18px;
 }
-div#loaderRess{
-  height: 100%;
-  width: 100%;
-  position: fixed;
-  top: 0px;
-  left: 0px;
-  background-color: #FFFFFF;
-  opacity: 1;
-  filter: alpha (opacity=50);
-  z-index: 3;
-}
-div#loaderRess div{
-  width: 250px;
-  margin: auto;
-  margin-top: 330px;
-  font-weight: bold;
-}
+
 #speedAnim {
   height: 100%;
   width : 100%;

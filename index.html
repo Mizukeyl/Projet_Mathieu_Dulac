@@ -7,15 +7,64 @@
 <body >
 
   <!-- Div affichée durant le chargement -->
-
-  <!--
+<!--
   <div id="loaderRess"><div>Please wait while loading</div></div>
-  -->
-  <script src="src/js/index.js">
+-->
+  <script>
+  'use strict';
+
     //loaderRess();
+    function loaderRess(text, points){
+        if(document.getElementById('loaderRess')){
+            points = (points ? points : 0);
+            points += 1; //(points+1 > 7 ? 0 : points+1);
+            if(!text){
+                text = document.getElementById('loaderRess').childNodes[0].innerHTML;
+            }
+            switch (points) {
+              case 1:
+                text = "Please wait while loading.";
+                break;
+              case 2:
+                text += ".";
+                break;
+              case 3:
+                text += ".";
+                break;
+              case 4:
+                text = "It seems you have a slow connection";
+                break;
+              case 5:
+                text = "You can play this minigame while loading";
+                break;
+              case 6:
+                text = "The loading will continue in the background";
+                break;
+              default:
+            }
+            var text_suspensions = text;
+
+            document.getElementById('loaderRess').childNodes[0].innerHTML = text_suspensions;
+            if (points<4) {
+              if (points == 3 && !launch) {
+                text = text.slice(-text.length,-3);
+                points -= 3;
+              }
+              setTimeout('loaderRess(\''+text+'\', '+points+')', 1000);
+            }
+            else if (points <7){
+              setTimeout('loaderRess(\''+text+'\', '+points+')', 2500);
+            }
+            else {
+              document.body.removeChild(document.getElementById('loaderRess'));
+            }
+        }
+    }
   </script>
 
+
   <div id="container"></div>
+  <div id="titleScreen"></div>
   <div id="pauseMenu">
     <h1> Pause Menu </h1>
     <div class="pauseMenuButton" onmouseover="this.style.background='gray';" onmouseout="this.style.background='white';">
@@ -33,7 +82,7 @@
     <div id="info">Game Over</div>
     <div id="help">
        <b>List of keys</b> <br/><br/>
-       H - pause game <br/>
+       S - start/pause game <br/>
        X - bomb <br/>
        P - printScreen <br/>
        F - fullScreen <br/>
@@ -67,6 +116,8 @@
 
     <script src="src/js/ressources.js"></script>
     <script src="src/js/main.js"></script>
+
+
 
 </body>
 </html>
