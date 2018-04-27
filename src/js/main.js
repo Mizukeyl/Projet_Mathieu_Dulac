@@ -18,6 +18,7 @@ var wallsMeshes = [];
 var leftArrowPushed = false, rightArrowPushed = false, spaceBarPushed = false;
 var player, ennemies = [], bullets = [], walls = [];
 var score = 0;
+var invincibility = false;
 var groupEnnemies = new THREE.Group();
 var vectUp = new THREE.Vector3(0,1,0);
 var vectDown = new THREE.Vector3(0,-1,0);

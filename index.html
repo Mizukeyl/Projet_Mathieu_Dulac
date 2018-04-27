@@ -67,19 +67,30 @@
   <div id="titleScreen"></div>
   <div id="pauseMenu">
     <h1> Pause Menu </h1>
-    <div class="pauseMenuButton" onmouseover="this.style.background='gray';" onmouseout="this.style.background='white';">
+    <div class="pauseMenuButton" onmouseover="this.style.background='gray';" onmouseout="this.style.background='#E7E5F6';">
       <h2>Music </h2></div>
-    <div class="pauseMenuButton" onmouseover="this.style.background='gray';" onmouseout="this.style.background='white';">
-      <h2>Moving Texture </h2></div>
-    <div class="pauseMenuButton" onmouseover="this.style.background='gray';" onmouseout="this.style.background='white';">
-      <h2>Developer options </h2></div>
+    <div id="hotkeys" class="pauseMenuButton" onmouseover="this.style.background='gray';" onmouseout="this.style.background='#E7E5F6';"
+    OnClick="hotkeys()">
+      <h2>Show Hotkeys</h2>
+    </div>
+    <div id="cameraControl" class="pauseMenuButton" onmouseover="this.style.background='gray';" onmouseout="this.style.background='#E7E5F6';"
+     OnClick="cameraControl()">
+      <h2>Enable/Disable OrbitControls </h2>
+    </div>
+    <div id="guiHide" class="pauseMenuButton" onmouseover="this.style.background='gray';" onmouseout="this.style.background='#E7E5F6';"
+    OnClick="guiHide()">
+      <h2>Show developer options </h2></div>
   </div>
   <div id="hud" style="display:block">
     <div id="guiContainer"></div>
     <div id="score"> Score :
       <span id="scorePts"> 0</span>
     </div>
-    <div id="info">Game Over</div>
+    <div id="info">Game Over <br/>
+      <div class="pauseMenuButton" onmouseover="this.style.background='gray';" onmouseout="this.style.background='#E7E5F6';"
+      OnClick="restartGame()">
+        <h2>Restart Game</h2></div>
+    </div>
     <div id="help">
        <b>List of keys</b> <br/><br/>
        S - start/pause game <br/>

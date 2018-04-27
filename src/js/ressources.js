@@ -70,7 +70,6 @@ function switchMenu(){
       pause=false;
       break;
     case 2:
-      window.alert("menu = 2");
       for (var j=0; j< 5; j++) {
         for (var i=0; i< 8; i++){
           ennemies[n].hitbox.position.set(i*3-10, j*3+5, 0);
@@ -164,13 +163,13 @@ function Wall(n, x,y,z, yHit,zHit){
 function initWalls(nbColumns){
   var n = 0;
   for (var i=0; i<nbColumns; i++){
-    walls[n  ] = new Wall(n  , (i*10-20)    , -30, 0  ,   -30, 0);
-    walls[n+1] = new Wall(n+1, (i*10-20)-1.0, -30, 0  ,   -31, 0);
-    walls[n+2] = new Wall(n+2, (i*10-20)+1.0, -30, 0  ,   -29, 0);
-    walls[n+3] = new Wall(n+3, (i*10-20)-0.5, -30, 0+1,   -28, 0);
-    walls[n+4] = new Wall(n+4, (i*10-20)+0.5, -30, 0+1,   -27, 0);
-    walls[n+5] = new Wall(n+5, (i*10-20)-0.5, -30, 0-1,   -32, 0);
-    walls[n+6] = new Wall(n+6, (i*10-20)+0.5, -30, 0-1,   -33, 0);
+    walls[n  ] = new Wall(n  , (i*10-20)    , -20, 0  ,   -20, 0);
+    walls[n+1] = new Wall(n+1, (i*10-20)-1.0, -20, 0  ,   -21, 0);
+    walls[n+2] = new Wall(n+2, (i*10-20)+1.0, -20, 0  ,   -19, 0);
+    walls[n+3] = new Wall(n+3, (i*10-20)-0.5, -20, 0+1,   -18, 0);
+    walls[n+4] = new Wall(n+4, (i*10-20)+0.5, -20, 0+1,   -17, 0);
+    walls[n+5] = new Wall(n+5, (i*10-20)-0.5, -20, 0-1,   -22, 0);
+    walls[n+6] = new Wall(n+6, (i*10-20)+0.5, -20, 0-1,   -23, 0);
     n+=7;
   }
 }
@@ -307,6 +306,7 @@ function onDocumentKeyUp(event) {
       chaseCameraActive = true;
       chaseCamera.up.set(0,0,1);
       chaseCamera.position.set(playerMesh.position.x,playerMesh.position.y-10,playerMesh.position.z+5);
+      chaseCamera.lookAt(vectLook);
       //glitching=false;
       break;
     case "2":
@@ -335,24 +335,29 @@ function onDocumentKeyUp(event) {
       bomb();
       break;
     case "Escape":
-      document.getElementById("speedAnim").style.display = "none";
+      break;
+    case "i":
+      if (invincibility) invincibility = false;
+      else invincibility = true;
+      break;
+    case "k":
+      nuke();
+      console.log("nuke em all");
       break;
     case "s":
       //pause = (pause ? false: true);
       if (pause) {
         document.getElementById("pauseMenu").style.display = "none";
+        document.getElementById("speedAnim").style.display = "block";
         pause = false;
       } else {
         document.getElementById("pauseMenu").style.display = "block";
+        document.getElementById("speedAnim").style.display = "none";
         pause = true;
       }
       break;
     case "h":
-      if (document.getElementById("help").style.display === "none"){
-        document.getElementById("help").style.display = "block";
-      } else {
-        document.getElementById("help").style.display = "none";
-      }
+      hotkeys();
         break;
     default:
       return;
@@ -360,7 +365,7 @@ function onDocumentKeyUp(event) {
   event.preventDefault();
 };
 
-//manage bullets movements
+//manage bullets movements and particles
 function bulletsMove(){
   for (var i=0; i<bullets.length; i++){
     if (bullets[i].alive) {
@@ -380,14 +385,9 @@ function bulletsMove(){
         bullets[i].hitbox.position.z
       );
     }
-    //computeHitboxEdges(bullets[i]);
     bullets[i].boundingBox.setFromObject(bullets[i].hitbox);
     fullDetectCollision(bullets[i]);
-    /*if (collisionParticle.position.z <= 1) {
-      collisionParticle.position.z += settings.bulletSpeed/100;
-    }*/
     if (bullets[i].hitbox.position.y >= yZoneLimit || bullets[i].hitbox.position.y <= -yZoneLimit) { //reset the bullets who goes too far
-//bullets[i].hitbox.visible = false;
       bullets[i].alive = false;
       bullets[i].hitbox.position.setZ(20);
       bullets[i].particleOptions.position.setZ(15);
@@ -409,10 +409,6 @@ function bulletsMove(){
           collisionParticle[i].explosion --;
         }
       }
-      /*if (collisionParticle.position.z < 1) {
-        particleSystem.spawnParticle( collisionParticle );
-        //if (tick == 0) collisionParticle.position.set(0,-20,10);
-      }*/
     }
   }
   particleSystem.update( tick );
@@ -432,7 +428,7 @@ function updateBoundingBoxes(){
 }
 
 
-
+//detect collision between two hitboxes
 function fullDetectCollision(bullet){
   var index = bullet.index;
   if (bullet.hitbox.position.y <= -10){ //collision between bullets and walls
@@ -449,15 +445,12 @@ function fullDetectCollision(bullet){
     }
   }
   if (bullet.direction == vectDown){ //collision between bullets and player
-    //computeHitboxEdges(player); //use box3 instead
-    //player.boundingBox.setFromObject(player.hitbox);
-    //if (isCollision(bullet,player)) { //use box3 instead
     if (bullet.boundingBox.intersectsBox(player.boundingBox)) {
       collisionParticle[index].position.set(player.hitbox.position.x,player.hitbox.position.y,player.hitbox.position.z);
       collisionParticle[index].explosion = 599;
       bullet.alive = false;
       bullet.hitbox.position.setZ(15);
-      settings.lifePoints--;
+      if (!invincibility) settings.lifePoints--;
       glitching = true;
       if (settings.lifePoints <= 0) {
         gameOver();
@@ -466,9 +459,6 @@ function fullDetectCollision(bullet){
   }
   else {
     for (var i=0; i<ennemies.length; i++){ //collision between bullets and ennemies
-      //computeHitboxEdges(ennemies[i]);
-      //ennemies[i].boundingBox.setFromObject(ennemies[i].hitbox);
-      //if (isCollision(bullet,ennemies[i])) {
       if (bullet.boundingBox.intersectsBox(ennemies[i].boundingBox)) {
         collisionParticle[index].position.set(ennemies[i].hitbox.position.x,ennemies[i].hitbox.position.y,ennemies[i].hitbox.position.z);
         collisionParticle[index].explosion = 599;
@@ -479,14 +469,10 @@ function fullDetectCollision(bullet){
         ennemies[i].alive = false;
         ennemiesMeshes[i].visible = false;
         score += ennemies[i].scorePts;
-
       }
     }
     for (var i=0; i<bullets.length; i++){ //collision between bullets
       if (bullets[i].direction == vectDown){
-        //computeHitboxEdges(bullets[i]);
-        //bullets[i].boundingBox.setFromObject(bullets[i].hitbox);
-        //if (isCollision(bullet,bullets[i])){
         if (bullet.boundingBox.intersectsBox(bullets[i].boundingBox)){
           collisionParticle[index].position.set(bullets[i].hitbox.position.x,bullets[i].hitbox.position.y,bullets[i].hitbox.position.z);
           collisionParticle[index].explosion = 599;
@@ -530,6 +516,10 @@ function animaEnnemies(){
 function ennemiesMove(){
   for (var i=0; i<ennemies.length; i++){
     if (ennemies[i].alive){//ennemy is alive
+      //game over if ennemies arrives to the walls
+      if(ennemies[i].hitbox.position.y <= walls[0].hitbox.position.y){
+        gameOver();
+      }
       //probability of shooting
       if (Math.floor(Math.random()*settings.shootFrequ) == 0) {shoot(vectDown,ennemies[i].hitbox.position)}
       //ennemies movements
@@ -538,8 +528,10 @@ function ennemiesMove(){
         ennemiesMeshes[i].position.x += settings.ennemyMoveSpeed;
         if (ennemies[i].hitbox.position.x > xZoneLimit) {
           ennemies[i].daWae = vectDown;
-          ennemies[i].hitbox.position.y -= 2;
-          ennemiesMeshes[i].position.y -= 2;
+          if (!invincibility) {
+            ennemies[i].hitbox.position.y -= 2;
+            ennemiesMeshes[i].position.y -= 2;
+          }
         }
       }
       else if (ennemies[i].daWae == vectDown) {
@@ -547,8 +539,10 @@ function ennemiesMove(){
         ennemiesMeshes[i].position.x -= settings.ennemyMoveSpeed;
         if (ennemies[i].hitbox.position.x < -xZoneLimit) {
           ennemies[i].daWae = vectUp;
-          ennemies[i].hitbox.position.y -= 2;
-          ennemiesMeshes[i].position.y -= 2;
+          if (!invincibility){
+            ennemies[i].hitbox.position.y -= 2;
+            ennemiesMeshes[i].position.y -= 2;
+          }
         }
       }
     }
@@ -582,7 +576,7 @@ function shoot(direction, position){
   bullets[j].hitbox.position.set(
     position.x,
     position.y,
-    position.z)
+    position.z);
   bullets[j].hitbox.visible = true;
   bullets[j].alive = true;
 }
@@ -598,6 +592,49 @@ function bomb(){
   }
 }
 
+function nuke(){
+  var vectPos = new THREE.Vector3(0,0,0);
+  for (var i=0; i<ennemies.length; i++){
+    vectPos.set(ennemies[i].hitbox.position.x,
+                ennemies[i].hitbox.position.y-1,
+                ennemies[i].hitbox.position.z,
+    );
+    shoot(vectUp, vectPos);
+  }
+}
+
+function hotkeys(){
+  if (document.getElementById("help").style.display === "none"){
+    document.getElementById("help").style.display = "block";
+    document.getElementById('hotkeys').style.color = "#4F3AF9";
+
+  } else {
+    document.getElementById("help").style.display = "none";
+    document.getElementById('hotkeys').style.color = "#424242";
+
+  }
+
+}
+function cameraControl(){
+  if (controls.enabled) {
+    controls.enabled=false;
+    document.getElementById('cameraControl').style.color = "#424242";
+  }
+  else {
+    controls.enabled=true;
+    document.getElementById('cameraControl').style.color = "#4F3AF9";
+  }
+}
+function guiHide(){
+  if (document.getElementById('guiContainer').style.display == "block"){
+    document.getElementById('guiContainer').style.display = "none";
+    document.getElementById('guiHide').style.color = "#424242";
+  }
+  else {
+    document.getElementById('guiContainer').style.display = "block";
+    document.getElementById('guiHide').style.color = "#4F3AF9";
+  }
+}
 /*
   function TextureAnimator from
   Three.js "tutorials by example"

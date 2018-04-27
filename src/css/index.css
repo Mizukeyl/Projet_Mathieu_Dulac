@@ -39,7 +39,7 @@ div#loaderRess div{
   padding-top: 1%;
   padding-bottom: 1%;
   background-color: #C7C7EF;
-  color: #424242;
+  color: #999999;
   display: none;
   opacity: 0.9;
   z-index: 6;
@@ -52,13 +52,14 @@ div#loaderRess div{
   top: 20%;
   left: 42%;
   margin-top: 5%;
+  color: red;
   /*border-radius: 50px;*/
   z-index: 5;
 }
 .pauseMenuButton{
-  background-color: #C7C7EF;
+  background-color: #E7E5F6;
   color: #424242;
-  opacity: 0.4;
+  opacity: 0.8;
 }
 
 #hud {
@@ -78,6 +79,7 @@ div#loaderRess div{
   left: 5px;
   background-color: #202F2F;
   opacity: 0.6;
+  display: none;
 }
 #help b{
   padding-left: 20px;
@@ -95,6 +97,7 @@ div#loaderRess div{
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
+  display: none;
   z-index: 2;
 }
 #score {
@@ -111,4 +114,5 @@ div#loaderRess div{
 #scorePts{
 }
 #guiContainer{
+  display: none;
 }
