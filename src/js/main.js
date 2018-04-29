@@ -55,7 +55,7 @@ spawnerOptions = {
 }
 
 //AUDIO
-var music;
+var isMusicMuted = false;
 var listener = new THREE.AudioListener();
 // create a global audio source
 var fate = new THREE.Audio( listener );
@@ -64,9 +64,6 @@ var danger = new THREE.Audio(  listener );
 var boum = new THREE.Audio(  listener );
 var explosion = new THREE.Audio(  listener );
 var dejavu = new THREE.Audio(  listener );
-var LTheme = new THREE.Audio(  listener );
-var cloudChasers = new THREE.Audio(  listener );
-var kiseijuu = new THREE.Audio(  listener );
 var microgravity = new THREE.Audio(  listener );
 
 
@@ -85,8 +82,10 @@ THREE.DefaultLoadingManager.onLoad = function ( ) {
 //INIT FUNCTIONS
 initGraphics(); //and audio
 
+
 initGui();
-switchMenu();
+placeEnnemies();
+
 
 //////////////////////////////////////////////////////////////////////////////////
 //		Init
@@ -266,12 +265,13 @@ function animate(){
     playerMove();
     bulletsMove();
     ennemiesMove();
+    /*TODO uncomment to allow animation
     var delta = 100* clockTex.getDelta();
     for (var i=0;i<mixers.length;i++){
       mixers[i].update(delta);
     }
     playerMixer.update(delta);
-
+    */
     document.getElementById('scorePts').innerHTML = score;
   }
   //raycaster.set( player.hitbox.position, vectUp);

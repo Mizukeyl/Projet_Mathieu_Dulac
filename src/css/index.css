@@ -27,6 +27,13 @@ div#loaderRess div{
 }
 #titleScreen{
   z-index: 7;
+  background-color: white;
+  height: 50%;
+  width: 50%;
+  position: fixed;
+  top: 25%;
+  left: 25%;
+  display: block;
 }
 #info {
   height: 6%;

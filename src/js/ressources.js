@@ -23,7 +23,7 @@ function initGui(){
   folder3.add(settings, "bulletSpeed", 0, 5).step(0.05);
   folder3.add( settings, "level", 0,5).step(1).onFinishChange(function(){
     document.getElementById('titre').innerHTML = "Loading "+settings.level*25+"% ...";
-    switchMenu();
+    placeEnnemies();
   });
   folder4.add(chaseCamera.position, "x", -50, 50).step(0.2).listen();
   folder4.add(chaseCamera.position, "y", -100, 50).step(0.2).listen();
@@ -39,6 +39,7 @@ function initGui(){
   });
   //folder1.open();
 };
+
 //////////////////////////////////////////////////////////////////////////////////
 //		add objects
 //////////////////////////////////////////////////////////////////////////////////
@@ -59,15 +60,16 @@ function initObjects(nbColumns, nbLines){
 //////////////////////////////////////////////////////////////////////////////////
 //		functions
 //////////////////////////////////////////////////////////////////////////////////
-function switchMenu(){
-  var n=0, i=0, j=0;
+function placeEnnemies(){
   switch (settings.level) {
     case 0:
       initObjects(8,5);
       break;
     case 1:
-      animaEnnemies();
-      pause=false;
+      positionLevel1();
+
+      //player.hitbox.position.set(0,-35, 0);
+      //chaseCamera.position.set(0,-65,20);
       break;
     case 2:
       for (var j=0; j< 5; j++) {
@@ -81,16 +83,27 @@ function switchMenu(){
           n++;
         }
       }
-      player.hitbox.position.set(0,-35, 0);
-      chaseCamera.position.set(0,-65,20);
       break;
     default:
-      window.alert("menu value incorrect");
+      console.log("menu value incorrect");
   }
 };
-
+function positionLevel1(){
+  var n=0, i=0, j=0;
+  for (var j=0; j< 5; j++) {
+    for (var i=0; i< 8; i++){
+      ennemies[n].hitbox.position.set(i*3-10, j*3+5, 0);
+      ennemiesMeshes[n].position.set(i*3-10, j*3+5, 0);
+      ennemies[n].daWae = vectUp;
+      ennemies[n].alive = true;
+      ennemies[n].hitbox.visible = true;
+      ennemiesMeshes[n].visible = true;
+      n++;
+    }
+  }
+}
 function PlayerCharacter(x,y,z){
-  loader.load("src/medias/models/necro-book-decimated.json", function(obj){
+  /*TODO loader.load("src/medias/models/necro-book-decimated.json", function(obj){
     obj.position.set(x,y,z);
     //this.material = new THREE.MeshBasicMaterial({color: 0x000000});
     playerMesh = obj;
@@ -98,7 +111,7 @@ function PlayerCharacter(x,y,z){
     //playerMesh.material.alphaMap.wrapT = THREE.RepeatWrapping;
     //playerMesh.material.alphaMap.repeat.y = 1;
     scene.add(playerMesh);
-  });
+  });*/
   this.dim = 1;
   this.alive = true;
   this.daWae = vectUp; //the way of the movement
@@ -106,16 +119,21 @@ function PlayerCharacter(x,y,z){
   this.hitbox.position.set(x,y,z);
   this.boundingBox = new THREE.Box3().setFromObject(this.hitbox);
   this.boxHelper = new THREE.Box3Helper(this.boundingBox, 0xffff00);
+
+  playerMesh = new THREE.Mesh(new THREE.BoxGeometry( this.dim, this.dim, this.dim ), new THREE.MeshBasicMaterial({color: 0xff00ff}));
+  playerMesh.position.set(x,y,z);
+  scene.add(playerMesh);
+
 }
 //add characters
 function Character(m,model3D,scorePts, x,y,z){
 
-  loader.load(model3D, function(obj){
+  /*TODO loader.load(model3D, function(obj){
     obj.position.set(x,y,z);
     ennemiesMeshes[m] = obj;
     scene.add(ennemiesMeshes[m]);
     //m++;
-  });
+  });*/
   this.scorePts = scorePts;
   this.dim = 1;
   this.alive = true;
@@ -125,6 +143,11 @@ function Character(m,model3D,scorePts, x,y,z){
   this.boundingBox = new THREE.Box3().setFromObject(this.hitbox);
   this.boxHelper = new THREE.Box3Helper(this.boundingBox, 0xffff00);
   //scene.add(this.boxHelper);
+  var obj = new THREE.Mesh(new THREE.BoxGeometry( this.dim, this.dim, this.dim ), new THREE.MeshBasicMaterial({color: 0xff00ff}));
+  obj.position.set(x,y,z);
+  ennemiesMeshes[m] = obj;
+  scene.add(ennemiesMeshes[m]);
+
 };
 //add bullets
 function Bullet(index, x,y,z, direction){
@@ -247,122 +270,6 @@ function playerMove() {
       lastShot = clockShoot.getElapsedTime();
     }
   }
-};
-//keyboard inputs
-document.addEventListener("keydown", onDocumentKeyDown, true);
-document.addEventListener("keyup", onDocumentKeyUp, true);
-function onDocumentKeyDown(event) {
-  if (event.defaultPrevented) {
-    return; // Do nothing if the event was already processed
-  }
-  //var keyCode = event.key;
-  switch (event.key) {
-    case "Tab":
-      animaEnnemies();
-      microgravity.play();
-      break;
-    case " ":
-      spaceBarPushed = true;
-      //playerMove()
-      break;
-    case "ArrowLeft":
-      leftArrowPushed = true;
-      //playerMove();
-      break;
-    case "ArrowRight":
-      rightArrowPushed = true;
-      //playerMove();
-      break;
-    case "ArrowDown":
-      document.getElementById("info").style.display = "none";
-      //glitching=false;
-      //microgravity.play();
-      //mixer.clipAction(ennemiesMeshes[2].animations[0], ennemiesMeshes[2]).play();
-      //switchMenu();
-      break;
-    case "ArrowUp":
-      document.getElementById("info").style.display = "block";
-      launch = true;
-      //glitching=true;
-      //microgravity.play();
-      //mixer.clipAction(ennemiesMeshes[2].animations[0], ennemiesMeshes[2]).play();
-      //switchMenu();
-      break;
-    default:
-      return;
-  }
-  event.preventDefault();
-};
-function onDocumentKeyUp(event) {
-  if (event.defaultPrevented) {
-    return; // Do nothing if the event was already processed
-  }
-  //var keyCode = event.key;
-  switch (event.key) {
-    case "Tab":
-      spaceBarPushed = false;
-      break;
-    case "1":
-      chaseCameraActive = true;
-      chaseCamera.up.set(0,0,1);
-      chaseCamera.position.set(playerMesh.position.x,playerMesh.position.y-10,playerMesh.position.z+5);
-      chaseCamera.lookAt(vectLook);
-      //glitching=false;
-      break;
-    case "2":
-      chaseCameraActive = false;
-      chaseCamera.position.set(0,-60,10);
-      chaseCamera.up.set(0,0,1);
-      chaseCamera.lookAt(vectLook);
-    break;
-    case "3":
-      chaseCameraActive = false;
-      chaseCamera.position.set(0,35,-10);
-      chaseCamera.up.set(0,0,-1);
-      chaseCamera.lookAt(vectLook);
-      //glitching=true;
-    break;
-    case " ":
-      spaceBarPushed = false;
-      break;
-    case "ArrowLeft":
-      leftArrowPushed = false;
-      break;
-    case "ArrowRight":
-      rightArrowPushed = false;
-      break;
-    case "x":
-      bomb();
-      break;
-    case "Escape":
-      break;
-    case "i":
-      if (invincibility) invincibility = false;
-      else invincibility = true;
-      break;
-    case "k":
-      nuke();
-      console.log("nuke em all");
-      break;
-    case "s":
-      //pause = (pause ? false: true);
-      if (pause) {
-        document.getElementById("pauseMenu").style.display = "none";
-        document.getElementById("speedAnim").style.display = "block";
-        pause = false;
-      } else {
-        document.getElementById("pauseMenu").style.display = "block";
-        document.getElementById("speedAnim").style.display = "none";
-        pause = true;
-      }
-      break;
-    case "h":
-      hotkeys();
-        break;
-    default:
-      return;
-  }
-  event.preventDefault();
 };
 
 //manage bullets movements and particles
@@ -489,11 +396,6 @@ function fullDetectCollision(bullet){
   }
 }
 
-function gameOver(){
-  pause=true;
-  document.getElementById("info").style.display = "block";
-  document.getElementById("info").innerHTML = "Game Over"
-}
 
 function isCollision(a, b) { //not used
 return	(a.hitbox.minX <= b.hitbox.maxX && a.hitbox.maxX >= b.hitbox.minX) &&
@@ -514,8 +416,10 @@ function animaEnnemies(){
 
 //AI of the ennemies
 function ennemiesMove(){
+  var endLevel = true;
   for (var i=0; i<ennemies.length; i++){
     if (ennemies[i].alive){//ennemy is alive
+      endLevel = false;
       //game over if ennemies arrives to the walls
       if(ennemies[i].hitbox.position.y <= walls[0].hitbox.position.y){
         gameOver();
@@ -547,6 +451,7 @@ function ennemiesMove(){
       }
     }
   }
+  if (endLevel) nextLevel();
 }
 
 //summon a bullet at the position
@@ -603,38 +508,7 @@ function nuke(){
   }
 }
 
-function hotkeys(){
-  if (document.getElementById("help").style.display === "none"){
-    document.getElementById("help").style.display = "block";
-    document.getElementById('hotkeys').style.color = "#4F3AF9";
 
-  } else {
-    document.getElementById("help").style.display = "none";
-    document.getElementById('hotkeys').style.color = "#424242";
-
-  }
-
-}
-function cameraControl(){
-  if (controls.enabled) {
-    controls.enabled=false;
-    document.getElementById('cameraControl').style.color = "#424242";
-  }
-  else {
-    controls.enabled=true;
-    document.getElementById('cameraControl').style.color = "#4F3AF9";
-  }
-}
-function guiHide(){
-  if (document.getElementById('guiContainer').style.display == "block"){
-    document.getElementById('guiContainer').style.display = "none";
-    document.getElementById('guiHide').style.color = "#424242";
-  }
-  else {
-    document.getElementById('guiContainer').style.display = "block";
-    document.getElementById('guiHide').style.color = "#4F3AF9";
-  }
-}
 /*
   function TextureAnimator from
   Three.js "tutorials by example"
@@ -683,213 +557,3 @@ function updateTexture(){
   var deltaTex = clockTex.getDelta();
   anima.update(1000*deltaTex);
 }
-
-//LOST FUNCTIONS
-/*
-// detection collision with raycasters (it's shit)
-function detectCollision(bullet){
-    bullet.raycaster.set(bullet.hitbox.position, bullet.direction);
-    var intersects = bullet.raycaster.intersectObjects(scene.children);
-      for (var i = 0; i < intersects.length; i++ ) {
-          intersects[i].object.material.color.set( 0xffffff );
-          return true;
-        }
-  return false;
-}
-//only for testing
-function drawLine(){
-// Draw a line from pointA in the given direction at distance 100
-var pointA = raycaster.ray.origin//new THREE.Vector3( 0, 0, 0 );
-  //var direction = new THREE.Vector3( 10, 0, 0 );
-raycaster.ray.direction.normalize();
-var distance = 50; // at what distance to determine pointB
-var pointB = new THREE.Vector3();
-pointB.addVectors ( pointA, raycaster.ray.direction.multiplyScalar( distance ) );
-var geometry = new THREE.Geometry();
-geometry.vertices.push( pointA );
-geometry.vertices.push( pointB );
-var material = new THREE.LineBasicMaterial( { color : 0xff0000 } );
-var line = new THREE.Line( geometry, material );
-scene.add( line );
-}
-*/
-// handle window resize (already done by threex ??)
-/*
-window.addEventListener('resize', function(){
-  renderer.setSize( window.innerWidth, window.innerHeight );
-  camera.aspect	= window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
-}, false);
-
-
-onRenderFcts.push(function(){
-  updateTexture();
-  playerMove();
-  bulletsMove();
-  ennemiesMove();
-
-  //raycaster.set( player.hitbox.position, vectUp);
-  var delta = 100* clockTex.getDelta();
-  for (var i=0;i<mixers.length;i++){
-    mixers[i].update(delta);
-  }
-  stats.update();
-  renderer.render( scene, camera );
-});
-
-// run the rendering loop
-var lastTimeMsec= null;
-requestAnimationFrame(function animate(nowMsec){
-  // keep looping
-  requestAnimationFrame( animate );
-  // measure time
-  lastTimeMsec	= lastTimeMsec || nowMsec-1000/60;
-  var deltaMsec	= Math.min(200, nowMsec - lastTimeMsec);
-  lastTimeMsec	= nowMsec;
-  // call each update function
-
-  onRenderFcts.forEach(function(onRenderFct){
-    onRenderFct(deltaMsec/1000, nowMsec/1000);
-  });
-});
-
-
-function loaderRess(text, points){
-  //onLoad="document.body.removeChild(document.getElementById('loaderRess'));"
-    if(document.getElementById('loaderRess')){
-        points = (points ? points : 0);
-        points = (points+1 > 3 ? 0 : points+1);
-        if(!text){
-            text = document.getElementById('loaderRess').childNodes[0].innerHTML;
-        }
-        if (points == 2) text = "It seems you have a bad connection";
-        if (points == 3) text = "You can play this minigame until the end of the loading";
-        var text_suspensions = text;
-        for(i=0; i<points; i++){
-            text_suspensions += '.';
-        }
-
-        document.getElementById('loaderRess').childNodes[0].innerHTML = text_suspensions;
-        setTimeout('loaderRess(\''+text+'\', '+points+')', 500);
-    }
-}
-    loaderRess();
-
-*/
-
-//GROUND
-/*  var textureLoader = new THREE.TextureLoader();
-var maxAnisotropy = renderer.getMaxAnisotropy();
-var texture1 = textureLoader.load( "src/medias/images/checkerboardA.png" );
-var material1 = new THREE.MeshPhongMaterial( { color: 0xffffff, map: texture1, transparent: true } );
-texture1.anisotropy =  maxAnisotropy;
-texture1.wrapS = texture1.wrapT = THREE.RepeatWrapping;
-texture1.repeat.set( 10, 10 );
-//add plane
-var plane = new THREE.Mesh(new THREE.PlaneGeometry(100,100), material1);
-plane.position.setZ(-1);
-//plane.scale.set( 10,10,10);
-//scene.add( plane ); */
-/*
-function computeHitboxEdges(box){
-  var borders = box.dim/2;
-  box.hitbox.minX = box.hitbox.position.x - borders;
-  box.hitbox.maxX = box.hitbox.position.x + borders;
-  box.hitbox.minY = box.hitbox.position.y - borders;
-  box.hitbox.maxY = box.hitbox.position.y + borders;
-  box.hitbox.minZ = box.hitbox.position.z - borders;
-  box.hitbox.maxZ = box.hitbox.position.z + borders;
-};
-
-function updateHitboxesEdges(){
-  computeHitboxEdges(player);
-  for (var i=0; i<ennemies.length; i++){
-    computeHitboxEdges(ennemies[i]);
-  }
-  for (var i=0; i<bullets.length; i++){
-    computeHitboxEdges(bullets[i]);
-  }
-}
-
-this.hitbox.minY = this.hitbox.position.y - this.dim/2;
-this.hitbox.maxY = this.hitbox.position.y + this.dim/2;
-this.hitbox.minX = this.hitbox.position.x - this.dim/2;
-this.hitbox.maxX = this.hitbox.position.x + this.dim/2;
-this.hitbox.minZ = this.hitbox.position.z - this.dim/2;
-this.hitbox.maxZ = this.hitbox.position.z + this.dim/2;
-
-
-function createennemiesMeshes(obj){
-  for (var i=0; i<ennemies.length; i++){
-    obj.position.set(ennemies[i].hitbox.position.x,ennemies[i].hitbox.position.y,ennemies[i].hitbox.position.z);
-    mesh[i] = new THREE.Object3D();
-    mesh[i] = obj;
-    scene.add(mesh[i]);
-    //mixer.clipAction(mesh[i].animations[0], mesh[i]).play();
-    //mixer.clipAction(playerMesh.animations[0], playerMesh[i]).play();
-    //addMesh(i, obj);
-  }
-};*/
-
-/*  var runnerMaterial = new THREE.MeshBasicMaterial( { map: runnerTexture, side:THREE.DoubleSide } );
-  var runnerGeometry = new THREE.PlaneGeometry(50, 50, 1, 1);
-  var runner = new THREE.Mesh(runnerGeometry, runnerMaterial);
-  runner.position.set(0,25,0); */
-  //scene.add(runner);
-  //SKYSPHERE
-//  var skyGeometry = new THREE.SphereBufferGeometry(100, 60, 40);
-  /*var uniforms = {
-    texture: { type: 't', value: THREE.ImageUtils.loadTexture('/path/to/my_image.jpg') }
-  };*/
-  /*var material = new THREE.ShaderMaterial( {
-    uniforms:       uniforms,
-    vertexShader:   document.getElementById('sky-vertex').textContent,
-    fragmentShader: document.getElementById('sky-fragment').textContent
-  });*/
-  /*var skyBox = new THREE.Mesh(skyGeometry, runnerMaterial);
-  skyBox.scale.set(-1, 1, 1);
-  skyBox.eulerOrder = 'XZY';
-  skyBox.renderDepth = 1000.0;
-  skyBox.rotateX(Math.PI / 16);
-  skyBox.rotateY(-Math.PI / 2);
-  scene.add(skyBox);
-  */
-
-
-  /*
-  var meshGroup = new THREE.Group();
-  var loader = new THREE.ObjectLoader();
-  loader.load("src/medias/models/damn.json",
-      function(mesh){
-        meshGroup.add(mesh);
-        mixer = new THREE.AnimationMixer(meshGroup);
-        mixer.clipAction(meshGroup.animations[0]).play();
-      });
-  */
-  // Alternatively, to parse a previously loaded JSON structure
-  //var object = loader.parse( "src/medias/models/Heart2.json" );
-
-  //scene.add( object );
-
-  /*
-  loader.load("src/medias/models/damn.json", function(obj){
-    for(var i=0; i<ennemies.length; i++){
-      obj.position.set(ennemies[i].hitbox.position.x,ennemies[i].hitbox.position.y,ennemies[i].hitbox.position.z);
-      ennemiesMeshes[i] = obj;
-      scene.add(ennemiesMeshes[i]);
-      mixer.clipAction(ennemiesMeshes[i].animations[0], ennemiesMeshes[i]).play();
-    }
-  });*/
-
-  /*
- var material = new THREE.MeshBasicMaterial ({color: 0xbadbad});
-
- geoLoader.load("src/medias/models/geoWall.json", function(geometry){
-   //var geometry = new THREE.Geometry().fromBufferGeometry( bufferGeometry );
-   var object = new THREE.Mesh(geometry, material);
-   object.position.set(x,y,z);
-
-   scene.add(object);
-   playerMesh = object;
-   scene.add(playerMesh);
- });*/

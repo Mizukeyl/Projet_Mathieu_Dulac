@@ -64,22 +64,31 @@
 
 
   <div id="container"></div>
-  <div id="titleScreen"></div>
+  <div id="titleScreen">
+    <h1> Main menu </h1>
+    <div id="startGame" class="pauseMenuButton" onmouseover="this.style.background='gray';" onmouseout="this.style.background='#E7E5F6';"
+    onclick="startGame()">
+      <h2>Start Game</h2>
+    </div>
+  </div>
   <div id="pauseMenu">
     <h1> Pause Menu </h1>
-    <div class="pauseMenuButton" onmouseover="this.style.background='gray';" onmouseout="this.style.background='#E7E5F6';">
-      <h2>Music </h2></div>
+    <div id="muteMusic" class="pauseMenuButton" onmouseover="this.style.background='gray';" onmouseout="this.style.background='#E7E5F6';"
+    onclick="muteMusic()">
+      <h2>Mute Music</h2>
+    </div>
     <div id="hotkeys" class="pauseMenuButton" onmouseover="this.style.background='gray';" onmouseout="this.style.background='#E7E5F6';"
-    OnClick="hotkeys()">
+    onclick="hotkeys()">
       <h2>Show Hotkeys</h2>
     </div>
     <div id="cameraControl" class="pauseMenuButton" onmouseover="this.style.background='gray';" onmouseout="this.style.background='#E7E5F6';"
-     OnClick="cameraControl()">
+     onclick="cameraControl()">
       <h2>Enable/Disable OrbitControls </h2>
     </div>
     <div id="guiHide" class="pauseMenuButton" onmouseover="this.style.background='gray';" onmouseout="this.style.background='#E7E5F6';"
-    OnClick="guiHide()">
-      <h2>Show developer options </h2></div>
+    onclick="guiHide()">
+      <h2>Show developer options </h2>
+    </div>
   </div>
   <div id="hud" style="display:block">
     <div id="guiContainer"></div>
@@ -89,10 +98,12 @@
     <div id="info">Game Over <br/>
       <div class="pauseMenuButton" onmouseover="this.style.background='gray';" onmouseout="this.style.background='#E7E5F6';"
       OnClick="restartGame()">
-        <h2>Restart Game</h2></div>
+        <h2>Restart Game</h2>
+      </div>
     </div>
     <div id="help">
        <b>List of keys</b> <br/><br/>
+       H - show hotkeys<br/>
        S - start/pause game <br/>
        X - bomb <br/>
        P - printScreen <br/>
@@ -102,10 +113,6 @@
      </div>
   </div>
   <div id="speedAnim"></div>
-  <div>
-    <label for="dotScreen">Glitch me wild:</label>
-    <input id="wildGlitch" type="checkbox" onchange="updateOptions()"/><br />
-  </div>
 
     <!--three.js and core lib-->
     <script src="src/lib/three.js"></script>
@@ -127,7 +134,7 @@
 
     <script src="src/js/ressources.js"></script>
     <script src="src/js/main.js"></script>
-
+    <script src="src/js/ui.js"></script>
 
 
 </body>
