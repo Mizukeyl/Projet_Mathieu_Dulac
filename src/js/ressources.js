@@ -37,6 +37,7 @@ function initGui(){
   folder4.add(vectLook, "z", -50, 50).step(0.2).onChange(function(){
     chaseCamera.lookAt(vectLook);
   });
+
   //folder1.open();
 };
 
@@ -60,35 +61,79 @@ function initObjects(nbColumns, nbLines){
 //////////////////////////////////////////////////////////////////////////////////
 //		functions
 //////////////////////////////////////////////////////////////////////////////////
-function placeEnnemies(){
+
+function nextLevel(){
+  var elem = document.getElementById('info');
   switch (settings.level) {
     case 0:
-      initObjects(8,5);
+      elem.innerHTML = "Loading 25%";
+      elem.style.display = "block";
+      setTimeout(function(){
+        document.getElementById('info').style.display = "none";
+        positionLevel1();
+        settings.level = 1;
+      }, 2000);
       break;
     case 1:
-      positionLevel1();
-
-      //player.hitbox.position.set(0,-35, 0);
-      //chaseCamera.position.set(0,-65,20);
+      elem.innerHTML = "Loading 50%";
+      elem.style.display = "block";
+      setTimeout(function(){
+        document.getElementById('info').style.display = "none";
+        positionLevel2();
+        settings.level = 2;
+      }, 2000);
       break;
     case 2:
-      for (var j=0; j< 5; j++) {
-        for (var i=0; i< 8; i++){
-          ennemies[n].hitbox.position.set(i*3-10, j*3+5, 0);
-          ennemiesMeshes[n].position.set(i*3-10, j*3+5, 0);
-          ennemies[n].daWae = vectUp;
-          ennemies[n].alive = true;
-          ennemies[n].hitbox.visible = true;
-          ennemiesMeshes[n].visible = true;
-          n++;
-        }
-      }
+      elem.innerHTML = "Loading 75%";
+      elem.style.display = "block";
+      setTimeout(function(){
+        document.getElementById('info').style.display = "none";
+        positionLevel3();
+        settings.level = 3;
+      }, 2000);
+      break;
+    case 3:
+      elem.innerHTML = "Loading 99%";
+      elem.style.display = "block";
+      setTimeout(function(){
+        document.getElementById('info').style.display = "none";
+        //placeEnnemies();
+        settings.level = 4;//game end
+      }, 2000);
       break;
     default:
-      console.log("menu value incorrect");
+      console.log('next Level incorrect');
   }
-};
+}
 function positionLevel1(){
+  var n=0, i=0, j=0;
+  for (var j=0; j< 5; j++) {
+    for (var i=0; i< 8; i++){
+      ennemies[n].hitbox.position.set(i*3-10, j*3+5, 0);
+      ennemiesMeshes[n].position.set(i*3-10, j*3+5, 0);
+      ennemies[n].daWae = vectUp;
+      ennemies[n].alive = true;
+      ennemies[n].hitbox.visible = true;
+      ennemiesMeshes[n].visible = true;
+      n++;
+    }
+  }
+}
+function positionLevel2(){
+  var n=0, i=0, j=0;
+  for (var j=0; j< 5; j++) {
+    for (var i=0; i< 8; i++){
+      ennemies[n].hitbox.position.set(i*3-10, j*3+5, 0);
+      ennemiesMeshes[n].position.set(i*3-10, j*3+5, 0);
+      ennemies[n].daWae = vectUp;
+      ennemies[n].alive = true;
+      ennemies[n].hitbox.visible = true;
+      ennemiesMeshes[n].visible = true;
+      n++;
+    }
+  }
+}
+function positionLevel3(){
   var n=0, i=0, j=0;
   for (var j=0; j< 5; j++) {
     for (var i=0; i< 8; i++){
@@ -265,8 +310,9 @@ function playerMove() {
     //if (clockShoot.getDelta() > 0.5) {
     if (clockShoot.getElapsedTime() - lastShot > settings.reloadDelay){
       shoot(vectUp,player.hitbox.position);
-      if (pew.isPlaying) boum.play();
-      else pew.play();
+      //if (shootEffect3.isPlaying) shootEffect.play();
+      //else shootEffect3.play();
+      shootAudio();
       lastShot = clockShoot.getElapsedTime();
     }
   }
@@ -335,8 +381,9 @@ function updateBoundingBoxes(){
 }
 
 
-//detect collision between two hitboxes
+//detect collision between two hitboxes and end of the level
 function fullDetectCollision(bullet){
+  var deadEnnemies = 0;
   var index = bullet.index;
   if (bullet.hitbox.position.y <= -10){ //collision between bullets and walls
     for (var i = 0; i < walls.length; i++) {
@@ -348,6 +395,7 @@ function fullDetectCollision(bullet){
         bullet.hitbox.position.setZ(15);
         walls[i].hitbox.position.setZ(10);
         wallsMeshes[i].visible=false;
+        explosionAudio();
       }
     }
   }
@@ -359,6 +407,7 @@ function fullDetectCollision(bullet){
       bullet.hitbox.position.setZ(15);
       if (!invincibility) settings.lifePoints--;
       glitching = true;
+      explosionAudio();
       if (settings.lifePoints <= 0) {
         gameOver();
       }
@@ -376,6 +425,11 @@ function fullDetectCollision(bullet){
         ennemies[i].alive = false;
         ennemiesMeshes[i].visible = false;
         score += ennemies[i].scorePts;
+        explosionAudio();
+        for (var j=0; j<ennemies.length; j++){ //Go to the next level if all ennemies are dead
+          if (!ennemies[j].alive) deadEnnemies++;
+          if (deadEnnemies === ennemies.length) nextLevel();
+        }
       }
     }
     for (var i=0; i<bullets.length; i++){ //collision between bullets
@@ -390,12 +444,30 @@ function fullDetectCollision(bullet){
           bullets[i].alive = false;
           bullets[i].particleOptions.position.setZ(15);
           score += bullets[i].scorePts;
+          explosionAudio();
         }
       }
     }
   }
 }
-
+function explosionAudio(){
+  if (!explosionSfx2.isPlaying) explosionSfx2.play();
+  else if (!explosionSfx.isPlaying) explosionSfx.play();
+  else if (!explosionSfx3.isPlaying) explosionSfx3.play();
+  else {
+    explosionSfx2.stop();
+    explosionSfx2.play();
+  }
+}
+function shootAudio(){
+  if (!shootSfx.isPlaying) shootSfx.play();
+  else if (!shootSfx2.isPlaying) shootSfx2.play();
+  else if (!shootSfx3.isPlaying) shootSfx3.play();
+  else {
+    shootSfx.stop();
+    shootSfx.play();
+  }
+}
 
 function isCollision(a, b) { //not used
 return	(a.hitbox.minX <= b.hitbox.maxX && a.hitbox.maxX >= b.hitbox.minX) &&
@@ -416,10 +488,10 @@ function animaEnnemies(){
 
 //AI of the ennemies
 function ennemiesMove(){
-  var endLevel = true;
+  //var endLevel = true;
   for (var i=0; i<ennemies.length; i++){
     if (ennemies[i].alive){//ennemy is alive
-      endLevel = false;
+      //endLevel = false;
       //game over if ennemies arrives to the walls
       if(ennemies[i].hitbox.position.y <= walls[0].hitbox.position.y){
         gameOver();
@@ -451,12 +523,12 @@ function ennemiesMove(){
       }
     }
   }
-  if (endLevel) nextLevel();
+  //if (endLevel) nextLevel();
 }
 
 //summon a bullet at the position
 //take the first bullet that isn't moving into the battlefield
-//if no bullet are available, it will reset all the bullets (should'nt happen if the bullets array is large enought)
+//if no bullet are available, it will reset all the bullets (should not happen if the bullets array is large enought)
 function shoot(direction, position){
   var j = 0;
   while (bullets[j].alive) { //loop if the bullet[j] is flying

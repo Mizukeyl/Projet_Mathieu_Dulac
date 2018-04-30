@@ -59,10 +59,13 @@ var isMusicMuted = false;
 var listener = new THREE.AudioListener();
 // create a global audio source
 var fate = new THREE.Audio( listener );
-var pew = new THREE.Audio(  listener );
 var danger = new THREE.Audio(  listener );
-var boum = new THREE.Audio(  listener );
-var explosion = new THREE.Audio(  listener );
+var shootSfx = new THREE.Audio(  listener );
+var shootSfx2 = new THREE.Audio(  listener );
+var shootSfx3 = new THREE.Audio(  listener );
+var explosionSfx = new THREE.Audio(  listener );
+var explosionSfx2 = new THREE.Audio(  listener );
+var explosionSfx3 = new THREE.Audio(  listener );
 var dejavu = new THREE.Audio(  listener );
 var microgravity = new THREE.Audio(  listener );
 
@@ -84,7 +87,8 @@ initGraphics(); //and audio
 
 
 initGui();
-placeEnnemies();
+initObjects(8,5);
+//placeEnnemies();
 
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -145,15 +149,20 @@ function initGraphics(){
     fate.setLoop(true);
     fate.setVolume(1.0);
   });
-  audioLoader.load( 'src/medias/sounds/pew.mp3', function( buffer ) {
-    pew.setBuffer( buffer );
-    pew.setLoop(false);
-    pew.setVolume(1.0);
+  audioLoader.load( 'src/medias/sounds/Shoot.mp3', function( buffer ) {
+    shootSfx.setBuffer( buffer );
+    shootSfx.setLoop(false);
+    shootSfx.setVolume(1.0);
   });
-  audioLoader.load( 'src/medias/sounds/boum.mp3', function( buffer ) {
-    boum.setBuffer( buffer );
-    boum.setLoop(false);
-    boum.setVolume(1.0);
+  audioLoader.load( 'src/medias/sounds/Shoot2.mp3', function( buffer ) {
+    shootSfx2.setBuffer( buffer );
+    shootSfx2.setLoop(false);
+    shootSfx2.setVolume(1.0);
+  });
+  audioLoader.load( 'src/medias/sounds/Shoot3.mp3', function( buffer ) {
+    shootSfx3.setBuffer( buffer );
+    shootSfx3.setLoop(false);
+    shootSfx3.setVolume(1.0);
   });
   audioLoader.load( 'src/medias/sounds/dejavu.mp3', function( buffer ) {
     dejavu.setBuffer( buffer );
@@ -165,12 +174,21 @@ function initGraphics(){
     danger.setLoop(false);
     danger.setVolume(1.0);
   });
-  audioLoader.load( 'src/medias/sounds/explosion.mp3', function( buffer ) {
-    explosion.setBuffer( buffer );
-    explosion.setLoop(false);
-    explosion.setVolume(1.0);
+  audioLoader.load( 'src/medias/sounds/Exploz.mp3', function( buffer ) {
+    explosionSfx.setBuffer( buffer );
+    explosionSfx.setLoop(false);
+    explosionSfx.setVolume(0.3);
   });
-
+  audioLoader.load( 'src/medias/sounds/Exploz2.mp3', function( buffer ) {
+    explosionSfx2.setBuffer( buffer );
+    explosionSfx2.setLoop(false);
+    explosionSfx2.setVolume(0.3);
+  });
+  audioLoader.load( 'src/medias/sounds/Exploz3.mp3', function( buffer ) {
+    explosionSfx3.setBuffer( buffer );
+    explosionSfx3.setLoop(false);
+    explosionSfx3.setVolume(0.3);
+  });
   audioLoader.load( 'src/medias/sounds/Organoid_-_02_-_Microgravity.mp3', function( buffer ) {
     microgravity.setBuffer( buffer );
     microgravity.setLoop(true);
