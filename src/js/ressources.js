@@ -71,12 +71,13 @@ function nextLevel(){
       setTimeout(function(){
         document.getElementById('info').style.display = "none";
         positionLevel1();
+        scene.fog.color.set(0x0000ff);
         settings.level = 1;
-        //settings.shootFrequ =
-        //settings.ennemyMoveSpeed =
+        settings.shootFrequ = 800;
+        settings.ennemyMoveSpeed = 0.1;
         settings.lifePoints = 3;
         resetLife();
-      }, 2000);
+      }, 2500);
       break;
     case 1:
       elem.innerHTML = "Loading 50%";
@@ -84,10 +85,11 @@ function nextLevel(){
       setTimeout(function(){
         document.getElementById('info').style.display = "none";
         positionLevel2();
+        scene.fog.color.set(0xB60044);
         settings.level = 2;
-        //settings.shootFrequ =
-        //settings.ennemyMoveSpeed =
-      }, 2000);
+        settings.shootFrequ = 400;
+        settings.ennemyMoveSpeed = 0.15;
+      }, 2500);
       break;
     case 2:
       elem.innerHTML = "Loading 75%";
@@ -95,8 +97,10 @@ function nextLevel(){
       setTimeout(function(){
         document.getElementById('info').style.display = "none";
         positionLevel3();
+        scene.fog.color.set(0xaaaaaa);
+
         settings.level = 3;
-      }, 2000);
+      }, 2500);
       break;
     case 3:
       elem.innerHTML = "Loading 99%";
@@ -197,7 +201,7 @@ function Character(m,model3D,scorePts, x,y,z){
   });*/
   this.scorePts = scorePts;
   this.dim = 1;
-  this.alive = true;
+  this.alive = false;
   this.daWae = vectUp; //the way of the movement
   this.hitbox = new THREE.Mesh(new THREE.BoxGeometry( this.dim, this.dim, this.dim ), new THREE.MeshBasicMaterial({color: 0xff00ff}));
   this.hitbox.position.set(x,y,z);
@@ -440,7 +444,6 @@ function fullDetectCollision(bullet){
         ennemiesMeshes[i].visible = false;
         score += ennemies[i].scorePts;
         remainingEn --;
-        console.log("collision :"+remainingEn);
         explosionAudio();
 
       }

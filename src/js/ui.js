@@ -53,7 +53,7 @@ function onDocumentKeyUp(event) {
   //var keyCode = event.key;
   switch (event.key) {
     case "Tab":
-      resetLife();
+      scene.fog.color.set(0x0000ff);
       break;
     case "1":
       chaseCameraActive = true;

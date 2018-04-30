@@ -198,15 +198,13 @@ function initGraphics(){
 
   //show fps
   stats = new Stats();
-  //stats.domElement.style.position = 'absolute';
   stats.domElement.style.top = '10px';
   container.appendChild( stats.domElement );
-  //document.getElementById('container').appendChild( stats.domElement);
   //Light
   light = new THREE.AmbientLight( 0x404040 ); // soft white light
   scene.add( light );
   // White directional light at 70% intensity shining from the top.
-  directionalLight = new THREE.DirectionalLight( 0xffffff, 1 );
+  directionalLight = new THREE.DirectionalLight( 0xBDE9E3, 1 );
   directionalLight.position.set(0,-30,10);
   //directionalLight.lookAt(vectLook);
   var lightHelper = new THREE.DirectionalLightHelper(directionalLight, 5);
@@ -214,13 +212,13 @@ function initGraphics(){
   //scene.add(lightHelper);
 
   //Fog
-  scene.fog = new THREE.FogExp2( 0x0000ff, 0.0035);
+  scene.fog = new THREE.FogExp2( 0x21f0d6, 0.004);
 
   function addObjects(scene) {
          //var geometry = new THREE.IcosahedronGeometry(30, 5);
-         var geometry = new THREE.CylinderGeometry( 20, 40, 300, 32, 1, true);
+         var geometry = new THREE.CylinderGeometry( 10, 49, 295, 32, 32, true);
 
-         var material = new THREE.MeshStandardMaterial({ color: "#444", transparent: true, side: THREE.DoubleSide, alphaTest: 0.5, opacity: 0.9, roughness: 1 });
+         var material = new THREE.MeshStandardMaterial({ color: "#000000", transparent: true, side: THREE.DoubleSide, alphaTest: 0.5, opacity: 0.9, roughness: 1 });
 
          // this image is loaded as data uri. Just copy and paste the string contained in "image.src" in your browser's url bar to see the image.
          // alpha texture used to regulate transparency
@@ -248,13 +246,25 @@ function initGraphics(){
   var runnerTexture = new THREE.ImageUtils.loadTexture( 'src/medias/images/tunnel.jpg' );
   anima = new TextureAnimator( runnerTexture, 8, 8, 64, settings.animaSpeed ); // texture, #horiz, #vert, #total, duration.
   //CylinderGeometry(radiusTop, radiusBottom, height, radialSegments, heightSegments, openEnded, thetaStart, thetaLength)
-  var geometry = new THREE.CylinderGeometry( 20, 50, 300, 32, 1, true);
+  var geometry = new THREE.CylinderGeometry( 10, 50, 300, 32, 32, true);
   //var geometry = new THREE.SphereBufferGeometry(150, 60, 40);
   var material = new THREE.MeshBasicMaterial( {map: runnerTexture, side:THREE.BackSide} );
   var cylinder = new THREE.Mesh( geometry, material );
   cylinder.position.setY(100);
   scene.add( cylinder );
 
+  //world color
+  /*var tubeEnd = new THREE.Mesh(new THREE.BoxGeometry( 100,10,100 ), new THREE.MeshPhongMaterial({color: 0x000000, emmissive: 0x000000 , emmissiveIntensity:1}));
+  tubeEnd.position.set(0,-55,0);
+  scene.add(tubeEnd);*/
+  var spriteMap = new THREE.TextureLoader().load( 'src/medias/images/alphaWall.png' );
+  var spriteMaterial = new THREE.SpriteMaterial( { map: spriteMap, color: 0xdadada } );
+  var sprite = new THREE.Sprite( spriteMaterial );
+  sprite.scale.set(100, 100, 1);
+  sprite.position.set(0,250,0);
+  scene.add( sprite );
+
+  scene.background = new THREE.Color(0x000000);
 };
 
 
