@@ -11,12 +11,13 @@ var loader = new THREE.ObjectLoader();
 var geoLoader = new THREE.BufferGeometryLoader();
 
 //CHARACTERS
-var xZoneLimit = 20, yZoneLimit = 40;
+var xZoneLimit = 22, yZoneLimit = 40;
 var ennemiesMeshes = [], mixers = []; //mixers for animations
 var playerMesh, playerMixer;
 var wallsMeshes = [];
 var leftArrowPushed = false, rightArrowPushed = false, spaceBarPushed = false;
 var player, ennemies = [], bullets = [], walls = [];
+var remainingEn = 40;
 var score = 0;
 var invincibility = false;
 var groupEnnemies = new THREE.Group();
@@ -283,6 +284,11 @@ function animate(){
     playerMove();
     bulletsMove();
     ennemiesMove();
+    if (remainingEn <= 0) {
+      remainingEn++;
+      console.log("next leveling:"+remainingEn);
+      nextLevel();
+    }
     /*TODO uncomment to allow animation
     var delta = 100* clockTex.getDelta();
     for (var i=0;i<mixers.length;i++){

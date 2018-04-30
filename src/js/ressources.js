@@ -9,7 +9,7 @@ function initGui(){
   var folder4 = gui.addFolder( 'Camera');
 
   folder1.add(settings, "playerMoveSpeed", 0, 2).step(0.1);
-  folder1.add(settings, "lifePoints", 0, 100).step(1).listen();
+  folder1.add(settings, "lifePoints", 0, 100).step(1).listen().onFinishChange(function(){resetLife();});
   folder1.add(settings, "reloadDelay", 0, 2).step(0.05);
   folder2.add(settings, "ennemyMoveSpeed", 0, 2).step(0.1);
   folder2.add(settings, "shootFrequ", 0, 2000).step(1);
@@ -72,6 +72,10 @@ function nextLevel(){
         document.getElementById('info').style.display = "none";
         positionLevel1();
         settings.level = 1;
+        //settings.shootFrequ =
+        //settings.ennemyMoveSpeed =
+        settings.lifePoints = 3;
+        resetLife();
       }, 2000);
       break;
     case 1:
@@ -81,6 +85,8 @@ function nextLevel(){
         document.getElementById('info').style.display = "none";
         positionLevel2();
         settings.level = 2;
+        //settings.shootFrequ =
+        //settings.ennemyMoveSpeed =
       }, 2000);
       break;
     case 2:
@@ -118,13 +124,21 @@ function positionLevel1(){
       n++;
     }
   }
+  remainingEn = ennemies.length;
 }
 function positionLevel2(){
-  var n=0, i=0, j=0;
+  var n=0, i=0, j=0, k=0, p=3;
   for (var j=0; j< 5; j++) {
+    k=0; p=0;
     for (var i=0; i< 8; i++){
-      ennemies[n].hitbox.position.set(i*3-10, j*3+5, 0);
-      ennemiesMeshes[n].position.set(i*3-10, j*3+5, 0);
+      if (i>3) {
+        k=5;
+        if (i>4) p += 3;
+      } else {
+        p -= 3;
+      }
+      ennemies[n].hitbox.position.set(i*3-10 + k, j*3+5 + p, 0);
+      ennemiesMeshes[n].position.set(i*3-10 + k, j*3+5 + p, 0);
       ennemies[n].daWae = vectUp;
       ennemies[n].alive = true;
       ennemies[n].hitbox.visible = true;
@@ -132,6 +146,7 @@ function positionLevel2(){
       n++;
     }
   }
+  remainingEn = ennemies.length;
 }
 function positionLevel3(){
   var n=0, i=0, j=0;
@@ -146,6 +161,7 @@ function positionLevel3(){
       n++;
     }
   }
+  remainingEn = ennemies.length;
 }
 function PlayerCharacter(x,y,z){
   /*TODO loader.load("src/medias/models/necro-book-decimated.json", function(obj){
@@ -383,7 +399,6 @@ function updateBoundingBoxes(){
 
 //detect collision between two hitboxes and end of the level
 function fullDetectCollision(bullet){
-  var deadEnnemies = 0;
   var index = bullet.index;
   if (bullet.hitbox.position.y <= -10){ //collision between bullets and walls
     for (var i = 0; i < walls.length; i++) {
@@ -405,12 +420,11 @@ function fullDetectCollision(bullet){
       collisionParticle[index].explosion = 599;
       bullet.alive = false;
       bullet.hitbox.position.setZ(15);
-      if (!invincibility) settings.lifePoints--;
-      glitching = true;
-      explosionAudio();
-      if (settings.lifePoints <= 0) {
-        gameOver();
+      if (!invincibility) {
+        glitching = true;
+        decreaseLife();
       }
+      explosionAudio();
     }
   }
   else {
@@ -425,11 +439,10 @@ function fullDetectCollision(bullet){
         ennemies[i].alive = false;
         ennemiesMeshes[i].visible = false;
         score += ennemies[i].scorePts;
+        remainingEn --;
+        console.log("collision :"+remainingEn);
         explosionAudio();
-        for (var j=0; j<ennemies.length; j++){ //Go to the next level if all ennemies are dead
-          if (!ennemies[j].alive) deadEnnemies++;
-          if (deadEnnemies === ennemies.length) nextLevel();
-        }
+
       }
     }
     for (var i=0; i<bullets.length; i++){ //collision between bullets
@@ -450,6 +463,7 @@ function fullDetectCollision(bullet){
     }
   }
 }
+
 function explosionAudio(){
   if (!explosionSfx2.isPlaying) explosionSfx2.play();
   else if (!explosionSfx.isPlaying) explosionSfx.play();
@@ -488,10 +502,8 @@ function animaEnnemies(){
 
 //AI of the ennemies
 function ennemiesMove(){
-  //var endLevel = true;
   for (var i=0; i<ennemies.length; i++){
     if (ennemies[i].alive){//ennemy is alive
-      //endLevel = false;
       //game over if ennemies arrives to the walls
       if(ennemies[i].hitbox.position.y <= walls[0].hitbox.position.y){
         gameOver();
@@ -505,8 +517,8 @@ function ennemiesMove(){
         if (ennemies[i].hitbox.position.x > xZoneLimit) {
           ennemies[i].daWae = vectDown;
           if (!invincibility) {
-            ennemies[i].hitbox.position.y -= 2;
-            ennemiesMeshes[i].position.y -= 2;
+            ennemies[i].hitbox.position.y -= 3;
+            ennemiesMeshes[i].position.y -= 3;
           }
         }
       }
@@ -516,14 +528,13 @@ function ennemiesMove(){
         if (ennemies[i].hitbox.position.x < -xZoneLimit) {
           ennemies[i].daWae = vectUp;
           if (!invincibility){
-            ennemies[i].hitbox.position.y -= 2;
-            ennemiesMeshes[i].position.y -= 2;
+            ennemies[i].hitbox.position.y -= 3;
+            ennemiesMeshes[i].position.y -= 3;
           }
         }
       }
     }
   }
-  //if (endLevel) nextLevel();
 }
 
 //summon a bullet at the position
@@ -571,12 +582,16 @@ function bomb(){
 
 function nuke(){
   var vectPos = new THREE.Vector3(0,0,0);
+  var oldScore = score;
   for (var i=0; i<ennemies.length; i++){
     vectPos.set(ennemies[i].hitbox.position.x,
                 ennemies[i].hitbox.position.y-1,
                 ennemies[i].hitbox.position.z,
     );
     shoot(vectUp, vectPos);
+    setTimeout(function(){
+      score = oldScore;
+    }, 100);
   }
 }
 

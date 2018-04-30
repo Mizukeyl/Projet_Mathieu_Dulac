@@ -11,7 +11,8 @@ function onDocumentKeyDown(event) {
   switch (event.key) {
     case "Tab":
       //animaEnnemies();
-      microgravity.play();
+      //microgravity.play();
+
       break;
     case " ":
       spaceBarPushed = true;
@@ -52,7 +53,7 @@ function onDocumentKeyUp(event) {
   //var keyCode = event.key;
   switch (event.key) {
     case "Tab":
-      spaceBarPushed = false;
+      resetLife();
       break;
     case "1":
       chaseCameraActive = true;
@@ -132,7 +133,29 @@ function pauseGame(){
     pause = true;
   }
 }
-
+function decreaseLife(){
+  var elem = document.getElementById('life');
+  elem.removeChild(elem.lastChild);
+  settings.lifePoints--;
+  if (settings.lifePoints <= 0) {
+    gameOver();
+  }
+}
+function resetLife(){
+  var elem = document.getElementById('life');
+  console.log("healing");
+  while (elem.firstChild) {
+    elem.removeChild(elem.firstChild);
+  }
+  //if (elem.childElementCount === 0){
+    for (var i=0; i<settings.lifePoints; i++){
+      var img = document.createElement("img");
+      img.setAttribute("src", "src/medias/images/heart.gif");
+      img.setAttribute("alt", "Heart");
+      document.getElementById("life").appendChild(img);
+    }
+  //}
+}
 
 function muteMusic(){
   console.log("muting :"+document.getElementById('muteMusic').style.color);

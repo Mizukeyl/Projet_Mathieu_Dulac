@@ -65,43 +65,42 @@
 
   <div id="container"></div>
   <div id="titleScreen">
-    <h1> Main menu </h1>
-    <div id="startGame" class="pauseMenuButton" onmouseover="this.style.background='gray';" onmouseout="this.style.background='#E7E5F6';"
-    onclick="startGame()">
-      <h2>Start Game</h2>
-    </div>
+      <h1> Main menu </h1>
+      <div id="startGame" class="pauseMenuButton" onmouseover="this.style.background='gray';" onmouseout="this.style.background='#E7E5F6';"
+      onclick="startGame()">
+        <h2>Start Game</h2>
+      </div>
   </div>
   <div id="pauseMenu">
-    <h1> Pause Menu </h1>
-    <div id="muteMusic" class="pauseMenuButton" onmouseover="this.style.background='gray';" onmouseout="this.style.background='#E7E5F6';"
-    onclick="muteMusic()">
-      <h2>Mute Music</h2>
-    </div>
-    <div id="hotkeys" class="pauseMenuButton" onmouseover="this.style.background='gray';" onmouseout="this.style.background='#E7E5F6';"
-    onclick="hotkeys()">
-      <h2>Show Hotkeys</h2>
-    </div>
-    <div id="cameraControl" class="pauseMenuButton" onmouseover="this.style.background='gray';" onmouseout="this.style.background='#E7E5F6';"
-     onclick="cameraControl()">
-      <h2>Enable/Disable OrbitControls </h2>
-    </div>
-    <div id="guiHide" class="pauseMenuButton" onmouseover="this.style.background='gray';" onmouseout="this.style.background='#E7E5F6';"
-    onclick="guiHide()">
-      <h2>Show developer options </h2>
-    </div>
+      <h1> Pause Menu </h1>
+      <div id="muteMusic" class="pauseMenuButton" onmouseover="this.style.background='gray';" onmouseout="this.style.background='#E7E5F6';"
+      onclick="muteMusic()">
+        <h2>Mute Music</h2>
+      </div>
+      <div id="hotkeys" class="pauseMenuButton" onmouseover="this.style.background='gray';" onmouseout="this.style.background='#E7E5F6';"
+      onclick="hotkeys()">
+        <h2>Show Hotkeys</h2>
+      </div>
+      <div id="cameraControl" class="pauseMenuButton" onmouseover="this.style.background='gray';" onmouseout="this.style.background='#E7E5F6';"
+      onclick="cameraControl()">
+        <h2>Enable/Disable OrbitControls </h2>
+      </div>
+      <div id="guiHide" class="pauseMenuButton" onmouseover="this.style.background='gray';" onmouseout="this.style.background='#E7E5F6';"
+      onclick="guiHide()">
+        <h2>Show developer options </h2>
+      </div>
   </div>
   <div id="hud" style="display:block">
-    <div id="guiContainer"></div>
-    <div id="score"> Score :
-      <span id="scorePts"> 0</span>
-    </div>
-    <div id="info">Game Over <br/>
-      <div class="pauseMenuButton" onmouseover="this.style.background='gray';" onmouseout="this.style.background='#E7E5F6';"
-      OnClick="restartGame()">
-        <h2>Restart Game</h2>
+      <div id="guiContainer"></div>
+      <div id="score"> Score :
+          <span id="scorePts"> 0</span>
       </div>
-    </div>
-    <div id="help">
+      <div id="info">Game Over <br/>
+          <div class="pauseMenuButton" onmouseover="this.style.background='gray';" onmouseout="this.style.background='#E7E5F6';" OnClick="restartGame()">
+            <h2>Restart Game</h2>
+          </div>
+      </div>
+      <div id="help">
        <b>List of keys</b> <br/><br/>
        H - show hotkeys<br/>
        S - start/pause game <br/>
@@ -110,7 +109,10 @@
        F - fullScreen <br/>
        I - invincibility <br/>
        K - kill all ennemies <br/>
-     </div>
+      </div>
+      <div id="life">
+
+      </div>
   </div>
   <div id="speedAnim"></div>
 
