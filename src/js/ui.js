@@ -166,10 +166,12 @@ function showBossLife(){
       img.setAttribute("alt", "Heart");
       document.getElementById("bossLife").appendChild(img);
     }
-    var name = document.createElement("div");
-    name.innerHTML = "Boss";
-    document.getElementById("bossLife").appendChild(name);
-}
+    if (boss.lifePoints >0){
+      var name = document.createElement("div");
+      name.innerHTML = "Boss";
+      document.getElementById("bossLife").appendChild(name);
+    }
+  }
 function muteMusic(){
   console.log("muting :"+document.getElementById('muteMusic').style.color);
   if (!isMusicMuted){

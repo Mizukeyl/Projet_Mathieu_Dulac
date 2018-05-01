@@ -110,6 +110,7 @@ function nextLevel(){
         fate.play();
         scene.fog.color.set(0xaaaaaa);
         settings.level = 3;
+        showBossLife();
         xZoneLimit = 20;
       }, 2500);
       break;
@@ -204,7 +205,7 @@ function BossCharacter(x,y,z){
     scene.add(bossMesh);
   });
   this.scorePts = 500;
-  this.dim = 2;
+  this.dim = 2.3;
   this.lifePoints = 10;
   this.alive = false;
   this.daWae = vectDown; //the way of the movement
@@ -212,7 +213,7 @@ function BossCharacter(x,y,z){
   this.hitbox.position.set(x,y,z);
   this.boundingBox = new THREE.Box3().setFromObject(this.hitbox);
   this.boxHelper = new THREE.Box3Helper(this.boundingBox, 0xffff00);
-  //scene.add(this.boxHelper);
+  scene.add(this.boxHelper);
   //bossMesh = new THREE.Mesh(new THREE.BoxGeometry( this.dim, this.dim, this.dim ), new THREE.MeshBasicMaterial({color: 0xff00ff}));
   //bossMesh.position.set(x,y,z);
   //scene.add(bossMesh);
@@ -490,12 +491,14 @@ function fullDetectCollision(bullet){
         boss.alive = false;
         bossMesh.visible = false;
         score += boss.scorePts;
-        remainingEn --;
+        //remainingEn = 0;
+        nuke();
+
       } else {
         //spawnEnnemy(boss.hitbox.position.x,boss.hitbox.position.y-3,boss.hitbox.position.z, vectDown);
         //spawnEnnemy(boss.hitbox.position.x+3,boss.hitbox.position.y-3,boss.hitbox.position.z, vectDown);
-
         spawnEnnemies(boss.hitbox.position.x,boss.hitbox.position.y,boss.hitbox.position.z);
+        showBossLife();
       }
     }
     for (var i=0; i<bullets.length; i++){ //collision between bullets

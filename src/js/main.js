@@ -256,10 +256,10 @@ function initGraphics(){
   /*var tubeEnd = new THREE.Mesh(new THREE.BoxGeometry( 100,10,100 ), new THREE.MeshPhongMaterial({color: 0x000000, emmissive: 0x000000 , emmissiveIntensity:1}));
   tubeEnd.position.set(0,-55,0);
   scene.add(tubeEnd);*/
-  var spriteMap = new THREE.TextureLoader().load( 'src/medias/images/alphaWall.png' );
+  var spriteMap = new THREE.TextureLoader().load( 'src/medias/images/sprite.png' );
   var spriteMaterial = new THREE.SpriteMaterial( { map: spriteMap, color: 0xdadada } );
   sprite = new THREE.Sprite( spriteMaterial );
-  sprite.scale.set(100, 100, 1);
+  sprite.scale.set(30, 30, 1);
   sprite.position.set(0,250,0);
   scene.add( sprite );
 
