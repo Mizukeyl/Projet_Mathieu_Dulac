@@ -51,6 +51,7 @@ function initObjects(nbColumns, nbLines){
   initBullets(50);
   initEnnemies(nbColumns,nbLines);
   player = new PlayerCharacter(0,-35,0);
+  boss = new BossCharacter(0, 200, 0);
   initWalls(5);
   //scene.add( groupEnnemies ); //hitbox
   //scene.add( player.hitbox );
@@ -69,6 +70,7 @@ function nextLevel(){
       elem.innerHTML = "Loading 25%";
       elem.style.display = "block";
       setTimeout(function(){
+        moveScene = false;
         document.getElementById('info').style.display = "none";
         positionLevel1();
         scene.fog.color.set(0x0000ff);
@@ -83,6 +85,7 @@ function nextLevel(){
       elem.innerHTML = "Loading 50%";
       elem.style.display = "block";
       setTimeout(function(){
+        moveScene = false;
         document.getElementById('info').style.display = "none";
         positionLevel2();
         scene.fog.color.set(0xB60044);
@@ -95,10 +98,10 @@ function nextLevel(){
       elem.innerHTML = "Loading 75%";
       elem.style.display = "block";
       setTimeout(function(){
+        moveScene = false;
         document.getElementById('info').style.display = "none";
         positionLevel3();
         scene.fog.color.set(0xaaaaaa);
-
         settings.level = 3;
       }, 2500);
       break;
@@ -106,6 +109,7 @@ function nextLevel(){
       elem.innerHTML = "Loading 99%";
       elem.style.display = "block";
       setTimeout(function(){
+        moveScene = false;
         document.getElementById('info').style.display = "none";
         //placeEnnemies();
         settings.level = 4;//game end
@@ -188,6 +192,29 @@ function PlayerCharacter(x,y,z){
   playerMesh = new THREE.Mesh(new THREE.BoxGeometry( this.dim, this.dim, this.dim ), new THREE.MeshBasicMaterial({color: 0xff00ff}));
   playerMesh.position.set(x,y,z);
   scene.add(playerMesh);
+
+}
+function BossCharacter(x,y,z){
+  /*TODO loader.load("src/medias/models/necro-book-decimated.json", function(obj){
+    obj.position.set(x,y,z);
+    //this.material = new THREE.MeshBasicMaterial({color: 0x000000});
+    playerMesh = obj;
+    //playerMesh.material.alphaMap.magFilter = THREE.NearestFilter;
+    //playerMesh.material.alphaMap.wrapT = THREE.RepeatWrapping;
+    //playerMesh.material.alphaMap.repeat.y = 1;
+    scene.add(playerMesh);
+  });*/
+  this.dim = 1;
+  this.alive = false;
+  this.daWae = vectDown; //the way of the movement
+  this.hitbox = new THREE.Mesh(new THREE.BoxGeometry( this.dim, this.dim, this.dim ), new THREE.MeshBasicMaterial({color: 0xff00ff}));
+  this.hitbox.position.set(x,y,z);
+  this.boundingBox = new THREE.Box3().setFromObject(this.hitbox);
+  this.boxHelper = new THREE.Box3Helper(this.boundingBox, 0xffff00);
+
+  bossMesh = new THREE.Mesh(new THREE.BoxGeometry( this.dim, this.dim, this.dim ), new THREE.MeshBasicMaterial({color: 0xff00ff}));
+  bossMesh.position.set(x,y,z);
+  scene.add(bossMesh);
 
 }
 //add characters

@@ -6,17 +6,17 @@ var light, directionalLight;
 var gui = new dat.GUI( {hideable: false},{width: 350});
 document.getElementById('guiContainer').appendChild(gui.domElement);
 var anima; //textures animators
-var alphaMesh;
+var alphaMesh, sprite, cylinder, moveScene = false;
 var loader = new THREE.ObjectLoader();
 var geoLoader = new THREE.BufferGeometryLoader();
 
 //CHARACTERS
 var xZoneLimit = 22, yZoneLimit = 40;
 var ennemiesMeshes = [], mixers = []; //mixers for animations
-var playerMesh, playerMixer;
+var playerMesh, bossMesh, playerMixer, bossMixer;
 var wallsMeshes = [];
 var leftArrowPushed = false, rightArrowPushed = false, spaceBarPushed = false;
-var player, ennemies = [], bullets = [], walls = [];
+var player, boss, ennemies = [], bullets = [], walls = [];
 var remainingEn = 40;
 var score = 0;
 var invincibility = false;
@@ -249,7 +249,7 @@ function initGraphics(){
   var geometry = new THREE.CylinderGeometry( 10, 50, 300, 32, 32, true);
   //var geometry = new THREE.SphereBufferGeometry(150, 60, 40);
   var material = new THREE.MeshBasicMaterial( {map: runnerTexture, side:THREE.BackSide} );
-  var cylinder = new THREE.Mesh( geometry, material );
+  cylinder = new THREE.Mesh( geometry, material );
   cylinder.position.setY(100);
   scene.add( cylinder );
 
@@ -259,7 +259,7 @@ function initGraphics(){
   scene.add(tubeEnd);*/
   var spriteMap = new THREE.TextureLoader().load( 'src/medias/images/alphaWall.png' );
   var spriteMaterial = new THREE.SpriteMaterial( { map: spriteMap, color: 0xdadada } );
-  var sprite = new THREE.Sprite( spriteMaterial );
+  sprite = new THREE.Sprite( spriteMaterial );
   sprite.scale.set(100, 100, 1);
   sprite.position.set(0,250,0);
   scene.add( sprite );
@@ -297,7 +297,13 @@ function animate(){
     if (remainingEn <= 0) {
       remainingEn++;
       console.log("next leveling:"+remainingEn);
+      moveScene = true;
       nextLevel();
+    }
+    if (moveScene) {
+      sprite.position.y -= 1;
+      cylinder.position.y -= 1;
+      alphaMesh.position.y -= 1;
     }
     /*TODO uncomment to allow animation
     var delta = 100* clockTex.getDelta();
@@ -308,7 +314,6 @@ function animate(){
     */
     document.getElementById('scorePts').innerHTML = score;
   }
-  //raycaster.set( player.hitbox.position, vectUp);
 
   stats.update();
   renderGlitch();
