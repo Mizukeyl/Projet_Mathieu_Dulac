@@ -6,7 +6,7 @@ var light, directionalLight;
 var gui = new dat.GUI( {hideable: false},{width: 350});
 document.getElementById('guiContainer').appendChild(gui.domElement);
 var anima; //textures animators
-var alphaMesh, sprite, cylinder, moveScene = false;
+var alphaMesh, sprite, cylinder, moveScene = 0;
 var loader = new THREE.ObjectLoader();
 var geoLoader = new THREE.BufferGeometryLoader();
 
@@ -85,10 +85,9 @@ THREE.DefaultLoadingManager.onLoad = function ( ) {
 
 //INIT FUNCTIONS
 initGraphics(); //and audio
-
-
 initGui();
 initObjects(8,5);
+
 //placeEnnemies();
 
 
@@ -153,17 +152,17 @@ function initGraphics(){
   audioLoader.load( 'src/medias/sounds/Shoot.mp3', function( buffer ) {
     shootSfx.setBuffer( buffer );
     shootSfx.setLoop(false);
-    shootSfx.setVolume(1.0);
+    shootSfx.setVolume(0.5);
   });
   audioLoader.load( 'src/medias/sounds/Shoot2.mp3', function( buffer ) {
     shootSfx2.setBuffer( buffer );
     shootSfx2.setLoop(false);
-    shootSfx2.setVolume(1.0);
+    shootSfx2.setVolume(0.5);
   });
   audioLoader.load( 'src/medias/sounds/Shoot3.mp3', function( buffer ) {
     shootSfx3.setBuffer( buffer );
     shootSfx3.setLoop(false);
-    shootSfx3.setVolume(1.0);
+    shootSfx3.setVolume(0.5);
   });
   audioLoader.load( 'src/medias/sounds/dejavu.mp3', function( buffer ) {
     dejavu.setBuffer( buffer );
@@ -178,17 +177,17 @@ function initGraphics(){
   audioLoader.load( 'src/medias/sounds/Exploz.mp3', function( buffer ) {
     explosionSfx.setBuffer( buffer );
     explosionSfx.setLoop(false);
-    explosionSfx.setVolume(0.3);
+    explosionSfx.setVolume(0.1);
   });
   audioLoader.load( 'src/medias/sounds/Exploz2.mp3', function( buffer ) {
     explosionSfx2.setBuffer( buffer );
     explosionSfx2.setLoop(false);
-    explosionSfx2.setVolume(0.3);
+    explosionSfx2.setVolume(0.1);
   });
   audioLoader.load( 'src/medias/sounds/Exploz3.mp3', function( buffer ) {
     explosionSfx3.setBuffer( buffer );
     explosionSfx3.setLoop(false);
-    explosionSfx3.setVolume(0.3);
+    explosionSfx3.setVolume(0.1);
   });
   audioLoader.load( 'src/medias/sounds/Organoid_-_02_-_Microgravity.mp3', function( buffer ) {
     microgravity.setBuffer( buffer );
@@ -268,8 +267,6 @@ function initGraphics(){
 };
 
 
-
-
 //////////////////////////////////////////////////////////////////////////////////
 //		render the whole thing on the page
 //////////////////////////////////////////////////////////////////////////////////
@@ -294,24 +291,26 @@ function animate(){
     playerMove();
     bulletsMove();
     ennemiesMove();
+    bossMove();
     if (remainingEn <= 0) {
       remainingEn++;
       console.log("next leveling:"+remainingEn);
-      moveScene = true;
       nextLevel();
     }
-    if (moveScene) {
+    if (moveScene > 0) {
       sprite.position.y -= 1;
       cylinder.position.y -= 1;
       alphaMesh.position.y -= 1;
+      moveScene--;
     }
-    /*TODO uncomment to allow animation
+    /*TODO uncomment to allow animation*/
     var delta = 100* clockTex.getDelta();
     for (var i=0;i<mixers.length;i++){
       mixers[i].update(delta);
     }
     playerMixer.update(delta);
-    */
+    bossMixer.update(delta);
+
     document.getElementById('scorePts').innerHTML = score;
   }
 

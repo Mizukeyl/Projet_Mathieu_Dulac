@@ -51,7 +51,7 @@ function initObjects(nbColumns, nbLines){
   initBullets(50);
   initEnnemies(nbColumns,nbLines);
   player = new PlayerCharacter(0,-35,0);
-  boss = new BossCharacter(0, 200, 0);
+  boss = new BossCharacter(0, 100, 0);
   initWalls(5);
   //scene.add( groupEnnemies ); //hitbox
   //scene.add( player.hitbox );
@@ -69,12 +69,15 @@ function nextLevel(){
     case 0:
       elem.innerHTML = "Loading 25%";
       elem.style.display = "block";
+      moveScene = 50;
       setTimeout(function(){
-        moveScene = false;
         document.getElementById('info').style.display = "none";
         positionLevel1();
         scene.fog.color.set(0x0000ff);
+        if (fate.isPlaying) fate.stop();
+        microgravity.play();
         settings.level = 1;
+        xZoneLimit = 22;
         settings.shootFrequ = 800;
         settings.ennemyMoveSpeed = 0.1;
         settings.lifePoints = 3;
@@ -84,32 +87,37 @@ function nextLevel(){
     case 1:
       elem.innerHTML = "Loading 50%";
       elem.style.display = "block";
+      moveScene = 50;
       setTimeout(function(){
-        moveScene = false;
         document.getElementById('info').style.display = "none";
         positionLevel2();
         scene.fog.color.set(0xB60044);
+        microgravity.stop();
+        dejavu.play();
         settings.level = 2;
         settings.shootFrequ = 400;
-        settings.ennemyMoveSpeed = 0.15;
+        settings.ennemyMoveSpeed = 0.1;
       }, 2500);
       break;
     case 2:
       elem.innerHTML = "Loading 75%";
       elem.style.display = "block";
+      moveScene = 50;
       setTimeout(function(){
-        moveScene = false;
         document.getElementById('info').style.display = "none";
         positionLevel3();
+        dejavu.stop();
+        fate.play();
         scene.fog.color.set(0xaaaaaa);
         settings.level = 3;
+        xZoneLimit = 20;
       }, 2500);
       break;
     case 3:
       elem.innerHTML = "Loading 99%";
       elem.style.display = "block";
+      moveScene = 50;
       setTimeout(function(){
-        moveScene = false;
         document.getElementById('info').style.display = "none";
         //placeEnnemies();
         settings.level = 4;//game end
@@ -145,8 +153,8 @@ function positionLevel2(){
       } else {
         p -= 3;
       }
-      ennemies[n].hitbox.position.set(i*3-10 + k, j*3+5 + p, 0);
-      ennemiesMeshes[n].position.set(i*3-10 + k, j*3+5 + p, 0);
+      ennemies[n].hitbox.position.set(i*3-10 + k, j*3+10 + p, 0);
+      ennemiesMeshes[n].position.set(i*3-10 + k, j*3+10 + p, 0);
       ennemies[n].daWae = vectUp;
       ennemies[n].alive = true;
       ennemies[n].hitbox.visible = true;
@@ -157,22 +165,15 @@ function positionLevel2(){
   remainingEn = ennemies.length;
 }
 function positionLevel3(){
-  var n=0, i=0, j=0;
-  for (var j=0; j< 5; j++) {
-    for (var i=0; i< 8; i++){
-      ennemies[n].hitbox.position.set(i*3-10, j*3+5, 0);
-      ennemiesMeshes[n].position.set(i*3-10, j*3+5, 0);
-      ennemies[n].daWae = vectUp;
-      ennemies[n].alive = true;
-      ennemies[n].hitbox.visible = true;
-      ennemiesMeshes[n].visible = true;
-      n++;
-    }
-  }
+  boss.hitbox.position.set(0,0,0);
+  bossMesh.position.set(0,0,0);
+  boss.alive = true;
+  bossMesh.visible = true;
+
   remainingEn = ennemies.length;
 }
 function PlayerCharacter(x,y,z){
-  /*TODO loader.load("src/medias/models/necro-book-decimated.json", function(obj){
+   loader.load("src/medias/models/necro-book-decimated.json", function(obj){
     obj.position.set(x,y,z);
     //this.material = new THREE.MeshBasicMaterial({color: 0x000000});
     playerMesh = obj;
@@ -180,52 +181,52 @@ function PlayerCharacter(x,y,z){
     //playerMesh.material.alphaMap.wrapT = THREE.RepeatWrapping;
     //playerMesh.material.alphaMap.repeat.y = 1;
     scene.add(playerMesh);
-  });*/
-  this.dim = 1;
+  });
+  this.dim = 1.2;
   this.alive = true;
   this.daWae = vectUp; //the way of the movement
   this.hitbox = new THREE.Mesh(new THREE.BoxGeometry( this.dim, this.dim, this.dim ), new THREE.MeshBasicMaterial({color: 0xff00ff}));
   this.hitbox.position.set(x,y,z);
   this.boundingBox = new THREE.Box3().setFromObject(this.hitbox);
   this.boxHelper = new THREE.Box3Helper(this.boundingBox, 0xffff00);
+  //scene.add(this.boxHelper);
 
-  playerMesh = new THREE.Mesh(new THREE.BoxGeometry( this.dim, this.dim, this.dim ), new THREE.MeshBasicMaterial({color: 0xff00ff}));
-  playerMesh.position.set(x,y,z);
-  scene.add(playerMesh);
+  //playerMesh = new THREE.Mesh(new THREE.BoxGeometry( this.dim, this.dim, this.dim ), new THREE.MeshBasicMaterial({color: 0xff00ff}));
+  //playerMesh.position.set(x,y,z);
+  //scene.add(playerMesh);
 
 }
 function BossCharacter(x,y,z){
-  /*TODO loader.load("src/medias/models/necro-book-decimated.json", function(obj){
+  loader.load("src/medias/models/eden-book.json", function(obj){
     obj.position.set(x,y,z);
-    //this.material = new THREE.MeshBasicMaterial({color: 0x000000});
-    playerMesh = obj;
-    //playerMesh.material.alphaMap.magFilter = THREE.NearestFilter;
-    //playerMesh.material.alphaMap.wrapT = THREE.RepeatWrapping;
-    //playerMesh.material.alphaMap.repeat.y = 1;
-    scene.add(playerMesh);
-  });*/
-  this.dim = 1;
+    obj.scale.set(2,2,2);
+    bossMesh = obj;
+    scene.add(bossMesh);
+  });
+  this.scorePts = 500;
+  this.dim = 2;
+  this.lifePoints = 10;
   this.alive = false;
   this.daWae = vectDown; //the way of the movement
   this.hitbox = new THREE.Mesh(new THREE.BoxGeometry( this.dim, this.dim, this.dim ), new THREE.MeshBasicMaterial({color: 0xff00ff}));
   this.hitbox.position.set(x,y,z);
   this.boundingBox = new THREE.Box3().setFromObject(this.hitbox);
   this.boxHelper = new THREE.Box3Helper(this.boundingBox, 0xffff00);
-
-  bossMesh = new THREE.Mesh(new THREE.BoxGeometry( this.dim, this.dim, this.dim ), new THREE.MeshBasicMaterial({color: 0xff00ff}));
-  bossMesh.position.set(x,y,z);
-  scene.add(bossMesh);
+  //scene.add(this.boxHelper);
+  //bossMesh = new THREE.Mesh(new THREE.BoxGeometry( this.dim, this.dim, this.dim ), new THREE.MeshBasicMaterial({color: 0xff00ff}));
+  //bossMesh.position.set(x,y,z);
+  //scene.add(bossMesh);
 
 }
 //add characters
 function Character(m,model3D,scorePts, x,y,z){
 
-  /*TODO loader.load(model3D, function(obj){
+  loader.load(model3D, function(obj){
     obj.position.set(x,y,z);
     ennemiesMeshes[m] = obj;
     scene.add(ennemiesMeshes[m]);
     //m++;
-  });*/
+  });
   this.scorePts = scorePts;
   this.dim = 1;
   this.alive = false;
@@ -235,10 +236,11 @@ function Character(m,model3D,scorePts, x,y,z){
   this.boundingBox = new THREE.Box3().setFromObject(this.hitbox);
   this.boxHelper = new THREE.Box3Helper(this.boundingBox, 0xffff00);
   //scene.add(this.boxHelper);
-  var obj = new THREE.Mesh(new THREE.BoxGeometry( this.dim, this.dim, this.dim ), new THREE.MeshBasicMaterial({color: 0xff00ff}));
-  obj.position.set(x,y,z);
-  ennemiesMeshes[m] = obj;
-  scene.add(ennemiesMeshes[m]);
+
+  //var obj = new THREE.Mesh(new THREE.BoxGeometry( this.dim, this.dim, this.dim ), new THREE.MeshBasicMaterial({color: 0xff00ff}));
+  //obj.position.set(x,y,z);
+  //ennemiesMeshes[m] = obj;
+  //scene.add(ennemiesMeshes[m]);
 
 };
 //add bullets
@@ -278,13 +280,13 @@ function Wall(n, x,y,z, yHit,zHit){
 function initWalls(nbColumns){
   var n = 0;
   for (var i=0; i<nbColumns; i++){
-    walls[n  ] = new Wall(n  , (i*10-20)    , -20, 0  ,   -20, 0);
-    walls[n+1] = new Wall(n+1, (i*10-20)-1.0, -20, 0  ,   -21, 0);
-    walls[n+2] = new Wall(n+2, (i*10-20)+1.0, -20, 0  ,   -19, 0);
-    walls[n+3] = new Wall(n+3, (i*10-20)-0.5, -20, 0+1,   -18, 0);
-    walls[n+4] = new Wall(n+4, (i*10-20)+0.5, -20, 0+1,   -17, 0);
-    walls[n+5] = new Wall(n+5, (i*10-20)-0.5, -20, 0-1,   -22, 0);
-    walls[n+6] = new Wall(n+6, (i*10-20)+0.5, -20, 0-1,   -23, 0);
+    walls[n  ] = new Wall(n  , (i*10-20)    , -23, 0  ,   -23, 0);
+    walls[n+1] = new Wall(n+1, (i*10-20)-1.0, -23, 0  ,   -24, 0);
+    walls[n+2] = new Wall(n+2, (i*10-20)+1.0, -23, 0  ,   -22, 0);
+    walls[n+3] = new Wall(n+3, (i*10-20)-0.5, -23, 0+1,   -20, 0);
+    walls[n+4] = new Wall(n+4, (i*10-20)+0.5, -23, 0+1,   -19, 0);
+    walls[n+5] = new Wall(n+5, (i*10-20)-0.5, -23, 0-1,   -25, 0);
+    walls[n+6] = new Wall(n+6, (i*10-20)+0.5, -23, 0-1,   -26, 0);
     n+=7;
   }
 }
@@ -416,6 +418,7 @@ function bulletsMove(){
 
 function updateBoundingBoxes(){
   player.boundingBox.setFromObject(player.hitbox);
+  boss.boundingBox.setFromObject(boss.hitbox);
   for (var i=0; i<ennemies.length; i++){
     ennemies[i].boundingBox.setFromObject(ennemies[i].hitbox);
   }
@@ -472,7 +475,27 @@ function fullDetectCollision(bullet){
         score += ennemies[i].scorePts;
         remainingEn --;
         explosionAudio();
+      }
+    }
+    if (bullet.boundingBox.intersectsBox(boss.boundingBox)) {//collision with boss
+      boss.lifePoints --;
+      collisionParticle[index].position.set(boss.hitbox.position.x,boss.hitbox.position.y,boss.hitbox.position.z);
+      collisionParticle[index].explosion = 599;
+      explosionAudio();
+      bullet.alive = false;
+      bullet.hitbox.position.setZ(15);
+      if (boss.lifePoints == 0){
+        boss.hitbox.visible = false;
+        boss.hitbox.position.setZ(4);
+        boss.alive = false;
+        bossMesh.visible = false;
+        score += boss.scorePts;
+        remainingEn --;
+      } else {
+        //spawnEnnemy(boss.hitbox.position.x,boss.hitbox.position.y-3,boss.hitbox.position.z, vectDown);
+        //spawnEnnemy(boss.hitbox.position.x+3,boss.hitbox.position.y-3,boss.hitbox.position.z, vectDown);
 
+        spawnEnnemies(boss.hitbox.position.x,boss.hitbox.position.y,boss.hitbox.position.z);
       }
     }
     for (var i=0; i<bullets.length; i++){ //collision between bullets
@@ -491,9 +514,33 @@ function fullDetectCollision(bullet){
         }
       }
     }
+
   }
 }
 
+function spawnEnnemy(x,y,z, direction){
+  var i=0, spawn = false;
+  while ((i<ennemies.length) && !spawn){
+    console.log('bloqué'+ i + spawn);
+    if (ennemies[i].alive == false) {
+      ennemies[i].hitbox.position.set(x,y,z);
+      ennemiesMeshes[i].position.set(x,y,z);
+      ennemies[i].daWae = direction;
+      ennemies[i].alive = true;
+      ennemies[i].hitbox.visible = true;
+      ennemiesMeshes[i].visible = true;
+      spawn = true;
+    }
+    i++;
+  }
+}
+function spawnEnnemies(x,y,z){
+  spawnEnnemy(x+3,y-2,z, vectUp);
+  spawnEnnemy(x+3,y-4,z, vectDown);
+  spawnEnnemy(x-3,y-2,z, vectUp);
+  spawnEnnemy(x-3,y-4,z, vectDown);
+
+}
 function explosionAudio(){
   if (!explosionSfx2.isPlaying) explosionSfx2.play();
   else if (!explosionSfx.isPlaying) explosionSfx.play();
@@ -527,9 +574,36 @@ function animaEnnemies(){
   }
   // TODO player animation to place somewhere else
   playerMixer = new THREE.AnimationMixer(scene);
+  bossMixer = new THREE.AnimationMixer(scene);
   playerMixer.clipAction(playerMesh.animations[0], playerMesh).play();
+  bossMixer.clipAction(bossMesh.animations[0], bossMesh).play();
 }
 
+function bossMove(){
+  if (settings.level == 3){
+    var missDirection = false;
+    if (boss.alive){
+      //gameOver if the boss arrives to the walls
+      if(boss.hitbox.position.y <= walls[0].hitbox.position.y){
+        gameOver();
+      }
+      //probability of shooting
+      if (Math.floor(Math.random()*settings.shootFrequ*2) == 0) shoot(vectDown,boss.hitbox.position);
+      //probability of changing direction
+      if (Math.floor(Math.random()*800) == 0) missDirection = true;
+      //movements
+      if (boss.daWae == vectUp) {
+        boss.hitbox.position.x += settings.ennemyMoveSpeed;
+        bossMesh.position.x += settings.ennemyMoveSpeed;
+        if ((boss.hitbox.position.x > (xZoneLimit-5)) || missDirection) boss.daWae = vectDown;
+      } else {
+        boss.hitbox.position.x -= settings.ennemyMoveSpeed;
+        bossMesh.position.x -= settings.ennemyMoveSpeed;
+        if ((boss.hitbox.position.x < (-xZoneLimit+5)) || missDirection) boss.daWae = vectUp;
+      }
+    }
+  }
+}
 //AI of the ennemies
 function ennemiesMove(){
   for (var i=0; i<ennemies.length; i++){
@@ -581,13 +655,6 @@ function shoot(direction, position){
       bullets[0].alive = false;
       bullets[0].particleOptions.position.setZ(15);
       j=0;
-      /*
-      for (var i=0; i<bullets.length; i++){ //clear all bullets
-        bullets[i].hitbox.visible = false;
-        bullets[i].hitbox.position.setZ(5);
-        bullets[i].particleOptions.position.setZ(15);
-      }
-      */
     }
   }
   bullets[j].direction = direction;

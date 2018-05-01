@@ -58,8 +58,9 @@ function onDocumentKeyUp(event) {
     case "1":
       chaseCameraActive = true;
       chaseCamera.up.set(0,0,1);
-      chaseCamera.position.set(playerMesh.position.x,playerMesh.position.y-10,playerMesh.position.z+5);
+      chaseCamera.position.set(0,playerMesh.position.y-12,playerMesh.position.z+5);
       chaseCamera.lookAt(vectLook);
+      chaseCamera.position.set(playerMesh.position.x,playerMesh.position.y-12,playerMesh.position.z+5);
       //glitching=false;
       break;
     case "2":
@@ -116,6 +117,7 @@ function gameOver(){
 }
 function startGame(){
   document.getElementById('titleScreen').style.display = "none";
+  animaEnnemies();
   settings.level = 0;
   microgravity.play();
   pauseGame();
