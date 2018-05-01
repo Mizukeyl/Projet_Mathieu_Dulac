@@ -26,14 +26,29 @@ div#loaderRess div{
   font-weight: bold;
 }
 #titleScreen{
-  z-index: 7;
-  background-color: white;
-  height: 50%;
-  width: 50%;
+  background-color: #a9b4b1;
+  color: #0e1b1f;
+  height: 60%;
+  width: 80%;
   position: fixed;
-  top: 25%;
-  left: 25%;
+  top: 20%;
+  left: 10%;
   display: block;
+  z-index: 7;
+}
+#endingScreen {
+  height: 100%;
+  width : 100%;
+  position:fixed;
+  top: 0px;
+  left: 0px;
+  opacity: 0.4;
+  background-image: url("../medias/images/endingScreen.png");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  display: none;
+  z-index: 6;
 }
 #info {
   height: 6%;
@@ -68,6 +83,25 @@ div#loaderRess div{
   color: #424242;
   opacity: 0.8;
 }
+
+.grid{
+  display: grid;
+  grid-template-columns: auto auto auto auto auto;
+  grid-gap: 10px;
+  background-color: #076165;
+  padding: 10px;
+}
+.grid > div {
+  background-color: rgba(255, 255, 255, 0.8);
+  text-align: center;
+  padding: 20px 0;
+  font-size: 30px;
+}
+.item2 {
+  grid-row-start: 1;
+  grid-row-end: 3;
+}
+
 
 #hud {
   height: 100%;
@@ -107,6 +141,7 @@ div#loaderRess div{
   display: none;
   z-index: 2;
 }
+
 #score {
   background-color: #84FFE3;
   color: #424242;
@@ -123,13 +158,26 @@ div#loaderRess div{
 #life {
   position: fixed;
   bottom: 20px;
-  right: 20px;
+  right: 35%;
   color: #424242;
   font-size: 25px;
-  opacity: 0.1;
+  opacity: 0.9;
   border-radius: 10px;
 }
-img {
+#life img {
+  width: 50px;
+  height: 50px:
+}
+#bossLife {
+  position: fixed;
+  bottom: 20px;
+  left: 35%;
+  color: #424242;
+  font-size: 25px;
+  opacity: 0.9;
+  border-radius: 10px;
+}
+#bossLife img {
   width: 50px;
   height: 50px:
 }

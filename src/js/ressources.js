@@ -73,13 +73,13 @@ function nextLevel(){
       setTimeout(function(){
         document.getElementById('info').style.display = "none";
         positionLevel1();
-        scene.fog.color.set(0x0000ff);
+        scene.fog.color.set(0x21f0d6);
         if (fate.isPlaying) fate.stop();
         microgravity.play();
         settings.level = 1;
         xZoneLimit = 22;
         settings.shootFrequ = 800;
-        settings.ennemyMoveSpeed = 0.1;
+        settings.ennemyMoveSpeed = 0.08;
         settings.lifePoints = 3;
         resetLife();
       }, 2500);
@@ -245,7 +245,7 @@ function Character(m,model3D,scorePts, x,y,z){
 };
 //add bullets
 function Bullet(index, x,y,z, direction){
-  this.scorePts = 20;
+  this.scorePts = 15;
   this.alive = false;
   this.index = index;
   this.direction = direction;

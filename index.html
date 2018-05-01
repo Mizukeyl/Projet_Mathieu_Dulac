@@ -65,11 +65,34 @@
 
   <div id="container"></div>
   <div id="titleScreen">
-      <h1> Main menu </h1>
+      <h1> Space Invaders </h1>
       <div id="startGame" class="pauseMenuButton" onmouseover="this.style.background='gray';" onmouseout="this.style.background='#E7E5F6';"
       onclick="startGame()">
         <h2>Start Game</h2>
       </div>
+      <div class="grid">
+          <div class="item1">
+              <img src="src/medias/images/collision.png" alt="collision" >
+          </div>
+          <div class="item1">
+              <img src="src/medias/images/hand painted book.png" alt="hand painted book" >
+          </div>
+          <div class="item1">
+              <img src="src/medias/images/secret tome of speculation.png" alt="secret tome of speculation" >
+          </div>
+          <div class="item1">
+              <img src="src/medias/images/book of the damned souls.png" alt="book of the damned souls" >
+          </div>
+          <div class="item1">
+              <img src="src/medias/images/magic book of eden.png" alt="magic book of eden" >
+          </div>
+          <div class="item1"> Collision between bullets :<br/>15 pts</div>
+          <div class="item1"> Spell Book :<br/>30 pts</div>
+          <div class="item1"> Secret Tome of Speculation :<br/>50 pts</div>
+          <div class="item1"> Book of the Damned Souls :<br/>100 pts</div>
+          <div class="item1"> Magic Book of Eden :<br/>500 pts</div>
+      </div>
+      <div> <h2>Developed by Mathieu Dulac</h2> </div>
   </div>
   <div id="pauseMenu">
       <h1> Pause Menu </h1>
@@ -110,11 +133,12 @@
        I - invincibility <br/>
        K - kill all ennemies <br/>
       </div>
-      <div id="life">
-
-      </div>
+      <div id="life"></div>
+      <div id="bossLife"></div>
+      
   </div>
   <div id="speedAnim"></div>
+  <div id="endingScreen"></div>
 
     <!--three.js and core lib-->
     <script src="src/lib/three.js"></script>

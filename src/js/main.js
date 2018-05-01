@@ -211,7 +211,7 @@ function initGraphics(){
   //scene.add(lightHelper);
 
   //Fog
-  scene.fog = new THREE.FogExp2( 0x21f0d6, 0.004);
+  scene.fog = new THREE.FogExp2( 0x000000, 0.004);
 
   function addObjects(scene) {
          //var geometry = new THREE.IcosahedronGeometry(30, 5);

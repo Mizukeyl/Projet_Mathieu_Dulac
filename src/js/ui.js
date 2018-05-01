@@ -53,7 +53,7 @@ function onDocumentKeyUp(event) {
   //var keyCode = event.key;
   switch (event.key) {
     case "Tab":
-      scene.fog.color.set(0x0000ff);
+      showBossLife();
       break;
     case "1":
       chaseCameraActive = true;
@@ -145,20 +145,31 @@ function decreaseLife(){
 }
 function resetLife(){
   var elem = document.getElementById('life');
-  console.log("healing");
   while (elem.firstChild) {
     elem.removeChild(elem.firstChild);
   }
-  //if (elem.childElementCount === 0){
     for (var i=0; i<settings.lifePoints; i++){
       var img = document.createElement("img");
-      img.setAttribute("src", "src/medias/images/heart.gif");
+      img.setAttribute("src", "src/medias/images/heart.png");
       img.setAttribute("alt", "Heart");
       document.getElementById("life").appendChild(img);
     }
-  //}
 }
-
+function showBossLife(){
+  var elem = document.getElementById('bossLife');
+  while (elem.firstChild) {
+    elem.removeChild(elem.firstChild);
+  }
+    for (var i=0; i<boss.lifePoints; i++){
+      var img = document.createElement("img");
+      img.setAttribute("src", "src/medias/images/bossLife.png");
+      img.setAttribute("alt", "Heart");
+      document.getElementById("bossLife").appendChild(img);
+    }
+    var name = document.createElement("div");
+    name.innerHTML = "Boss";
+    document.getElementById("bossLife").appendChild(name);
+}
 function muteMusic(){
   console.log("muting :"+document.getElementById('muteMusic').style.color);
   if (!isMusicMuted){
