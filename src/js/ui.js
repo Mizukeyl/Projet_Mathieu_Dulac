@@ -111,17 +111,62 @@ function onDocumentKeyUp(event) {
 
 
 function gameOver(){
+  var info = document.getElementById("info");
   pause=true;
-  document.getElementById("info").style.display = "block";
-  document.getElementById("info").innerHTML = "Game Over"
+  info.style.display = "block";
+  info.innerHTML = "Game Over";
+  var button = document.createElement('div');
+  button.setAttribute("class","pauseMenuButton");
+  button.setAttribute("onmouseover","this.style.background='gray';");
+  button.setAttribute("onmouseout","this.style.background='#E7E5F6';");
+  button.setAttribute("onclick","restartGame()");
+  button.innerHTML = "<h2>Restart Game</h2>";
+  info.appendChild(button);
 }
 function startGame(){
   document.getElementById('titleScreen').style.display = "none";
   animaEnnemies();
   settings.level = 0;
   microgravity.play();
-  pauseGame();
+  //pauseGame();
   nextLevel();
+}
+function restartGame(){
+  var n=0, nbColumns = 5;
+  document.getElementById('titleScreen').style.display = "block";
+  spriteBack.position.set(0,-100,0);
+  sprite.position.set(0,250,0);
+  cylinder.position.setY(100);
+  alphaMesh.position.setY(100);
+  boss.alive = false;
+  boss.hitbox.position.set(0,100,0);
+  bossMesh.position.set(0,100,0);
+  boss.lifePoints = 10;
+  showBossLife();
+  for (var i=0; i<nbColumns; i++){
+    wallsMeshes[n  ].position.set((i*10-20)    , -23, 0);
+    wallsMeshes[n+1].position.set((i*10-20)-1.0, -23, 0);
+    wallsMeshes[n+2].position.set((i*10-20)+1.0, -23, 0);
+    wallsMeshes[n+3].position.set((i*10-20)-0.5, -23, 0+1);
+    wallsMeshes[n+4].position.set((i*10-20)+0.5, -23, 0+1);
+    wallsMeshes[n+5].position.set((i*10-20)-0.5, -23, 0-1);
+    wallsMeshes[n+6].position.set((i*10-20)+0.5, -23, 0-1);
+    wallsMeshes[n].visible = true;
+    wallsMeshes[n+1].visible = true;
+    wallsMeshes[n+2].visible = true;
+    wallsMeshes[n+3].visible = true;
+    wallsMeshes[n+4].visible = true;
+    wallsMeshes[n+5].visible = true;
+    wallsMeshes[n+6].visible = true;
+    walls[n  ].hitbox.position.set((i*10-20)    , -23, 0);
+    walls[n+1].hitbox.position.set((i*10-20)    , -24, 0);
+    walls[n+2].hitbox.position.set((i*10-20)    , -22, 0);
+    walls[n+3].hitbox.position.set((i*10-20)    , -20, 0);
+    walls[n+4].hitbox.position.set((i*10-20)    , -19, 0);
+    walls[n+5].hitbox.position.set((i*10-20)    , -25, 0);
+    walls[n+6].hitbox.position.set((i*10-20)    , -26, 0);
+    n+=7;
+  }
 }
 function pauseGame(){
   //pause = (pause ? false: true);

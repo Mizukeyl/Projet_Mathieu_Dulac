@@ -275,6 +275,7 @@ function initGraphics(){
 };
 
 
+
 //////////////////////////////////////////////////////////////////////////////////
 //		render the whole thing on the page
 //////////////////////////////////////////////////////////////////////////////////
@@ -284,15 +285,15 @@ var time =0;
 function animate(){
   requestAnimationFrame(animate);
 
-  if (!pause) {
     time++;
     alphaMesh.material.alphaMap.offset.y = time*0.008;
     //playerMesh.material.alphaMap.offset.y = time*0.005;
     for (var i = 0; i < wallsMeshes.length; i++) {
       wallsMeshes[i].material.alphaMap.offset.y = time*0.005;
     }
-
     updateTexture();
+
+    if (!pause) {
     //updateHitboxesEdges();
     updateBoundingBoxes();
 

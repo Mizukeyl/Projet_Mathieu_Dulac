@@ -98,6 +98,7 @@ function nextLevel(){
   var elem = document.getElementById('info');
   switch (settings.level) {
     case 0:
+      //pause = true;
       elem.innerHTML = "Loading 25%";
       elem.style.display = "block";
       moveScene = 50;
@@ -106,13 +107,16 @@ function nextLevel(){
         positionLevel1();
         scene.fog.color.set(0x21f0d6);
         if (fate.isPlaying) fate.stop();
+        if (dejavu.isPlaying) dejavu.stop();
         microgravity.play();
         settings.level = 1;
         xZoneLimit = 22;
         settings.shootFrequ = 800;
         settings.ennemyMoveSpeed = 0.08;
+        score = 0;
         settings.lifePoints = 3;
         resetLife();
+        pause = false;
       }, 2500);
       break;
     case 1:

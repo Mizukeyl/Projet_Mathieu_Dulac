@@ -56,17 +56,15 @@ div#loaderRess div{
   position: fixed;
   top: 15%;
   left: 30%;
-  font-family: cursive;
   font-size: 35px;
   padding-top: 1%;
   padding-bottom: 1%;
-  background-color: #C7C7EF;
+  background-color: #E7E5F6;
   color: #999999;
   display: none;
   opacity: 0.9;
   z-index: 6;
 }
-
 #pauseMenu{
   height: 30%;
   width : 16%;
@@ -75,7 +73,7 @@ div#loaderRess div{
   left: 42%;
   margin-top: 5%;
   color: red;
-  /*border-radius: 50px;*/
+  display: none;
   z-index: 5;
 }
 .pauseMenuButton{
