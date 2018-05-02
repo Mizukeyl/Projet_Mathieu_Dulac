@@ -46,7 +46,14 @@ function initGui(){
 //////////////////////////////////////////////////////////////////////////////////
 function initObjects(nbColumns, nbLines){
   //init particles
-  options = new particleOpt(); //to test with dat.gui
+  bossOptions = new particleOpt(); //to test with dat.gui
+  bossOptions.positionRandomness = 3;
+  bossOptions.lifetime = 3.5;
+  bossOptions.color = 0x4220A9;
+  bossOptions.turbulence = 0.4;
+  bossOptions.velocityRandomness = .4;
+  bossOptions.size = 20;
+  bossOptions.sizeRandomness = 8;
   particleSystem = new THREE.GPUParticleSystem( {maxParticles: 250000} );
   initBullets(50);
   initEnnemies(nbColumns,nbLines);
@@ -58,6 +65,30 @@ function initObjects(nbColumns, nbLines){
   //scene.add(player.boxHelper);
   scene.add(particleSystem);
 };
+//////////////////////////////////////////////////////////////////////////////////
+//		Particles
+//////////////////////////////////////////////////////////////////////////////////
+// Particles options passed during each spawned
+function particleOpt() {
+  this.position = new THREE.Vector3();
+  this.positionRandomness = .2;
+  this.velocity = new THREE.Vector3();
+  this.velocityRandomness = .2;
+  this.color = 0xaa88ff;
+  this.colorRandomness = .2;
+  this.turbulence = .02;
+  this.lifetime = 1;
+  this.size = 6;
+  this.sizeRandomness = 1;
+  this.explosion = 600;
+};
+function spawnerOpt() {
+  this.spawnRate = 15000;
+  this.horizontalSpeed = 1.5;
+  this.verticalSpeed =  1.33;
+  this.timeScale = 0.4;
+};
+
 
 //////////////////////////////////////////////////////////////////////////////////
 //		functions
@@ -103,6 +134,8 @@ function nextLevel(){
       elem.innerHTML = "Loading 75%";
       elem.style.display = "block";
       moveScene = 50;
+      boss.emitParticles = true;
+      bossOptions.explosion = 4800;
       setTimeout(function(){
         document.getElementById('info').style.display = "none";
         positionLevel3();
@@ -205,15 +238,17 @@ function BossCharacter(x,y,z){
     scene.add(bossMesh);
   });
   this.scorePts = 500;
-  this.dim = 2.3;
+  this.dim = 2.5;
   this.lifePoints = 10;
+  this.emitParticles = false;
   this.alive = false;
   this.daWae = vectDown; //the way of the movement
   this.hitbox = new THREE.Mesh(new THREE.BoxGeometry( this.dim, this.dim, this.dim ), new THREE.MeshBasicMaterial({color: 0xff00ff}));
   this.hitbox.position.set(x,y,z);
   this.boundingBox = new THREE.Box3().setFromObject(this.hitbox);
   this.boxHelper = new THREE.Box3Helper(this.boundingBox, 0xffff00);
-  scene.add(this.boxHelper);
+  //scene.add(this.boxHelper);
+
   //bossMesh = new THREE.Mesh(new THREE.BoxGeometry( this.dim, this.dim, this.dim ), new THREE.MeshBasicMaterial({color: 0xff00ff}));
   //bossMesh.position.set(x,y,z);
   //scene.add(bossMesh);
@@ -317,26 +352,7 @@ function initBullets(nbBullet){
   }
 };
 
-// options passed during each spawned
-function particleOpt() {
-  this.position = new THREE.Vector3();
-  this.positionRandomness = .2;
-  this.velocity = new THREE.Vector3();
-  this.velocityRandomness = .2;
-  this.color = 0xaa88ff;
-  this.colorRandomness = .2;
-  this.turbulence = .02;
-  this.lifetime = 1;
-  this.size = 6;
-  this.sizeRandomness = 1;
-  this.explosion = 600;
-};
-function spawnerOpt() {
-  this.spawnRate = 15000;
-  this.horizontalSpeed = 1.5;
-  this.verticalSpeed =  1.33;
-  this.timeScale = 0.4;
-};
+
 
 
 //manage player's movements
@@ -396,26 +412,10 @@ function bulletsMove(){
       bullets[i].particleOptions.position.setZ(15);
     }
   }
-  //bullets particles
-  var delta = clock.getDelta() * spawnerOptions.timeScale;
-  tick += delta;
-  if ( tick < 0 ) tick = 0;
-  if ( delta > 0 ) {
-    for ( var x = 0; x < spawnerOptions.spawnRate * delta; x++ ) {
-      //bullets.forEach(function(elt)
-      for (var i=0; i<bullets.length;i++){
-        if (bullets[i].alive){
-          particleSystem.spawnParticle( bullets[i].particleOptions );
-        }
-        else if (collisionParticle[i].explosion < 600 && collisionParticle[i].explosion >0){
-          particleSystem.spawnParticle( collisionParticle[i] );
-          collisionParticle[i].explosion --;
-        }
-      }
-    }
-  }
-  particleSystem.update( tick );
+
 }
+
+
 
 function updateBoundingBoxes(){
   player.boundingBox.setFromObject(player.hitbox);
@@ -480,8 +480,9 @@ function fullDetectCollision(bullet){
     }
     if (bullet.boundingBox.intersectsBox(boss.boundingBox)) {//collision with boss
       boss.lifePoints --;
-      collisionParticle[index].position.set(boss.hitbox.position.x,boss.hitbox.position.y,boss.hitbox.position.z);
-      collisionParticle[index].explosion = 599;
+      //collisionParticle[index].position.set(boss.hitbox.position.x,boss.hitbox.position.y,boss.hitbox.position.z);
+      //collisionParticle[index].explosion = 599;
+      bossOptions.explosion = 599;
       explosionAudio();
       bullet.alive = false;
       bullet.hitbox.position.setZ(15);
@@ -643,7 +644,32 @@ function ennemiesMove(){
     }
   }
 }
-
+function particlesGenerator (){
+  var delta = clock.getDelta() * spawnerOptions.timeScale;
+  tick += delta;
+  if ( tick < 0 ) tick = 0;
+  if ( delta > 0 ) {
+    for ( var x = 0; x < spawnerOptions.spawnRate * delta; x++ ) {
+      //bullet's particles
+      for (var i=0; i<bullets.length;i++){
+        if (bullets[i].alive){
+          particleSystem.spawnParticle( bullets[i].particleOptions );
+        }
+        else if (collisionParticle[i].explosion < 600 && collisionParticle[i].explosion >0){
+          particleSystem.spawnParticle( collisionParticle[i] );
+          collisionParticle[i].explosion --;
+        }
+      }
+      //boss particles
+      if (boss.emitParticles && bossOptions.explosion >0){
+        bossOptions.position.set(boss.hitbox.position.x,boss.hitbox.position.y,boss.hitbox.position.z);
+        particleSystem.spawnParticle( bossOptions );
+        bossOptions.explosion--;
+      }
+    }
+  }
+  particleSystem.update( tick );
+}
 //summon a bullet at the position
 //take the first bullet that isn't moving into the battlefield
 //if no bullet are available, it will reset all the bullets (should not happen if the bullets array is large enought)

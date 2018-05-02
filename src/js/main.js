@@ -6,7 +6,7 @@ var light, directionalLight;
 var gui = new dat.GUI( {hideable: false},{width: 350});
 document.getElementById('guiContainer').appendChild(gui.domElement);
 var anima; //textures animators
-var alphaMesh, sprite, cylinder, moveScene = 0;
+var alphaMesh, sprite, spriteBack, cylinder, moveScene = 0;
 var loader = new THREE.ObjectLoader();
 var geoLoader = new THREE.BufferGeometryLoader();
 
@@ -256,14 +256,22 @@ function initGraphics(){
   /*var tubeEnd = new THREE.Mesh(new THREE.BoxGeometry( 100,10,100 ), new THREE.MeshPhongMaterial({color: 0x000000, emmissive: 0x000000 , emmissiveIntensity:1}));
   tubeEnd.position.set(0,-55,0);
   scene.add(tubeEnd);*/
+
+  var spriteBackMap = new THREE.TextureLoader().load( 'src/medias/images/spriteBack.png' );
+  var spriteBackMaterial = new THREE.SpriteMaterial( { map: spriteBackMap, color: 0x000000, opacity:1 } );
+  spriteBack = new THREE.Sprite( spriteBackMaterial );
+  spriteBack.scale.set(200, 200, 1);
+  spriteBack.position.set(0,-100,0);
+  scene.add( spriteBack );
+
   var spriteMap = new THREE.TextureLoader().load( 'src/medias/images/sprite.png' );
-  var spriteMaterial = new THREE.SpriteMaterial( { map: spriteMap, color: 0xdadada } );
+  var spriteMaterial = new THREE.SpriteMaterial( { map: spriteMap, color: 0xc6fff2, opacity:0.6, lights: true } );
   sprite = new THREE.Sprite( spriteMaterial );
   sprite.scale.set(30, 30, 1);
   sprite.position.set(0,250,0);
   scene.add( sprite );
 
-  scene.background = new THREE.Color(0x000000);
+  scene.background = new THREE.Color(0xDBD8E3);
 };
 
 
@@ -290,6 +298,7 @@ function animate(){
 
     playerMove();
     bulletsMove();
+    particlesGenerator();
     ennemiesMove();
     bossMove();
     if (remainingEn <= 0) {
@@ -299,6 +308,7 @@ function animate(){
     }
     if (moveScene > 0) {
       sprite.position.y -= 1;
+      spriteBack.position.y -= 1;
       cylinder.position.y -= 1;
       alphaMesh.position.y -= 1;
       moveScene--;
