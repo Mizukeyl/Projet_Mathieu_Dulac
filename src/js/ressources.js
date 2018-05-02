@@ -4,14 +4,14 @@
 function initGui(){
 
   var folder1 = gui.addFolder( 'Player' );
-  var folder2 = gui.addFolder( 'Ennemy' );
+  var folder2 = gui.addFolder( 'Enemy' );
   var folder3 = gui.addFolder( 'Miscellaneous' );
   var folder4 = gui.addFolder( 'Camera');
 
   folder1.add(settings, "playerMoveSpeed", 0, 2).step(0.1);
   folder1.add(settings, "lifePoints", 0, 100).step(1).listen().onFinishChange(function(){resetLife();});
   folder1.add(settings, "reloadDelay", 0, 2).step(0.05);
-  folder2.add(settings, "ennemyMoveSpeed", 0, 2).step(0.1);
+  folder2.add(settings, "enemyMoveSpeed", 0, 2).step(0.1);
   folder2.add(settings, "shootFrequ", 0, 2000).step(1);
   folder3.add(settings, "animaSpeed", 5, 500).step(10).onFinishChange(function(){
     anima.tileDisplayDuration = settings.animaSpeed;
@@ -23,7 +23,7 @@ function initGui(){
   folder3.add(settings, "bulletSpeed", 0, 5).step(0.05);
   folder3.add( settings, "level", 0,5).step(1).onFinishChange(function(){
     document.getElementById('titre').innerHTML = "Loading "+settings.level*25+"% ...";
-    placeEnnemies();
+    placeEnemies();
   });
   folder4.add(chaseCamera.position, "x", -50, 50).step(0.2).listen();
   folder4.add(chaseCamera.position, "y", -100, 50).step(0.2).listen();
@@ -56,11 +56,11 @@ function initObjects(nbColumns, nbLines){
   bossOptions.sizeRandomness = 8;
   particleSystem = new THREE.GPUParticleSystem( {maxParticles: 250000} );
   initBullets(50);
-  initEnnemies(nbColumns,nbLines);
+  initEnemies(nbColumns,nbLines);
   player = new PlayerCharacter(0,-35,0);
   boss = new BossCharacter(0, 100, 0);
   initWalls(5);
-  //scene.add( groupEnnemies ); //hitbox
+  //scene.add( groupEnemies ); //hitbox
   //scene.add( player.hitbox );
   //scene.add(player.boxHelper);
   scene.add(particleSystem);
@@ -109,10 +109,13 @@ function nextLevel(){
         if (fate.isPlaying) fate.stop();
         if (dejavu.isPlaying) dejavu.stop();
         microgravity.play();
+        explosionSfx.setVolume(0.1);
+        explosionSfx2.setVolume(0.1);
+        explosionSfx3.setVolume(0.1);
         settings.level = 1;
         xZoneLimit = 22;
         settings.shootFrequ = 800;
-        settings.ennemyMoveSpeed = 0.08;
+        settings.enemyMoveSpeed = 0.08;
         score = 0;
         settings.lifePoints = 3;
         resetLife();
@@ -131,7 +134,7 @@ function nextLevel(){
         dejavu.play();
         settings.level = 2;
         settings.shootFrequ = 400;
-        settings.ennemyMoveSpeed = 0.1;
+        settings.enemyMoveSpeed = 0.1;
       }, 2500);
       break;
     case 2:
@@ -154,11 +157,23 @@ function nextLevel(){
     case 3:
       elem.innerHTML = "Loading 99%";
       elem.style.display = "block";
-      moveScene = 50;
+      moveScene = 180;
       setTimeout(function(){
         document.getElementById('info').style.display = "none";
-        //placeEnnemies();
+        document.getElementById('endingScreen').style.display = "block";
+        explosionSfx.play();
+        explosionSfx2.play();
+        explosionSfx3.play();
+        explosionSfx.setVolume(1);
+        explosionSfx2.setVolume(1);
+        explosionSfx3.setVolume(1);
         settings.level = 4;//game end
+        setTimeout(function(){
+          document.getElementById('endingScreen').style.display = "none";
+          gameOver(" You Won with a score of : " + score + " points !");
+          //elem.style.display = "block";
+          //elem.innerHTML = " You Won with a score of : " + score + " points !";
+        }, 2000);
       }, 2000);
       break;
     default:
@@ -169,16 +184,16 @@ function positionLevel1(){
   var n=0, i=0, j=0;
   for (var j=0; j< 5; j++) {
     for (var i=0; i< 8; i++){
-      ennemies[n].hitbox.position.set(i*3-10, j*3+5, 0);
-      ennemiesMeshes[n].position.set(i*3-10, j*3+5, 0);
-      ennemies[n].daWae = vectUp;
-      ennemies[n].alive = true;
-      ennemies[n].hitbox.visible = true;
-      ennemiesMeshes[n].visible = true;
+      enemies[n].hitbox.position.set(i*3-10, j*3+5, 0);
+      enemiesMeshes[n].position.set(i*3-10, j*3+5, 0);
+      enemies[n].daWae = vectUp;
+      enemies[n].alive = true;
+      enemies[n].hitbox.visible = true;
+      enemiesMeshes[n].visible = true;
       n++;
     }
   }
-  remainingEn = ennemies.length;
+  remainingEn = enemies.length;
 }
 function positionLevel2(){
   var n=0, i=0, j=0, k=0, p=3;
@@ -191,16 +206,16 @@ function positionLevel2(){
       } else {
         p -= 3;
       }
-      ennemies[n].hitbox.position.set(i*3-10 + k, j*3+10 + p, 0);
-      ennemiesMeshes[n].position.set(i*3-10 + k, j*3+10 + p, 0);
-      ennemies[n].daWae = vectUp;
-      ennemies[n].alive = true;
-      ennemies[n].hitbox.visible = true;
-      ennemiesMeshes[n].visible = true;
+      enemies[n].hitbox.position.set(i*3-10 + k, j*3+10 + p, 0);
+      enemiesMeshes[n].position.set(i*3-10 + k, j*3+10 + p, 0);
+      enemies[n].daWae = vectUp;
+      enemies[n].alive = true;
+      enemies[n].hitbox.visible = true;
+      enemiesMeshes[n].visible = true;
       n++;
     }
   }
-  remainingEn = ennemies.length;
+  remainingEn = enemies.length;
 }
 function positionLevel3(){
   boss.hitbox.position.set(0,0,0);
@@ -208,7 +223,7 @@ function positionLevel3(){
   boss.alive = true;
   bossMesh.visible = true;
 
-  remainingEn = ennemies.length;
+  remainingEn = enemies.length;
 }
 function PlayerCharacter(x,y,z){
    loader.load("src/medias/models/necro-book-decimated.json", function(obj){
@@ -220,7 +235,7 @@ function PlayerCharacter(x,y,z){
     //playerMesh.material.alphaMap.repeat.y = 1;
     scene.add(playerMesh);
   });
-  this.dim = 1.2;
+  this.dim = 1.7;
   this.alive = true;
   this.daWae = vectUp; //the way of the movement
   this.hitbox = new THREE.Mesh(new THREE.BoxGeometry( this.dim, this.dim, this.dim ), new THREE.MeshBasicMaterial({color: 0xff00ff}));
@@ -242,7 +257,7 @@ function BossCharacter(x,y,z){
     scene.add(bossMesh);
   });
   this.scorePts = 500;
-  this.dim = 2.5;
+  this.dim = 2.8;
   this.lifePoints = 10;
   this.emitParticles = false;
   this.alive = false;
@@ -263,8 +278,8 @@ function Character(m,model3D,scorePts, x,y,z){
 
   loader.load(model3D, function(obj){
     obj.position.set(x,y,z);
-    ennemiesMeshes[m] = obj;
-    scene.add(ennemiesMeshes[m]);
+    enemiesMeshes[m] = obj;
+    scene.add(enemiesMeshes[m]);
     //m++;
   });
   this.scorePts = scorePts;
@@ -279,8 +294,8 @@ function Character(m,model3D,scorePts, x,y,z){
 
   //var obj = new THREE.Mesh(new THREE.BoxGeometry( this.dim, this.dim, this.dim ), new THREE.MeshBasicMaterial({color: 0xff00ff}));
   //obj.position.set(x,y,z);
-  //ennemiesMeshes[m] = obj;
-  //scene.add(ennemiesMeshes[m]);
+  //enemiesMeshes[m] = obj;
+  //scene.add(enemiesMeshes[m]);
 
 };
 //add bullets
@@ -331,14 +346,14 @@ function initWalls(nbColumns){
   }
 }
 
-function initEnnemies(nbColumns,nbLines){
+function initEnemies(nbColumns,nbLines){
   var n=0;
   for (var j=0; j<nbLines; j++) {
     for (var i=0; i<nbColumns; i++){
-      if (n< 2*nbColumns) ennemies[n] = new Character(n,"src/medias/models/spell-book-decimated.json",30, (i*3-10), (j*3+5), 0);
-      else if (n< 4*nbColumns) ennemies[n] = new Character(n,"src/medias/models/tome-of-secret-speculation.json",50, (i*3-10), (j*3+5), 0);
-      else ennemies[n] = new Character(n,"src/medias/models/damned-souls.json",100, (i*3-10), (j*3+5), 0);
-      groupEnnemies.add(ennemies[n].hitbox);
+      if (n< 2*nbColumns) enemies[n] = new Character(n,"src/medias/models/spell-book-decimated.json",30, (i*3-10), (j*3+5), 0);
+      else if (n< 4*nbColumns) enemies[n] = new Character(n,"src/medias/models/tome-of-secret-speculation.json",50, (i*3-10), (j*3+5), 0);
+      else enemies[n] = new Character(n,"src/medias/models/damned-souls.json",100, (i*3-10), (j*3+5), 0);
+      groupEnemies.add(enemies[n].hitbox);
       n++;
     }
   }
@@ -424,8 +439,8 @@ function bulletsMove(){
 function updateBoundingBoxes(){
   player.boundingBox.setFromObject(player.hitbox);
   boss.boundingBox.setFromObject(boss.hitbox);
-  for (var i=0; i<ennemies.length; i++){
-    ennemies[i].boundingBox.setFromObject(ennemies[i].hitbox);
+  for (var i=0; i<enemies.length; i++){
+    enemies[i].boundingBox.setFromObject(enemies[i].hitbox);
   }
   for (var j=0; j<bullets.length; j++){
       bullets[j].boundingBox.setFromObject(bullets[j].hitbox);
@@ -467,17 +482,17 @@ function fullDetectCollision(bullet){
     }
   }
   else {
-    for (var i=0; i<ennemies.length; i++){ //collision between bullets and ennemies
-      if (bullet.boundingBox.intersectsBox(ennemies[i].boundingBox)) {
-        collisionParticle[index].position.set(ennemies[i].hitbox.position.x,ennemies[i].hitbox.position.y,ennemies[i].hitbox.position.z);
+    for (var i=0; i<enemies.length; i++){ //collision between bullets and enemies
+      if (bullet.boundingBox.intersectsBox(enemies[i].boundingBox)) {
+        collisionParticle[index].position.set(enemies[i].hitbox.position.x,enemies[i].hitbox.position.y,enemies[i].hitbox.position.z);
         collisionParticle[index].explosion = 599;
         bullet.alive = false;
         bullet.hitbox.position.setZ(15);
-        ennemies[i].hitbox.visible = false;
-        ennemies[i].hitbox.position.setZ(4);
-        ennemies[i].alive = false;
-        ennemiesMeshes[i].visible = false;
-        score += ennemies[i].scorePts;
+        enemies[i].hitbox.visible = false;
+        enemies[i].hitbox.position.setZ(4);
+        enemies[i].alive = false;
+        enemiesMeshes[i].visible = false;
+        score += enemies[i].scorePts;
         remainingEn --;
         explosionAudio();
       }
@@ -498,13 +513,12 @@ function fullDetectCollision(bullet){
         score += boss.scorePts;
         //remainingEn = 0;
         nuke();
-
       } else {
-        //spawnEnnemy(boss.hitbox.position.x,boss.hitbox.position.y-3,boss.hitbox.position.z, vectDown);
-        //spawnEnnemy(boss.hitbox.position.x+3,boss.hitbox.position.y-3,boss.hitbox.position.z, vectDown);
-        spawnEnnemies(boss.hitbox.position.x,boss.hitbox.position.y,boss.hitbox.position.z);
-        showBossLife();
+        //spawnEnemy(boss.hitbox.position.x,boss.hitbox.position.y-3,boss.hitbox.position.z, vectDown);
+        //spawnEnemy(boss.hitbox.position.x+3,boss.hitbox.position.y-3,boss.hitbox.position.z, vectDown);
+        spawnEnemies(boss.hitbox.position.x,boss.hitbox.position.y,boss.hitbox.position.z);
       }
+      showBossLife();
     }
     for (var i=0; i<bullets.length; i++){ //collision between bullets
       if (bullets[i].direction == vectDown){
@@ -526,27 +540,27 @@ function fullDetectCollision(bullet){
   }
 }
 
-function spawnEnnemy(x,y,z, direction){
+function spawnEnemy(x,y,z, direction){
   var i=0, spawn = false;
-  while ((i<ennemies.length) && !spawn){
+  while ((i<enemies.length) && !spawn){
     console.log('bloqué'+ i + spawn);
-    if (ennemies[i].alive == false) {
-      ennemies[i].hitbox.position.set(x,y,z);
-      ennemiesMeshes[i].position.set(x,y,z);
-      ennemies[i].daWae = direction;
-      ennemies[i].alive = true;
-      ennemies[i].hitbox.visible = true;
-      ennemiesMeshes[i].visible = true;
+    if (enemies[i].alive == false) {
+      enemies[i].hitbox.position.set(x,y,z);
+      enemiesMeshes[i].position.set(x,y,z);
+      enemies[i].daWae = direction;
+      enemies[i].alive = true;
+      enemies[i].hitbox.visible = true;
+      enemiesMeshes[i].visible = true;
       spawn = true;
     }
     i++;
   }
 }
-function spawnEnnemies(x,y,z){
-  spawnEnnemy(x+3,y-2,z, vectUp);
-  spawnEnnemy(x+3,y-4,z, vectDown);
-  spawnEnnemy(x-3,y-2,z, vectUp);
-  spawnEnnemy(x-3,y-4,z, vectDown);
+function spawnEnemies(x,y,z){
+  spawnEnemy(x+3,y-2,z, vectUp);
+  spawnEnemy(x+3,y-4,z, vectDown);
+  spawnEnemy(x-3,y-2,z, vectUp);
+  spawnEnemy(x-3,y-4,z, vectDown);
 
 }
 function explosionAudio(){
@@ -574,11 +588,11 @@ return	(a.hitbox.minX <= b.hitbox.maxX && a.hitbox.maxX >= b.hitbox.minX) &&
       (a.hitbox.minZ <= b.hitbox.maxZ && a.hitbox.maxZ >= b.hitbox.minZ)
 }
 
-function animaEnnemies(){
-  for (var i=0; i<ennemies.length; i++){
+function animaEnemies(){
+  for (var i=0; i<enemies.length; i++){
     mixers[i] = new THREE.AnimationMixer(scene);
-    //window.alert(ennemiesMeshes[i]);
-    mixers[i].clipAction(ennemiesMeshes[i].animations[0], ennemiesMeshes[i]).play();
+    //window.alert(enemiesMeshes[i]);
+    mixers[i].clipAction(enemiesMeshes[i].animations[0], enemiesMeshes[i]).play();
   }
   // TODO player animation to place somewhere else
   playerMixer = new THREE.AnimationMixer(scene);
@@ -593,55 +607,56 @@ function bossMove(){
     if (boss.alive){
       //gameOver if the boss arrives to the walls
       if(boss.hitbox.position.y <= walls[0].hitbox.position.y){
-        gameOver();
+        gameOver("Game Over<br/> you lost because the enemy pierced your barricades<br/>");
       }
       //probability of shooting
-      if (Math.floor(Math.random()*settings.shootFrequ*2) == 0) shoot(vectDown,boss.hitbox.position);
+      if (Math.floor(Math.random()*settings.shootFrequ/2) == 0) bomb(vectDown,boss.hitbox.position);
       //probability of changing direction
       if (Math.floor(Math.random()*800) == 0) missDirection = true;
       //movements
       if (boss.daWae == vectUp) {
-        boss.hitbox.position.x += settings.ennemyMoveSpeed;
-        bossMesh.position.x += settings.ennemyMoveSpeed;
+        boss.hitbox.position.x += settings.enemyMoveSpeed;
+        bossMesh.position.x += settings.enemyMoveSpeed;
         if ((boss.hitbox.position.x > (xZoneLimit-5)) || missDirection) boss.daWae = vectDown;
       } else {
-        boss.hitbox.position.x -= settings.ennemyMoveSpeed;
-        bossMesh.position.x -= settings.ennemyMoveSpeed;
+        boss.hitbox.position.x -= settings.enemyMoveSpeed;
+        bossMesh.position.x -= settings.enemyMoveSpeed;
         if ((boss.hitbox.position.x < (-xZoneLimit+5)) || missDirection) boss.daWae = vectUp;
       }
     }
   }
 }
-//AI of the ennemies
-function ennemiesMove(){
-  for (var i=0; i<ennemies.length; i++){
-    if (ennemies[i].alive){//ennemy is alive
-      //game over if ennemies arrives to the walls
-      if(ennemies[i].hitbox.position.y <= walls[0].hitbox.position.y){
-        gameOver();
+//AI of the enemies
+function enemiesMove(){
+  for (var i=0; i<enemies.length; i++){
+    if (enemies[i].alive){//enemy is alive
+      //game over if enemies arrives to the walls
+      if(enemies[i].hitbox.position.y <= walls[0].hitbox.position.y){
+        gameOver("Game Over<br/> you lost because the enemy pierced your barricades<br/>");
+
       }
       //probability of shooting
-      if (Math.floor(Math.random()*settings.shootFrequ) == 0) {shoot(vectDown,ennemies[i].hitbox.position)}
-      //ennemies movements
-      if (ennemies[i].daWae == vectUp) {
-        ennemies[i].hitbox.position.x += settings.ennemyMoveSpeed;
-        ennemiesMeshes[i].position.x += settings.ennemyMoveSpeed;
-        if (ennemies[i].hitbox.position.x > xZoneLimit) {
-          ennemies[i].daWae = vectDown;
+      if (Math.floor(Math.random()*settings.shootFrequ) == 0) {shoot(vectDown,enemies[i].hitbox.position)}
+      //enemies movements
+      if (enemies[i].daWae == vectUp) {
+        enemies[i].hitbox.position.x += settings.enemyMoveSpeed;
+        enemiesMeshes[i].position.x += settings.enemyMoveSpeed;
+        if (enemies[i].hitbox.position.x > xZoneLimit) {
+          enemies[i].daWae = vectDown;
           if (!invincibility) {
-            ennemies[i].hitbox.position.y -= 3;
-            ennemiesMeshes[i].position.y -= 3;
+            enemies[i].hitbox.position.y -= 3;
+            enemiesMeshes[i].position.y -= 3;
           }
         }
       }
-      else if (ennemies[i].daWae == vectDown) {
-        ennemies[i].hitbox.position.x -= settings.ennemyMoveSpeed;
-        ennemiesMeshes[i].position.x -= settings.ennemyMoveSpeed;
-        if (ennemies[i].hitbox.position.x < -xZoneLimit) {
-          ennemies[i].daWae = vectUp;
+      else if (enemies[i].daWae == vectDown) {
+        enemies[i].hitbox.position.x -= settings.enemyMoveSpeed;
+        enemiesMeshes[i].position.x -= settings.enemyMoveSpeed;
+        if (enemies[i].hitbox.position.x < -xZoneLimit) {
+          enemies[i].daWae = vectUp;
           if (!invincibility){
-            ennemies[i].hitbox.position.y -= 3;
-            ennemiesMeshes[i].position.y -= 3;
+            enemies[i].hitbox.position.y -= 3;
+            enemiesMeshes[i].position.y -= 3;
           }
         }
       }
@@ -699,30 +714,37 @@ function shoot(direction, position){
   bullets[j].alive = true;
 }
 
-function bomb(){
-  var vectPos = new THREE.Vector3(0,0,0);
-  vectPos.set(player.hitbox.position.x,player.hitbox.position.y,player.hitbox.position.z);
-  vectPos.x -= 20;
-  for (var i=0; i<40; i++){
-    vectPos.x ++;
-    vectPos.y += (Math.random()-0.2);
-    shoot(vectUp, vectPos);
+function bomb(direction,position){
+  var vectPos = new THREE.Vector3(position.x,position.y,position.z);
+  //vectPos.set(player.hitbox.position.x,player.hitbox.position.y,player.hitbox.position.z);
+  vectPos.x -= 4;
+  for (var i=0; i<3; i++){
+    vectPos.x += 2;
+    vectPos.y += (Math.random()*-1);
+    shoot(direction, vectPos);
   }
 }
 
 function nuke(){
   var vectPos = new THREE.Vector3(0,0,0);
   var oldScore = score;
-  for (var i=0; i<ennemies.length; i++){
-    vectPos.set(ennemies[i].hitbox.position.x,
-                ennemies[i].hitbox.position.y-1,
-                ennemies[i].hitbox.position.z,
+  for (var i=0; i<enemies.length; i++){
+    vectPos.set(enemies[i].hitbox.position.x,
+                enemies[i].hitbox.position.y-1,
+                enemies[i].hitbox.position.z,
     );
     shoot(vectUp, vectPos);
-    setTimeout(function(){
-      score = oldScore;
-    }, 100);
   }
+  if (settings.level == 3){
+    boss.lifePoints = 0;
+    boss.alive = false;
+    bossMesh.visible = false;
+    boss.hitbox.position.setZ(4);
+
+  }
+  setTimeout(function(){
+    score = oldScore;
+  }, 100);
 }
 
 

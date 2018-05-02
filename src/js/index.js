@@ -43,7 +43,7 @@ onRenderFcts.push(function(){
   updateTexture();
   playerMove();
   bulletsMove();
-  ennemiesMove();
+  enemiesMove();
 
   //raycaster.set( player.hitbox.position, vectUp);
   var delta = 100* clockTex.getDelta();
@@ -120,8 +120,8 @@ function computeHitboxEdges(box){
 
 function updateHitboxesEdges(){
   computeHitboxEdges(player);
-  for (var i=0; i<ennemies.length; i++){
-    computeHitboxEdges(ennemies[i]);
+  for (var i=0; i<enemies.length; i++){
+    computeHitboxEdges(enemies[i]);
   }
   for (var i=0; i<bullets.length; i++){
     computeHitboxEdges(bullets[i]);
@@ -136,9 +136,9 @@ this.hitbox.minZ = this.hitbox.position.z - this.dim/2;
 this.hitbox.maxZ = this.hitbox.position.z + this.dim/2;
 
 
-function createennemiesMeshes(obj){
-  for (var i=0; i<ennemies.length; i++){
-    obj.position.set(ennemies[i].hitbox.position.x,ennemies[i].hitbox.position.y,ennemies[i].hitbox.position.z);
+function createenemiesMeshes(obj){
+  for (var i=0; i<enemies.length; i++){
+    obj.position.set(enemies[i].hitbox.position.x,enemies[i].hitbox.position.y,enemies[i].hitbox.position.z);
     mesh[i] = new THREE.Object3D();
     mesh[i] = obj;
     scene.add(mesh[i]);
@@ -190,11 +190,11 @@ function createennemiesMeshes(obj){
 
   /*
   loader.load("src/medias/models/damn.json", function(obj){
-    for(var i=0; i<ennemies.length; i++){
-      obj.position.set(ennemies[i].hitbox.position.x,ennemies[i].hitbox.position.y,ennemies[i].hitbox.position.z);
-      ennemiesMeshes[i] = obj;
-      scene.add(ennemiesMeshes[i]);
-      mixer.clipAction(ennemiesMeshes[i].animations[0], ennemiesMeshes[i]).play();
+    for(var i=0; i<enemies.length; i++){
+      obj.position.set(enemies[i].hitbox.position.x,enemies[i].hitbox.position.y,enemies[i].hitbox.position.z);
+      enemiesMeshes[i] = obj;
+      scene.add(enemiesMeshes[i]);
+      mixer.clipAction(enemiesMeshes[i].animations[0], enemiesMeshes[i]).play();
     }
   });*/
 

@@ -10,7 +10,7 @@ function onDocumentKeyDown(event) {
   //var keyCode = event.key;
   switch (event.key) {
     case "Tab":
-      //animaEnnemies();
+      //animaEnemies();
       //microgravity.play();
 
       break;
@@ -30,16 +30,16 @@ function onDocumentKeyDown(event) {
       document.getElementById("info").style.display = "none";
       //glitching=false;
       //microgravity.play();
-      //mixer.clipAction(ennemiesMeshes[2].animations[0], ennemiesMeshes[2]).play();
-      //placeEnnemies();
+      //mixer.clipAction(enemiesMeshes[2].animations[0], enemiesMeshes[2]).play();
+      //placeEnemies();
       break;
     case "ArrowUp":
       document.getElementById("info").style.display = "block";
       launch = true;
       //glitching=true;
       //microgravity.play();
-      //mixer.clipAction(ennemiesMeshes[2].animations[0], ennemiesMeshes[2]).play();
-      //placeEnnemies();
+      //mixer.clipAction(enemiesMeshes[2].animations[0], enemiesMeshes[2]).play();
+      //placeEnemies();
       break;
     default:
       return;
@@ -86,7 +86,7 @@ function onDocumentKeyUp(event) {
       rightArrowPushed = false;
       break;
     case "x":
-      bomb();
+      //bomb();
       break;
     case "Escape":
       break;
@@ -110,11 +110,11 @@ function onDocumentKeyUp(event) {
 };
 
 
-function gameOver(){
+function gameOver(text){
   var info = document.getElementById("info");
   pause=true;
   info.style.display = "block";
-  info.innerHTML = "Game Over";
+  info.innerHTML = text;
   var button = document.createElement('div');
   button.setAttribute("class","pauseMenuButton");
   button.setAttribute("onmouseover","this.style.background='gray';");
@@ -125,16 +125,20 @@ function gameOver(){
 }
 function startGame(){
   document.getElementById('titleScreen').style.display = "none";
-  animaEnnemies();
+  animaEnemies();
   settings.level = 0;
   showBossLife();
   microgravity.play();
   //pauseGame();
   nextLevel();
+
 }
 function restartGame(){
   var n=0, nbColumns = 5;
+  var info = document.getElementById('info');
   document.getElementById('titleScreen').style.display = "block";
+  info.removeChild(info.firstChild);
+  info.style.display = "none";
   spriteBack.position.set(0,-100,0);
   sprite.position.set(0,250,0);
   cylinder.position.setY(100);
@@ -185,7 +189,7 @@ function decreaseLife(){
   elem.removeChild(elem.lastChild);
   settings.lifePoints--;
   if (settings.lifePoints <= 0) {
-    gameOver();
+    gameOver("Game Over<br/> you lost all your life points<br/>");
   }
 }
 function resetLife(){

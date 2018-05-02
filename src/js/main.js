@@ -12,15 +12,15 @@ var geoLoader = new THREE.BufferGeometryLoader();
 
 //CHARACTERS
 var xZoneLimit = 22, yZoneLimit = 40;
-var ennemiesMeshes = [], mixers = []; //mixers for animations
+var enemiesMeshes = [], mixers = []; //mixers for animations
 var playerMesh, bossMesh, playerMixer, bossMixer;
 var wallsMeshes = [];
 var leftArrowPushed = false, rightArrowPushed = false, spaceBarPushed = false;
-var player, boss, ennemies = [], bullets = [], walls = [];
+var player, boss, enemies = [], bullets = [], walls = [];
 var remainingEn = 40;
 var score = 0;
 var invincibility = false;
-var groupEnnemies = new THREE.Group();
+var groupEnemies = new THREE.Group();
 var vectUp = new THREE.Vector3(0,1,0);
 var vectDown = new THREE.Vector3(0,-1,0);
 var vectNull = new THREE.Vector3(0,0,0);
@@ -44,7 +44,7 @@ var settings = {
   lifePoints: 3,
   playerMoveSpeed: 0.2,
   reloadDelay: 0.5,
-  ennemyMoveSpeed: 0.1,
+  enemyMoveSpeed: 0.1,
   shootFrequ: 800,
   bulletSpeed: 0.7
 }
@@ -88,7 +88,7 @@ initGraphics(); //and audio
 initGui();
 initObjects(8,5);
 
-//placeEnnemies();
+//placeEnemies();
 
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -300,10 +300,10 @@ function animate(){
     playerMove();
     bulletsMove();
     particlesGenerator();
-    ennemiesMove();
+    enemiesMove();
     bossMove();
     if (remainingEn <= 0) {
-      remainingEn++;
+      remainingEn = 1;
       console.log("next leveling:"+remainingEn);
       nextLevel();
     }
@@ -312,6 +312,7 @@ function animate(){
       spriteBack.position.y -= 1;
       cylinder.position.y -= 1;
       alphaMesh.position.y -= 1;
+      bossMesh.position.y -= 0.5;
       moveScene--;
     }
     /*TODO uncomment to allow animation*/

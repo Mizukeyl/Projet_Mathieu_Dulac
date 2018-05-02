@@ -28,7 +28,7 @@ div#loaderRess div{
 #titleScreen{
   background-color: #a9b4b1;
   color: #0e1b1f;
-  height: 60%;
+  height: 78%;
   width: 80%;
   position: fixed;
   top: 20%;
@@ -48,10 +48,10 @@ div#loaderRess div{
   background-size: cover;
   background-repeat: no-repeat;
   display: none;
-  z-index: 6;
+  z-index: 4;
 }
 #info {
-  height: 6%;
+  height: 8%;
   width : 40%;
   position: fixed;
   top: 15%;
