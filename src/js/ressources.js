@@ -218,8 +218,8 @@ function positionLevel2(){
   remainingEn = enemies.length;
 }
 function positionLevel3(){
-  boss.hitbox.position.set(0,0,0);
-  bossMesh.position.set(0,0,0);
+  boss.hitbox.position.set(0,5,0);
+  bossMesh.position.set(0,5,0);
   boss.alive = true;
   bossMesh.visible = true;
 

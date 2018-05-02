@@ -28,7 +28,7 @@ div#loaderRess div{
 #titleScreen{
   background-color: #a9b4b1;
   color: #0e1b1f;
-  height: 78%;
+  height: 60%;
   width: 80%;
   position: fixed;
   top: 20%;
@@ -85,19 +85,19 @@ div#loaderRess div{
 .grid{
   display: grid;
   grid-template-columns: auto auto auto auto auto;
-  grid-gap: 10px;
-  background-color: #076165;
-  padding: 10px;
+  grid-gap: 5px;
+  background-color: #406B80;
+  padding: 5px;
 }
 .grid > div {
   background-color: rgba(255, 255, 255, 0.8);
   text-align: center;
-  padding: 20px 0;
+  padding: 2px 0;
   font-size: 30px;
 }
 .item2 {
-  grid-row-start: 1;
-  grid-row-end: 3;
+  grid-column-start: 1;
+  grid-column-end: 6;
 }
 
 
