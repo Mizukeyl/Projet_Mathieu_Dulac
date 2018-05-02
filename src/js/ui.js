@@ -127,6 +127,7 @@ function startGame(){
   document.getElementById('titleScreen').style.display = "none";
   animaEnnemies();
   settings.level = 0;
+  showBossLife();
   microgravity.play();
   //pauseGame();
   nextLevel();
@@ -142,7 +143,6 @@ function restartGame(){
   boss.hitbox.position.set(0,100,0);
   bossMesh.position.set(0,100,0);
   boss.lifePoints = 10;
-  showBossLife();
   for (var i=0; i<nbColumns; i++){
     wallsMeshes[n  ].position.set((i*10-20)    , -23, 0);
     wallsMeshes[n+1].position.set((i*10-20)-1.0, -23, 0);
@@ -205,6 +205,7 @@ function showBossLife(){
   while (elem.firstChild) {
     elem.removeChild(elem.firstChild);
   }
+  if (settings.level == 3 ){
     for (var i=0; i<boss.lifePoints; i++){
       var img = document.createElement("img");
       img.setAttribute("src", "src/medias/images/bossLife.png");
@@ -217,6 +218,8 @@ function showBossLife(){
       document.getElementById("bossLife").appendChild(name);
     }
   }
+}
+
 function muteMusic(){
   console.log("muting :"+document.getElementById('muteMusic').style.color);
   if (!isMusicMuted){
