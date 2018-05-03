@@ -10,36 +10,22 @@ function onDocumentKeyDown(event) {
   //var keyCode = event.key;
   switch (event.key) {
     case "Tab":
-      //animaEnemies();
-      //microgravity.play();
-
       break;
     case " ":
       spaceBarPushed = true;
-      //playerMove()
       break;
     case "ArrowLeft":
       leftArrowPushed = true;
-      //playerMove();
       break;
     case "ArrowRight":
       rightArrowPushed = true;
-      //playerMove();
       break;
     case "ArrowDown":
       document.getElementById("info").style.display = "none";
-      //glitching=false;
-      //microgravity.play();
-      //mixer.clipAction(enemiesMeshes[2].animations[0], enemiesMeshes[2]).play();
-      //placeEnemies();
       break;
     case "ArrowUp":
       document.getElementById("info").style.display = "block";
-      launch = true;
       //glitching=true;
-      //microgravity.play();
-      //mixer.clipAction(enemiesMeshes[2].animations[0], enemiesMeshes[2]).play();
-      //placeEnemies();
       break;
     default:
       return;
@@ -50,7 +36,6 @@ function onDocumentKeyUp(event) {
   if (event.defaultPrevented) {
     return; // Do nothing if the event was already processed
   }
-  //var keyCode = event.key;
   switch (event.key) {
     case "Tab":
       showBossLife();
@@ -95,10 +80,10 @@ function onDocumentKeyUp(event) {
       else invincibility = true;
       break;
     case "k":
-      nuke();
+      if (isKeyPressAllowed) nuke();
       break;
     case "s":
-      pauseGame();
+      if (isKeyPressAllowed) pauseGame();
       break;
     case "h":
       hotkeys();
@@ -135,11 +120,14 @@ function startGame(){
 }
 function restartGame(){
   var n=0, nbColumns = 5;
+  chaseCamera.position.set(0,-60,10);
+  chaseCamera.up.set(0,0,1);
+  chaseCamera.lookAt(vectLook);
   var info = document.getElementById('info');
   document.getElementById('titleScreen').style.display = "block";
   info.removeChild(info.firstChild);
   info.style.display = "none";
-  spriteBack.position.set(0,-100,0);
+  spriteBack.position.set(0,-50,0);
   sprite.position.set(0,250,0);
   cylinder.position.setY(100);
   alphaMesh.position.setY(100);

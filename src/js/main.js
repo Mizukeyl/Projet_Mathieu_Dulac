@@ -1,6 +1,6 @@
 'use strict';
 // - Global Variables -
-var renderer,composer, glitchPass, scene, chaseCamera, fixedCamera, chaseCameraActive=false, controls, pause=true;
+var renderer,composer, glitchPass, scene, chaseCamera, fixedCamera, chaseCameraActive=false, controls, pause=true, isKeyPressAllowed = false;
 var stats;
 var light, directionalLight;
 var gui = new dat.GUI( {hideable: false},{width: 350});
@@ -257,11 +257,19 @@ function initGraphics(){
   tubeEnd.position.set(0,-55,0);
   scene.add(tubeEnd);*/
 
-  var spriteBackMap = new THREE.TextureLoader().load( 'src/medias/images/spriteBack.png' );
-  var spriteBackMaterial = new THREE.SpriteMaterial( { map: spriteBackMap, color: 0x000000, opacity:1 } );
+  /*var spriteBackMap = new THREE.TextureLoader().load( 'src/medias/images/spriteBack.png' );
+  var spriteBackMaterial = new THREE.SpriteMaterial( { map: spriteBackMap, color: 0x000000, lights:true } );
   spriteBack = new THREE.Sprite( spriteBackMaterial );
-  spriteBack.scale.set(200, 200, 1);
+  spriteBack.scale.set(800, 600, 1);
   spriteBack.position.set(0,-100,0);
+  scene.add( spriteBack );*/
+
+
+  var backGeo = new THREE.SphereBufferGeometry(600, 32, 32, 0, 2*Math.PI, 0, 0.5 * Math.PI);
+  var backMat = new THREE.MeshBasicMaterial( {color: 0x000000, side: THREE.BackSide, fog: 0} );
+  spriteBack = new THREE.Mesh( backGeo, backMat );
+  spriteBack.position.set(0,-50,0);
+  spriteBack.rotateZ(-Math.PI);
   scene.add( spriteBack );
 
   var spriteMap = new THREE.TextureLoader().load( 'src/medias/images/sprite.png' );

@@ -100,8 +100,10 @@ function nextLevel(){
     case 0:
       //pause = true;
       elem.innerHTML = "Loading 25%";
+      document.title = "Loading 25% ...";
       elem.style.display = "block";
       moveScene = 50;
+      isKeyPressAllowed = false;
       setTimeout(function(){
         document.getElementById('info').style.display = "none";
         positionLevel1();
@@ -120,12 +122,15 @@ function nextLevel(){
         settings.lifePoints = 3;
         resetLife();
         pause = false;
+        isKeyPressAllowed = true;
       }, 2500);
       break;
     case 1:
       elem.innerHTML = "Loading 50%";
+      document.title = "Loading 50% ...";
       elem.style.display = "block";
       moveScene = 50;
+      isKeyPressAllowed = false;
       setTimeout(function(){
         document.getElementById('info').style.display = "none";
         positionLevel2();
@@ -135,14 +140,17 @@ function nextLevel(){
         settings.level = 2;
         settings.shootFrequ = 400;
         settings.enemyMoveSpeed = 0.1;
+        isKeyPressAllowed = true;
       }, 2500);
       break;
     case 2:
       elem.innerHTML = "Loading 75%";
+      document.title = "Loading 75% ...";
       elem.style.display = "block";
       moveScene = 50;
+      isKeyPressAllowed = false;
       boss.emitParticles = true;
-      bossOptions.explosion = 4800;
+      //bossOptions.explosion = 4800;
       setTimeout(function(){
         document.getElementById('info').style.display = "none";
         positionLevel3();
@@ -152,12 +160,15 @@ function nextLevel(){
         settings.level = 3;
         showBossLife();
         xZoneLimit = 20;
+        isKeyPressAllowed = true;
       }, 2500);
       break;
     case 3:
       elem.innerHTML = "Loading 99%";
+      document.title = "Loading 99% ...";
       elem.style.display = "block";
       moveScene = 180;
+      isKeyPressAllowed = false;
       setTimeout(function(){
         document.getElementById('info').style.display = "none";
         document.getElementById('endingScreen').style.display = "block";
@@ -168,13 +179,20 @@ function nextLevel(){
         explosionSfx2.setVolume(1);
         explosionSfx3.setVolume(1);
         settings.level = 4;//game end
+        isKeyPressAllowed = true;
         setTimeout(function(){
           document.getElementById('endingScreen').style.display = "none";
-          gameOver(" You Won with a score of : " + score + " points !");
-          //elem.style.display = "block";
-          //elem.innerHTML = " You Won with a score of : " + score + " points !";
+          gameOver("You won the minigame with a score of " + score + " points ! <br/><br/><br/>"
+                  +"However an error has occured during the loading ...<br/>"
+                  +"Please, try loading again ");
+          chaseCameraActive = false;
+          playerMesh.position.set(0,-35,0);
+          player.hitbox.position.set(0,-35,0);
+          chaseCamera.position.set(0,playerMesh.position.y+4,playerMesh.position.z+1);
+          chaseCamera.up.set(0,0,1);
+          chaseCamera.lookAt(playerMesh.position.x,playerMesh.position.y-10,playerMesh.position.z-1);
         }, 2000);
-      }, 2000);
+      }, 2300);
       break;
     default:
       console.log('next Level incorrect');
@@ -740,7 +758,7 @@ function nuke(){
     boss.alive = false;
     bossMesh.visible = false;
     boss.hitbox.position.setZ(4);
-
+    showBossLife();
   }
   setTimeout(function(){
     score = oldScore;
