@@ -253,9 +253,7 @@ function initGraphics(){
   scene.add( cylinder );
 
   //world color
-  /*var tubeEnd = new THREE.Mesh(new THREE.BoxGeometry( 100,10,100 ), new THREE.MeshPhongMaterial({color: 0x000000, emmissive: 0x000000 , emmissiveIntensity:1}));
-  tubeEnd.position.set(0,-55,0);
-  scene.add(tubeEnd);*/
+
 
   /*var spriteBackMap = new THREE.TextureLoader().load( 'src/medias/images/spriteBack.png' );
   var spriteBackMaterial = new THREE.SpriteMaterial( { map: spriteBackMap, color: 0x000000, lights:true } );
