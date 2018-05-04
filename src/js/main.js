@@ -220,7 +220,6 @@ function initGraphics(){
 
          var material = new THREE.MeshStandardMaterial({ color: "#000000", transparent: true, side: THREE.DoubleSide, alphaTest: 0.5, opacity: 0.9, roughness: 1 });
 
-         // this image is loaded as data uri. Just copy and paste the string contained in "image.src" in your browser's url bar to see the image.
          // alpha texture used to regulate transparency
          var image = document.createElement('img');
          var alphaMap = new THREE.Texture(image);
@@ -341,7 +340,7 @@ var glitching = false;
 var frameGlitch=0;
 function renderGlitch(){
   if (settings.infiniteGlitch) composer.render();
-  
+
   else if (glitching && (frameGlitch < 40)){
     frameGlitch++;
     composer.render();

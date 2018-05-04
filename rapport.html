@@ -11,8 +11,7 @@
 <h2>Déroulement du jeu</h2>
     <p>Le jeu commence par un écran de chargement, et informe le joueur lorsque le jeu est prêt. On se retrouve alors sur l’écran titre qui contient les informations
        sur les ennemies, les touches et un bouton cliquable pour lancer la partie.</p>
-Figure loading screen
-Figure title screen
+       <p><img src="rapport/images/fig1.png"></p>
     <p>Au cours du jeu, le joueur gagne des points en détruisant des ennemis ou des balles en plein vol. Les ennemis se déplacent de gauche à droite et
        s’avancent vers le joueur lorsqu’ils atteignent une extrémité de la zone de jeu. Si les ennemis arrivent au niveau de la ligne de défense du joueur,
         ou si le joueur perd ses trois vies, c’est la fin du jeu. Il y a trois niveaux différents, le troisième faisant intervenir le mini boss. </p>
@@ -39,23 +38,111 @@ La gestion des ressources avec Parcel a été envisagée mais finalement abandon
         <br/>Au bout du tunnel on a un sprite transparent qui représente l'étoile de salomon, et de l'autre côté on a une demi sphère noire pour que l'arrière
         du tunnel soit sombre et que l'avant reste claire. En plus de ça, un brouillard a été ajouté, on peut ensuite changer sa couleur qui va se répercuter sur les
         autres textures et donner une ambiance propre à chaque niveau.</p>
-        <p>La texture de ce cylindre est animée par une fonction qui va prendre une grande images découpées en tuiles </p>
-        Figure half sphere, salomon star
-    <h3>Modèles 3D des personnages</h3>
-    <h3>postprocessing</h3>
+        <p>La texture de ce cylindre est animée par une fonction qui va prendre une grande images découpée en tuiles, chaque tuile représente une image qui est
+        décalée de plus en plus. Au lieu de plaquer la grande image entière, la fonction d'animation va plaquer seulement une tuile à un instant donné sur le cylindre,
+        puis après un certain délai, elle va plaquer la tuile suivante. En paramétrant un délai assez court et en ayant un nombre de tuiles suffisantes on arrive à avoir une animation plutôt fluide.</p>
+<p><img src="rapport/images/fig2.png"></p>
+        <p>En plus de ce cylindre, une autre technique d'animation est appliquée sur un autre cylindre légèrement plus petit que le précédent. Ici on va utiliser l'alphaMap d'un material.
+          On dessine une image en nuances de gris pour avoir une texture transparente, puis on fait défiler le offset de l'alphaMap dans la fonction animate. Cela donne un effet d'animation
+          différent de la méthode précédente et est finalement plus simple à mettre en place.</p>
 
-<h2>Dialogues avec l’utilisateur
-</h2>
-<h2>Points de vue de caméra
-</h2>
+    <h3>Modèles 3D des personnages</h3>
+        <h4>Joueur et ennemis</h4>
+            <p>Les modèles du joueur et des ennemis sont des modèles 3D libres qui ont été récupérés sur sketchfab.com (voir crédits). Généralement ces modèles sont disponibles au format OBJ.
+            Pour les utiliser dans Three.js je les ai d'abord importés sur <a href="https://clara.io/">Clara.io</a> qui propose une option d'export des objets 3D au format JSON spécialement
+            pour Three.js. J'ai utilisé ce format là car c'est le seul avec lequel j'ai pu intégrer et faire fonctionner des animations d'objets 3D. En passant par clara.io j'ai donc pu créé
+            des animations pour chaque modèle, et lors de l'export, les chemins relatifs aux textures sont spécifiés dans le JSON. Cela implique qu'il faut placer les textures des modèles dans
+            le même dossier que leur modèle respectif, l'ObjectLoader de Three.js se charge alors d'associer la geometry et le material de l'objet tout seul.</p>
+        <h4>Barrières magiques</h4>
+            <p>Le modèle pour les murs/barrières est différent car il son material est transparent et animé de la même manière que le deuxième cylindre. Aussi pour
+            obtenir de la transparence dans un modèle dans Three.js j'ai utilisé la fonction d'export de <a href="https://threejs.org/editor/">Three.js Editor </a>
+            qui donne également un JSON mais dont la structure est différente que celle obtenu avec clara.io. En procédant ainsi je n'ai plus l'animation du modèle mais je parviens
+            à avoir une texture transparente que je peux animer par la suite.</p>
+            <p>Le modèle des barrières est un seul "hexagone". Pour constituer une barricade entière j'en place 7 dans une certaine configuration, et cela permet de rendre les formations de
+              barricades partiellement destructibles.</p>
+        <h4>Balles</h4>
+            <p>Les balles, qui ressemblent plus à des sorts de magie ici, n'ont pas de modèles 3D propre. J'ai estimé qu'elles n'en avaient finalement pas besoin
+              puisqu'elles sont repésentées par des particules, qui sont générées grâce à la librairie GPUParticleSystem disponible dans les examples de three.js.</p>
+<p><img src="rapport/images/fig3.png"></p>
+            <p>Plutôt que de générer des balles dynamiquement lorsqu'un personnage veut tirer, j'ai fais le choix de générer toutes les balles au
+               chargement du jeu et de les contenir dans un tableau. Lorsqu'elles sont considérées "mortes" elles sont placées en dehors de la zone de jeu,
+                restent immobiles, ne génèrent pas de particules et ne sont pas rendues. Et lorsqu'un personnage tire, je déplace simplement une balle "morte"
+                dans la zone de jeu et la rend visible, jusqu'à que ce qu'elle touche un objet et redevienne "morte". Je pense que cette méthode demande moins
+                de ressources plutôt de créer et détruire des objets à chaque tir.</p>
+            <p>Cette méthode implique d'avoir un tableau fixe et un nombre de balles limité, mais cela n'a pas vraiment d'impact si l'on prend un nombre de balles assez élevé.
+              Ici, en mettant un nombre de 50 balles, cela signifie seulement que je ne peux pas avoir plus de 50 balles affichées simultanément dans la zone de jeu.
+              Cela est amplement suffisant pour notre cas. Si une 51ème balle doit être tirée, il n'y aura pas d'erreur mais une des 50 balles en mouvement va disparaître
+              pour être re-tirée.</p>
+
+    <h3>postprocessing</h3>
+        <p>J'ai implémenté l'effet de postprocessing qui donne un effet de glitching. Il se déclenche lorsque le joueur perd une vie et dure pendant une courte période.
+        J'ai accentué l'effet de glitching en modifiant des valeurs directement dans le fichier GlitchPass.js. Il est possible de l'activer en permancence via le menu de dat.gui mais cela n'est
+      pas recommandé.</p>
+      <p><img src="rapport/images/fig4.png"></p>
+<h2>Dialogues avec l’utilisateur</h2>
+    <p>Lors de la transition d'un niveau, un message va afficher l'état du "chargement" et la zone de jeu va se déplacer vers le bout du tunnel.</p>
+    <p>La touche "h" permet d'afficher la liste des raccourcis disponibles, cette liste peut aussi être affichée à partir du menu pause avec la touche "s". L'activation du menu dat.gui se fait
+      également à partir du menu de pause.</p>
+
+<h2>Points de vue de caméra</h2>
+    <p>La touche "1" place une caméra proche du joueur et qui suit ses déplacements, la touche "2" fixe la caméra derrière le joueur et offre une vue d'ensemble de la zone de jeu.
+    La touche "3" place la caméra derrière les ennemis pour voir le monde sous un autre angle.</p>
 <h2>Gestion des collisions</h2>
-<h2>Dynamique
-</h2>
-<h2>Intelligence artificielle de l’adversaire
-</h2>
+    <p>La détection des collisions se fait avec les méthodes de boundingBox de three.js. Chaque personnage possède un modèle 3D mais également une
+    une mesh box qui est invisible et subis les mêmes déplacements que les modèles 3D. C'est sur ces box que sont effectuées les calculs de collisions.</p>
+<h2>Dynamique</h2>
+    <p>La vitesse des ennemis et des missiles augmentent au fil des niveaux.</p>
+<h2>Intelligence artificielle de l’adversaire</h2>
+    <p>Pour simuler une intellignece artificielle, la fréquence de tir des ennemis augmente au fil des niveaux et le boss a une probabilité de changer
+    de direction sans être à une extrémité de la zone. Pour ne pas trop déséquilibrer la difficulté il ne se déplace pas vers le joueur, mais il peut faire apparaître des
+    sous fifres qui n'hésiteront pas à venir jusqu'aux barrières.</p>
 <h2>Musique et sons</h2>
+    <p>Les sons ont étés réalisés par mes soins avec le logiciel Reaper, ainsi que les musiques fate et dejavu qui sont des reprises de "fate Of The Unknown" de Yoko Shimomura et de "Deja Vu" de Dave Rodgers,
+      la musique microgravity a été obtenu dans une banque de sons libre de droits.</p>
 <h2>Triche</h2>
+    <p> Touche "i" pour l'invincibilité et touche "k" pour tuer tous les ennemis et passer au niveau suivant.</p>
 <h2>Les petits plus ! </h2>
+    <p>Essentiellement ce qui concerne la partie graphique, avec les animations de textures les particules, et aussi les animations des modèles 3D. L'originalité de l'ambiance du jeu.<br/>
+    La disponibilité en ligne du jeu.</p>
 <h2>Crédits</h2>
+
+<p>
+<a href="https://sketchfab.com/models/ecc83d6938f94cdb83d67fa7b3d3f9a6#">secret tome of speculation</a> par Michael Stöter
+</p>
+
+<p>
+<a href="https://sketchfab.com/models/5115ffc67b8d4ab8abb807a959ceb603#">magic book of eden
+</a> par luisservin89
+</p>
+
+<p>
+<a href="https://sketchfab.com/models/2940aa9dd6934517a6291f459fcf9ec2">kalestra's book</a> par Alena
+</p>
+
+<p>
+<a href="https://sketchfab.com/models/7de5a5f0669a4764a5d41e3305eb309b#">book of the damned souls</a> par Max Marvin de Saint Denis "mdsd95"
+</p>
+
+<p>
+<a href="https://sketchfab.com/models/1e61abe39a0741b68a067ff78b1f97ac#">hand painted book</a> par james braley
+</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </body>
 </html>
