@@ -12,7 +12,7 @@
     <p>Le jeu commence par un écran de chargement, et informe le joueur lorsque le jeu est prêt. On se retrouve alors sur l’écran titre qui contient les informations
        sur les ennemies, les touches et un bouton cliquable pour lancer la partie. L'idée était de faire un mini-jeu qui sert à patienter pendant un chargement mais qui au final se serait
      révélé être plus interessant que le "vrai" jeu.</p>
-       <p><img src="rapport/images/fig1.png" alt="fig1"></p>
+       <p><img src="rapport/images/fig1.PNG" alt="fig1"></p>
     <p>Au cours du jeu, le joueur gagne des points en détruisant des ennemis ou des balles en plein vol. Les ennemis se déplacent de gauche à droite et
        s’avancent vers le joueur lorsqu’ils atteignent une extrémité de la zone de jeu. Si les ennemis arrivent au niveau de la ligne de défense du joueur,
         ou si le joueur perd ses trois vies, c’est la fin du jeu. Il y a trois niveaux différents, le troisième faisant intervenir le mini boss. </p>
@@ -42,11 +42,11 @@ La gestion des ressources avec Parcel a été envisagée mais finalement abandon
         <p>La texture de ce cylindre est animée par une fonction qui va prendre une grande images découpée en tuiles, chaque tuile représente une image qui est
         décalée de plus en plus. Au lieu de plaquer la grande image entière, la fonction d'animation va plaquer seulement une tuile à un instant donné sur le cylindre,
         puis après un certain délai, elle va plaquer la tuile suivante. En paramétrant un délai assez court et en ayant un nombre de tuiles suffisantes on arrive à avoir une animation plutôt fluide.</p>
-<p><img src="rapport/images/fig2.png" alt="fig2"></p>
+<p><img src="rapport/images/fig2.PNG" alt="fig2"></p>
         <p>En plus de ce cylindre, une autre technique d'animation est appliquée sur un autre cylindre légèrement plus petit que le précédent. Ici on va utiliser l'alphaMap d'un material.
           On dessine une image en nuances de gris pour avoir une texture transparente, puis on fait défiler le offset de l'alphaMap dans la fonction animate. Cela donne un effet d'animation
           différent de la méthode précédente et est finalement plus simple à mettre en place.</p>
-<p><img src="rapport/images/figlol.png" alt="figlol"></p>
+<p><img src="rapport/images/figlol.PNG" alt="figlol"></p>
     <h3>Modèles 3D des personnages</h3>
         <h4>Joueur et ennemis</h4>
             <p>Les modèles du joueur et des ennemis sont des modèles 3D libres qui ont été récupérés sur sketchfab.com (voir crédits). Généralement ces modèles sont disponibles au format OBJ.
@@ -64,7 +64,7 @@ La gestion des ressources avec Parcel a été envisagée mais finalement abandon
         <h4>Balles</h4>
             <p>Les balles, qui ressemblent plus à des sorts de magie ici, n'ont pas de modèles 3D propre. J'ai estimé qu'elles n'en avaient finalement pas besoin
               puisqu'elles sont repésentées par des particules, qui sont générées grâce à la librairie GPUParticleSystem disponible dans les examples de three.js.</p>
-<p><img src="rapport/images/fig3.png" alt="fig3"></p>
+<p><img src="rapport/images/fig3.PNG" alt="fig3"></p>
             <p>Plutôt que de générer des balles dynamiquement lorsqu'un personnage veut tirer, j'ai fais le choix de générer toutes les balles au
                chargement du jeu et de les contenir dans un tableau. Lorsqu'elles sont considérées "mortes" elles sont placées en dehors de la zone de jeu,
                 restent immobiles, ne génèrent pas de particules et ne sont pas rendues. Et lorsqu'un personnage tire, je déplace simplement une balle "morte"
@@ -79,7 +79,7 @@ La gestion des ressources avec Parcel a été envisagée mais finalement abandon
         <p>J'ai implémenté l'effet de postprocessing qui donne un effet de glitching. Il se déclenche lorsque le joueur perd une vie et dure pendant une courte période.
         J'ai accentué l'effet de glitching en modifiant des valeurs directement dans le fichier GlitchPass.js. Il est possible de l'activer en permancence via le menu de dat.gui mais cela n'est
       pas recommandé.</p>
-      <p><img src="rapport/images/fig4.png" alt="fig4"></p>
+      <p><img src="rapport/images/fig4.PNG" alt="fig4"></p>
 <h2>Dialogues avec l’utilisateur</h2>
     <p>Lors de la transition d'un niveau, un message va afficher l'état du "chargement" et la zone de jeu va se déplacer vers le bout du tunnel.</p>
     <p>La touche "h" permet d'afficher la liste des raccourcis disponibles, cette liste peut aussi être affichée à partir du menu pause avec la touche "s". L'activation du menu dat.gui se fait
@@ -88,7 +88,7 @@ La gestion des ressources avec Parcel a été envisagée mais finalement abandon
 <h2>Points de vue de caméra</h2>
     <p>La touche "1" place une caméra proche du joueur et qui suit ses déplacements, la touche "2" fixe la caméra derrière le joueur et offre une vue d'ensemble de la zone de jeu.
     La touche "3" place la caméra derrière les ennemis pour voir le monde sous un autre angle.</p>
-    <p><img src="rapport/images/figcam3.png" alt="figcam3"></p>
+    <p><img src="rapport/images/figcam3.PNG" alt="figcam3"></p>
 <h2>Gestion des collisions</h2>
     <p>La détection des collisions se fait avec les méthodes de boundingBox de three.js. Chaque personnage possède un modèle 3D mais également une
     une mesh box qui est invisible et subis les mêmes déplacements que les modèles 3D. C'est sur ces box que sont effectuées les calculs de collisions.</p>
