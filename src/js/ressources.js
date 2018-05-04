@@ -10,31 +10,29 @@ function initGui(){
 
   folder1.add(settings, "playerMoveSpeed", 0, 2).step(0.1);
   folder1.add(settings, "lifePoints", 0, 100).step(1).listen().onFinishChange(function(){resetLife();});
-  folder1.add(settings, "reloadDelay", 0, 2).step(0.05);
+  folder1.add(settings, "reloadDelay", 0, 2).name('Delay between Shot').step(0.05);
   folder2.add(settings, "enemyMoveSpeed", 0, 2).step(0.1);
-  folder2.add(settings, "shootFrequ", 0, 2000).step(1);
-  folder3.add(settings, "animaSpeed", 5, 500).step(10).onFinishChange(function(){
+  folder2.add(settings, "shootFrequ", 0, 2000).name('Shot Delay Frequency').step(1);
+
+  folder3.add(settings, "animaSpeed", 5, 100).name('Texture Speed').step(1).onFinishChange(function(){
     anima.tileDisplayDuration = settings.animaSpeed;
   });
-  folder3.add(spawnerOptions, "spawnRate", 0, 80000).step(1);
-  folder3.add(spawnerOptions, "horizontalSpeed", 0, 5).step(0.05);
-  folder3.add(spawnerOptions, "verticalSpeed", 0, 5).step(0.05);
-  folder3.add(spawnerOptions, "timeScale", 0, 5).step(0.05);
-  folder3.add(settings, "bulletSpeed", 0, 5).step(0.05);
-  folder3.add( settings, "level", 0,5).step(1).onFinishChange(function(){
-    document.getElementById('titre').innerHTML = "Loading "+settings.level*25+"% ...";
-    placeEnemies();
-  });
+  folder3.add(spawnerOptions, "spawnRate", 0, 80000).name('Particles SpawnRate').step(1);
+
+  folder3.add(spawnerOptions, "timeScale", 0, 5).name('Particles timeScale').step(0.05);
+  folder3.add(settings, "bulletSpeed", 0, 2).step(0.05);
+  folder3.add(settings, "infiniteGlitch");
+
   folder4.add(chaseCamera.position, "x", -50, 50).step(0.2).listen();
   folder4.add(chaseCamera.position, "y", -100, 50).step(0.2).listen();
   folder4.add(chaseCamera.position, "z", -50, 50).step(0.2).listen();
-  folder4.add(vectLook, "x", -50, 50).step(0.2).onChange(function(){
+  folder4.add(vectLook, "x", -50, 50).name('x LookAt').step(0.2).onChange(function(){
     chaseCamera.lookAt(vectLook);
   });
-  folder4.add(vectLook, "y", -50, 50).step(0.2).onChange(function(){
+  folder4.add(vectLook, "y", -50, 50).name('y LookAt').step(0.2).onChange(function(){
     chaseCamera.lookAt(vectLook);
   });
-  folder4.add(vectLook, "z", -50, 50).step(0.2).onChange(function(){
+  folder4.add(vectLook, "z", -50, 50).name('z LookAt').step(0.2).onChange(function(){
     chaseCamera.lookAt(vectLook);
   });
 
@@ -624,8 +622,8 @@ function bossMove(){
     var missDirection = false;
     if (boss.alive){
       //gameOver if the boss arrives to the walls
-      if(boss.hitbox.position.y <= walls[0].hitbox.position.y){
-        gameOver("Game Over<br/> you lost because the enemy pierced your barricades<br/>");
+      if(boss.hitbox.position.y <= -23){
+        gameOver("Game Over<br/><br/><br/> you lost because the enemy pierced your barricades<br/>");
       }
       //probability of shooting
       if (Math.floor(Math.random()*settings.shootFrequ/2) == 0) bomb(vectDown,boss.hitbox.position);
@@ -649,8 +647,8 @@ function enemiesMove(){
   for (var i=0; i<enemies.length; i++){
     if (enemies[i].alive){//enemy is alive
       //game over if enemies arrives to the walls
-      if(enemies[i].hitbox.position.y <= walls[0].hitbox.position.y){
-        gameOver("Game Over<br/> you lost because the enemy pierced your barricades<br/>");
+      if(enemies[i].hitbox.position.y <= -23){
+        gameOver("Game Over<br/><br/><br/> you lost because the enemy pierced your barricades<br/>");
 
       }
       //probability of shooting
@@ -766,12 +764,7 @@ function nuke(){
 }
 
 
-/*
-  function TextureAnimator from
-  Three.js "tutorials by example"
-  Author: Lee Stemkoski
-  Date: July 2013 (three.js v59dev)
-*/
+
 function TextureAnimator(texture, tilesHoriz, tilesVert, numTiles, tileDispDuration)
 {
   // note: texture passed by reference, will be updated by the update function.

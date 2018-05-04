@@ -5,82 +5,57 @@
             <link rel="stylesheet" href="rapport/css/style.css"/>
 </head>
 <body>
+  <h1>Rapport de Projet</h1>
 
+
+<h2>Déroulement du jeu</h2>
+    <p>Le jeu commence par un écran de chargement, et informe le joueur lorsque le jeu est prêt. On se retrouve alors sur l’écran titre qui contient les informations
+       sur les ennemies, les touches et un bouton cliquable pour lancer la partie.</p>
+Figure loading screen
+Figure title screen
+    <p>Au cours du jeu, le joueur gagne des points en détruisant des ennemis ou des balles en plein vol. Les ennemis se déplacent de gauche à droite et
+       s’avancent vers le joueur lorsqu’ils atteignent une extrémité de la zone de jeu. Si les ennemis arrivent au niveau de la ligne de défense du joueur,
+        ou si le joueur perd ses trois vies, c’est la fin du jeu. Il y a trois niveaux différents, le troisième faisant intervenir le mini boss. </p>
+
+<h2>Technologies logicielles</h2>
+    <p>Le jeu s’appuie sur la bibliothèque Three.js et utilise des ressources récupérées dans les exemples fournies par Three.js,
+       comme le système de génération de particules, ou OrbitControls.js pour déplacer la caméra librement lorsque l’option est activée dans le menu de pause.</p>
+    <p>Certaines librairies ThreeX sont également utilisées, ainsi que dat.gui et stats.js pour afficher le nombre de fps.</p>
+
+<h2>Fenêtre graphique 3D</h2>
+    <p>Les librairies ThreeX permettent d’adapter la taille de la fenêtre dynamiquement, de passer en plein écran avec la touche “f” et
+       aussi de prendre de captures d’écran avec la touche “p”. On note que cette dernière fonctionne correctement sur firefox mais
+        vraisemblablement pas sur chrome.</p>
+
+<h2>Architecture logicielle</h2>
+    <p>On peut accéder aux à l’interface dat.gui des paramètres développeurs en cliquant sur le bouton correspondant dans le menu de pause.
+La gestion des ressources avec Parcel a été envisagée mais finalement abandonnée, car son emploi requiert de structurer tout le code sous forme de modules.
+ Cela est problématique car certaines librairies Three.js, comme le système de génération de particules, ne sont pas structurées pour l’utilisation de modules.</p>
+
+<h2>Graphisme</h2>
+    <h3>Environnement</h3>
+        <p>L’environnement a été fait dans l’idée de donner la sensation que le joueur et les ennemis sont toujours en train de se déplacer vers l’avant.
+           Le combat se passe donc à l’intérieur d’un tunnel magique, qui est un cylindre ouvert à ses extrémités, avec l’une étant plus large que l’autre.
+        <br/>Au bout du tunnel on a un sprite transparent qui représente l'étoile de salomon, et de l'autre côté on a une demi sphère noire pour que l'arrière
+        du tunnel soit sombre et que l'avant reste claire. En plus de ça, un brouillard a été ajouté, on peut ensuite changer sa couleur qui va se répercuter sur les
+        autres textures et donner une ambiance propre à chaque niveau.</p>
+        <p>La texture de ce cylindre est animée par une fonction qui va prendre une grande images découpées en tuiles </p>
+        Figure half sphere, salomon star
+    <h3>Modèles 3D des personnages</h3>
+    <h3>postprocessing</h3>
+
+<h2>Dialogues avec l’utilisateur
+</h2>
+<h2>Points de vue de caméra
+</h2>
+<h2>Gestion des collisions</h2>
+<h2>Dynamique
+</h2>
+<h2>Intelligence artificielle de l’adversaire
+</h2>
+<h2>Musique et sons</h2>
+<h2>Triche</h2>
+<h2>Les petits plus ! </h2>
+<h2>Crédits</h2>
 </body>
-week 1 : scene, box, camera, raycaster
-week 2 : collision, particles debut menu,
-week 3 : textures animees
-locate pour viser la camera sur un objet
-
-raycaster abandonné, pas de new a chaque tir
-
-pour chrome, il est necessaire de lancer le navigateur avec l'option --allow-file-access-from-files
-parce qu'il est retardé
-ou alors
-lancer un serveur :
-
-cd Projet
-python -m SimpleHTTPServer
-
-puis navigateur
-Firefox localhost:8000
-
-need utiliser parcel
-
-minify le code en version finale pour plus de perf
-on garde le code version lisible et on link le .min dans le html
-
-
-/////////////// MODULES
-Let users run the script themselves for an examples they need to import.
-
-In the case of (e.g.) OrbitControls, the script just needs to:
-
-    Add import * as THREE from './three'; to the top of the file
-    Replace THREE.OrbitControls = function ( object, domElement ) {
-    with export default function OrbitControls ( object, domElement ) {
-    Change THREE.OrbitControls -> OrbitControls wherever it appears in the file.
-
-Then to use OrbitControls, you can just do:
-
-import OrbitControls from './OrbitControls.module.js
-
-En fait, la detection de collision et hitbox est déjà implementee dans three.js
-https://developer.mozilla.org/fr/docs/Games/Techniques/3D_collision_detection/Bounding_volume_collision_detection_with_THREE.js
-
-wowo
-c'est WOOOOOOOOOOOw
-
-capture d'ecran des différentes phases du jeu
-
-AE86 de
-Saiyan
-https://www.blendswap.com/user/Saiyan
-
-secret tome of speculation
-https://sketchfab.com/models/ecc83d6938f94cdb83d67fa7b3d3f9a6#
-Michael Stöter
-
-magic book of eden
-https://sketchfab.com/models/5115ffc67b8d4ab8abb807a959ceb603#
-luisservin89
-
-kalestra's book
-https://sketchfab.com/models/2940aa9dd6934517a6291f459fcf9ec2
-Alena
-
-book of the damned souls
-https://sketchfab.com/models/7de5a5f0669a4764a5d41e3305eb309b#
-Max Marvin de Saint Denis "mdsd95"
-
-hand painted book
-https://sketchfab.com/models/1e61abe39a0741b68a067ff78b1f97ac#
-james braley
-
-dragon tome (fbx)
-https://sketchfab.com/models/d8bfbc48bbed4d73b7e21eb26c96990a#download
-cornflakes
-
-faun book (.fbx)
-https://sketchfab.com/models/ae7dd68075e44975b609ba3c9eb58f29#
-Hatsaru and Alexandra Semushina
+</html>

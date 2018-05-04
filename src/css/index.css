@@ -182,3 +182,8 @@ div#loaderRess div{
 #guiContainer{
   display: none;
 }
+img {
+    max-width: 100%;
+    height: auto;
+    width: auto\9; /* ie8 */
+}

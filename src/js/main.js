@@ -3,7 +3,7 @@
 var renderer,composer, glitchPass, scene, chaseCamera, fixedCamera, chaseCameraActive=false, controls, pause=true, isKeyPressAllowed = false;
 var stats;
 var light, directionalLight;
-var gui = new dat.GUI( {hideable: false},{width: 350});
+var gui = new dat.GUI( {hideable: false},{width: 400});
 document.getElementById('guiContainer').appendChild(gui.domElement);
 var anima; //textures animators
 var alphaMesh, sprite, spriteBack, cylinder, moveScene = 0;
@@ -46,7 +46,8 @@ var settings = {
   reloadDelay: 0.5,
   enemyMoveSpeed: 0.1,
   shootFrequ: 800,
-  bulletSpeed: 0.7
+  bulletSpeed: 0.7,
+  infiniteGlitch: false
 }
 spawnerOptions = {
   spawnRate: 20000,
@@ -339,7 +340,9 @@ function animate(){
 var glitching = false;
 var frameGlitch=0;
 function renderGlitch(){
-  if (glitching && (frameGlitch < 40)){
+  if (settings.infiniteGlitch) composer.render();
+  
+  else if (glitching && (frameGlitch < 40)){
     frameGlitch++;
     composer.render();
   }
